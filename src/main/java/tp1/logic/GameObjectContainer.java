@@ -68,7 +68,7 @@ public class GameObjectContainer {
 		}
 		//Comprueba si la posicion es la de la puerta de salida
 		if(exitDoor != null && exitDoor.isInPosition(position)){
-			return mario.getIcon();
+			return exitDoor.getIcon();
 		}
 		//Comprueba si la posicion es la de algun Goomba
 		for(Goomba goomba : goombas){
