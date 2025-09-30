@@ -30,14 +30,15 @@ public class Controller {
 		boolean exit = false;
 		
 		//TODO fill your code: The main loop that displays the game, asks the user for input, and executes the action.
-		while(!exit &&game.playerWins() && !game.playerLoses()){
-			//Muestra el juego
+		while(!exit && !game.playerWins() && !game.playerLoses()){
+			//1Draw:Muestra el juego
 			view.showGame();
-			//Pide la accion al usuario
+
+			//2Input: Pide la accion al usuario
 			System.out.print("Accion: ");
 			String accion = scanner.nextLine().trim();
 
-			//Procesar la accion
+			//3Update: Procesar la accion
 			exit = processCommand(accion);
 
 		}
@@ -59,32 +60,27 @@ public class Controller {
 		String command = parts[0].toLowerCase();
 
 		switch(command){
-			case "help":
-			case "h":
+			case "help", "h":
 				showHelp();
 				break;
 			
-			case "exit":
-			case "e":
-				System.out.println("Jugador sale del juego");
+			case "exit", "e":
 				return true;
+				
 
-			case "reset":
-            case "r":
+			case "reset", "r":
                 handleReset(parts);
-                return false;
+                break;
+				
 			
-			case "update":
-            case "u":
-            case "":
+			case "update","u","":
                 // Por ahora no hace nada hasta implementar movimiento (Hito C)
-                return false;
+                break;
 
-			case "action":
-            case "a":
+			case "action","a":
                 // Por ahora no hace nada hasta implementar acciones (Hito D)
                 System.out.println("Acciones no implementadas");
-                return false;
+                break;
 			
 			default:
 				System.out.println("Comando no reconocido");
@@ -96,13 +92,13 @@ public class Controller {
 	//Muestra la ayuda
 	private void showHelp() {
 		System.out.println("Comandos disponibles:");
-		System.out.println("[a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]+: user performs actions");
-        System.out.println("[u]pdate | \"\": user does not perform any action");
-        System.out.println("[r]eset [numLevel]: reset the game to initial configuration if not numLevel else load the numLevel map");
-        System.out.println("[h]elp: print this help message");
-        System.out.println("[e]xit: exits the game");
+		System.out.println("[a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]+: Posibles acciones del usuario");
+        System.out.println("[u]pdate | \"\": no hace nada");
+        System.out.println("[r]eset [numLevel]: resetea el juego, opcionalmente a un nivel especifico");
+        System.out.println("[h]elp: muestra el mensaje de ayuda");
+        System.out.println("[e]xit: sales del juego");
 	}
-	
+
 	private void handleReset(String[] parts) {
         if (parts.length > 1) {
             // Hay un nivel especificado
@@ -110,7 +106,7 @@ public class Controller {
                 int level = Integer.parseInt(parts[1]);
                 game.reset(level);
             } catch (NumberFormatException e) {
-                System.out.println("Error: Invalid level number: " + parts[1]);
+                System.out.println("Error: Nivel no valido: " + parts[1]);
             }
         } else {
             // Reset sin nivel especificado
