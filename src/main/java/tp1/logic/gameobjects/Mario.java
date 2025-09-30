@@ -18,7 +18,8 @@ public class Mario extends GameObject {
 		super(position);
 		this.game = game;
 		this.direccion = 1; //Por defecto mira a la derecha
-		this.big = true; //Por defecto es pequeño
+		this.big = true; //Por defecto es grande
+		this.facingRight = true;
 	}	
 	
 	/**

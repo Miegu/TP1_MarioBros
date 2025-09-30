@@ -21,7 +21,7 @@ public class Goomba extends GameObject {
     public String getIcon() {
         return "🐻";
     }
-    //Implementa la actualizacion automatica
+    
     @Override
     public void update() {
         if(!vivo) return; //Si no esta vivo no hace nada

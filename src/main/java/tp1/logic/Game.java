@@ -59,7 +59,7 @@ public class Game {
 			this.lives = currentLives;
 		}
 	}
-	//NEcesario para que Mario y Goomba puedan acceder al contenedor
+	//NEcesarioMario y Goomba puedan acceder al contenedor
 public GameObjectContainer getGameObjects() {
     return gameObjects;
 }

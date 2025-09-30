@@ -64,11 +64,11 @@ public class GameObjectContainer {
 	public String positionToString(Position position){
 		//Comprueba si la posicion es la de Mario
 		if(mario != null && mario.isInPosition(position)){
-			return String.valueOf(mario.getIcon());
+			return mario.getIcon();
 		}
 		//Comprueba si la posicion es la de la puerta de salida
 		if(exitDoor != null && exitDoor.isInPosition(position)){
-			return exitDoor.getIcon();
+			return mario.getIcon();
 		}
 		//Comprueba si la posicion es la de algun Goomba
 		for(Goomba goomba : goombas){
