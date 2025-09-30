@@ -29,10 +29,10 @@ public class Mario extends GameObject {
 	@Override
 	public String getIcon() {
 		if(facingRight){
-			return "🧍";
+			return "\u1F9CD";
 		}
 		else{
-			return "🚶"; 
+			return "W"; 
 		}
 	}	
 

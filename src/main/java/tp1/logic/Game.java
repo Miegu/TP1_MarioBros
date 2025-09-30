@@ -1,9 +1,9 @@
 package tp1.logic;
 
-import tp1.logic.gameobjects.Mario;
 import tp1.logic.gameobjects.ExitDoor;
 import tp1.logic.gameobjects.Goomba;
 import tp1.logic.gameobjects.Land;
+import tp1.logic.gameobjects.Mario;
 
 public class Game {
 
@@ -61,7 +61,7 @@ public class Game {
 
 	public boolean playerLoses() {
 		// TODO Auto-generated method stub
-		return playerLost;
+		return lives <= 0;
 	}  
 
 	public int remainingTime() {
@@ -128,5 +128,29 @@ public class Game {
 
 		gameObjects.add(new Goomba(this, new Position(0, 19)));
 	}
+	/**
+ * Resetea el juego al estado inicial manteniendo puntos y vidas
+ */
+public void reset() {
+    reset(this.nLevel); // Mantiene el nivel actual
+}
+
+/**
+ * Resetea el juego con un nivel específico
+ * @param level nivel a cargar
+ */
+public void reset(int level) {
+    // Resetear tiempo pero mantener puntos y vidas
+    this.remainingTime = 100;
+    
+    // Solo cambiar nivel si existe, si no mantener el actual
+    if (level == 0 || level == 1) { // Añadir más niveles según necesites
+        this.nLevel = level;
+    }
+    
+    // Reinicializar el nivel
+    initLevel(this.nLevel);
+}
+
 
 }
