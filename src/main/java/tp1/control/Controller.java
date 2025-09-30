@@ -52,7 +52,8 @@ public class Controller {
 	 */
 	private boolean processCommand(String accion) {
 		if(accion.isEmpty()){
-			//Comando vacio, no hacer nada
+			//Si el comando esta vacio, se actualiza
+			game.update();
 			return false;
 		}
 
@@ -60,31 +61,23 @@ public class Controller {
 		String command = parts[0].toLowerCase();
 
 		switch(command){
-			case "help", "h":
-				showHelp();
-				break;
+			case "help", "h" -> showHelp();
 			
-			case "exit", "e":
-				return true;
+			case "exit", "e" -> {
+                 return true;
+			}
 				
-
-			case "reset", "r":
-                handleReset(parts);
-                break;
+			case "reset", "r" -> handleReset(parts);
 				
 			
-			case "update","u","":
-                // Por ahora no hace nada hasta implementar movimiento (Hito C)
-                break;
+			case "update","u" -> {
+				game.update();
+                }
 
-			case "action","a":
-                // Por ahora no hace nada hasta implementar acciones (Hito D)
+			case "action","a" -> // Por ahora no hace nada hasta implementar acciones (Hito D)
                 System.out.println("Acciones no implementadas");
-                break;
 			
-			default:
-				System.out.println("Comando no reconocido");
-				break;
+			default -> System.out.println("Comando no reconocido");
 		}
 		return false;
 	}

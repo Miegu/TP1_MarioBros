@@ -7,8 +7,6 @@ import tp1.logic.gameobjects.ExitDoor;
 import tp1.logic.gameobjects.Goomba;
 import tp1.logic.gameobjects.Land;
 import tp1.logic.gameobjects.Mario;
-
-
 public class GameObjectContainer {
 	//TODO fill your code
 	
@@ -39,10 +37,34 @@ public class GameObjectContainer {
 		this.mario = mario;
 	}
 
+	public void update() {
+        // 1. PRIMERO Mario (orden importante según especificación)
+        if (mario != null) {
+            mario.update();
+        }
+        
+        // 2. DESPUÉS los Goombas
+        for (Goomba goomba : goombas) {
+            goomba.update();
+        }
+        
+        // 3. Eliminar Goombas muertos
+        goombas.removeIf(goomba -> !goomba.estaVivo());
+    }
+	public boolean isSolid(Position position){
+		//Comprueba si la posicion es la de algun Land
+		for(Land land : lands){
+			if(land.isInPosition(position)){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public String positionToString(Position position){
 		//Comprueba si la posicion es la de Mario
 		if(mario != null && mario.isInPosition(position)){
-			return mario.getIcon();
+			return String.valueOf(mario.getIcon());
 		}
 		//Comprueba si la posicion es la de la puerta de salida
 		if(exitDoor != null && exitDoor.isInPosition(position)){
@@ -61,10 +83,6 @@ public class GameObjectContainer {
 			}
 		}
 		return " "; //Si no hay nada en esa posicion, devuelve un espacio en blanco
-	}
-
-	public void update(){
-		
 	}
 	
 }

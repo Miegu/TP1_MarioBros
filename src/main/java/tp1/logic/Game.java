@@ -35,14 +35,46 @@ public class Game {
 		initLevel(nLevel);
 	}
 	
+	public void update(){
+		//1 Reducir el tiempo
+		remainingTime--;
+		//2, Actualizar todos los objetos del juego
+		gameObjects.update();
+		//3 Verificar condiciones de fin de juego
+		if(remainingTime <= 0){
+			playerLost = true;
+		}
+	}
+	// Mario muere
+	public void marioDies(){
+		lives--;
+		if(lives <= 0){
+			playerLost = true;
+		}else{
+			//Reiniciar el nivel, pero mantienes puntos y vidas
+			int currentPoints = this.points;
+			int currentLives = this.lives;
+			initLevel(this.nLevel);
+			this.points = currentPoints;
+			this.lives = currentLives;
+		}
+	}
+	//NEcesario para que Mario y Goomba puedan acceder al contenedor
+public GameObjectContainer getGameObjects() {
+    return gameObjects;
+}
+
 	private void initLevel(int nLevel) {
+
+		this.gameObjects = new GameObjectContainer();
+
 		switch(nLevel){
 			case 0:
 				initLevel0();
 				break;
-			//case 1:
+			case 1:
 				//initLevel1();
-				//break;
+				break;
 			default:
 				initLevel0();
 				break;

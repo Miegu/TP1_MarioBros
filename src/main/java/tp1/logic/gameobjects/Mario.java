@@ -1,6 +1,7 @@
 package tp1.logic.gameobjects;
 
 import tp1.logic.Game;
+import tp1.logic.GameObjectContainer;
 import tp1.logic.Position;
 
 //Mario class extiende de GameObject, es su hijo
@@ -8,15 +9,16 @@ public class Mario extends GameObject {
 
 	//TODO fill your code
 	private final Game game;
-	private boolean facingRight;
+	private int direccion; // -1 izquierda, 1 derecha
 	private boolean big;
+	private boolean facingRight; //true si mira a la derecha, false si mira a la izquierda
 
 	//Constructor de Mario
 	public Mario(Game game, Position position){
 		super(position);
 		this.game = game;
-		this.facingRight = true; //Por defecto mira a la derecha
-		this.big = false; //Por defecto es pequeño
+		this.direccion = 1; //Por defecto mira a la derecha
+		this.big = true; //Por defecto es pequeño
 	}	
 	
 	/**
@@ -25,16 +27,49 @@ public class Mario extends GameObject {
 	@Override
 	public void update() {
 		//TODO fill your code
+		//1: Movimiento horizontal
+		Position newPos = pos.move(direccion, 0);
+
+		if(canMoveTo(newPos)){
+			pos = newPos;
+		}else{
+			direccion = -direccion; //Cambia de direccion si se choca
+			facingRight = (direccion == 1);
+		}
+		//2 Gravedad (cuando se cae o no hay suelo)
+		applyGravity();
 	}
+
+	private void applyGravity(){
+		Position debajo = pos.move(0, 1);
+		//Si no hay suelo cae
+		 while (debajo.isValidPosition() && !game.getGameObjects().isSolid(debajo)) {
+            pos = debajo;
+            debajo = pos.move(0, 1);
+        }
+		//Si se sale del tablero muere
+		if(!pos.isValidPosition()){
+			game.marioDies();
+		}
+	}
+
+	private boolean canMoveTo(Position position){
+		//Comprueba si la posicion es valida y no hay ningun Land en esa posicion
+		return position.isValidPosition() && !game.getGameObjects().isSolid(position);
+	}
+
 	@Override
 	public String getIcon() {
 		if(facingRight){
-			return "\u1F9CD";
+			return "M";
 		}
 		else{
 			return "W"; 
 		}
 	}	
+	 public GameObjectContainer getGameObjects() {
+        return game.getGameObjects();
+    }
 
 	public boolean isBig(){
 		return big;
