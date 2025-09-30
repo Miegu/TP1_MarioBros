@@ -7,7 +7,7 @@ import tp1.logic.Position;
 public class Mario extends GameObject {
 
 	//TODO fill your code
-	private Game game;
+	private final Game game;
 	private boolean facingRight;
 	private boolean big;
 
@@ -50,7 +50,7 @@ public class Mario extends GameObject {
 		}
 		//Si Mario es grande, tambien ocupa la posicion de arriba
 		if(big && pos.getRow() > 0){
-			Position above = new Position(pos.getCol(), pos.getRow() - 1);
+			Position above = new Position(pos.getRow() - 1, pos.getCol());
 			return above.equals(position);
 		}
 		return false;

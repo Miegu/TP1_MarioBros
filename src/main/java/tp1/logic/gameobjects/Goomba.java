@@ -6,7 +6,7 @@ import tp1.logic.Position;
 
 public class Goomba extends GameObject {
 
-    private Game game;
+    private final Game game;
 
     public Goomba(Game game, Position pos) {
         super(pos);
