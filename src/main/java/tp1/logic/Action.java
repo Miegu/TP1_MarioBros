@@ -24,5 +24,20 @@ public enum Action {
 	}
 	
 	//TODO fill your code
+
+	public static Action parse(String text) {
+        if (text == null) return null;
+
+        String upperText = text.toUpperCase().trim();
+
+            return switch (upperText) {
+                case "LEFT", "L", "l" -> LEFT;
+                case "RIGHT", "R", "r" -> RIGHT;
+                case "UP", "U", "u" -> UP;
+                case "DOWN", "D", "d" -> DOWN;
+                case "STOP", "S" ,"s" -> STOP;
+                default -> null;
+            };
+    }
 	
 }

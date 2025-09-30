@@ -1,53 +1,91 @@
 package tp1.logic;
 
+import tp1.logic.gameobjects.Mario;
+import tp1.logic.gameobjects.ExitDoor;
+import tp1.logic.gameobjects.Goomba;
+import tp1.logic.gameobjects.Land;
+
 public class Game {
 
 	public static final int DIM_X = 30;
 	public static final int DIM_Y = 15;
 
+	private int nLevel;
+    private int remainingTime;
+    private int points;
+    private int lives;
+    private boolean playerWon;
+    private boolean playerLost;
+
+	private GameObjectContainer gameObjects;
+    private Mario mario;
+
 	//TODO fill your code
+	// Atributos del juego
 	
 	public Game(int nLevel) {
 		// TODO Auto-generated constructor stub
+		this.nLevel = nLevel;
+		this.remainingTime = 100;
+		this.points = 0;
+		this.lives = 3;
+		this.playerWon = false;
+		this.playerLost = false;
+
+		initLevel(nLevel);
+	}
+	
+	private void initLevel(int nLevel) {
+		switch(nLevel){
+			case 0:
+				initLevel0();
+				break;
+			//case 1:
+				//initLevel1();
+				//break;
+			default:
+				initLevel0();
+				break;
+		}
 	}
 	
 	public String positionToString(int col, int row) {
-		// TODO Auto-generated method stub
-		return null;
+		Position position = new Position(row, col);
+        return gameObjects.positionToString(position);
 	}
 
 	public boolean playerWins() {
 		// TODO Auto-generated method stub
-		return false;
+		return playerWon;
 	}
 
 	public boolean playerLoses() {
 		// TODO Auto-generated method stub
-		return false;
+		return playerLost;
 	}  
 
 	public int remainingTime() {
 		// TODO Auto-generated method stub
-		return 100;
+		return remainingTime;
 	}
 
 	public int points() {
 		// TODO Auto-generated method stub
-		return 0;
+		return points;
 	}
 
 	public int numLives() {
 		// TODO Auto-generated method stub
-		return 3;
+		return lives;
 	}
 
 	@Override
 	public String toString() {
 		// TODO returns a textual representation of the object
-		return "TODO: Hola soy el game";
+		return "Vidas: " + lives + "\nTiempo: " + remainingTime + "\nPuntos: " + points;
 	}
 	
-	/*
+	
 	private void initLevel0() {
 		this.nLevel = 0;
 		this.remainingTime = 100;
@@ -90,5 +128,5 @@ public class Game {
 
 		gameObjects.add(new Goomba(this, new Position(0, 19)));
 	}
-	*/
+
 }

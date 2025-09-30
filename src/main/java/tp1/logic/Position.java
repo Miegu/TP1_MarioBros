@@ -26,15 +26,9 @@ public class Position {
 		return row;
 	}
 	
-	public void setCol(int col){
-		this.col = col;
-	}
-	public void setRow(int row){
-		this.row = row;
-	}
 	//Metodo para moverse: devuelve una nueva posicion, Posicion actual + desplazamiento
-	public Position move(int dcol,int drow){
-		return new Position(col + dcol, row + drow);
+	public Position move(int deltaCol,int deltaRow){
+		return new Position(col + deltaCol, row + deltaRow);
 	}
 
 	//Comprobar si la posicion es valida
@@ -43,4 +37,14 @@ public class Position {
 		return col >= 0 && col < Game.DIM_X &&
 				row >= 0 && row < Game.DIM_Y;
 	}
+
+	//Comparar Posiciones
+	public boolean equals(Position other){
+		return this.col == other.col && this.row == other.row;
+	}
+
+	@Override
+    public String toString() {
+        return "(" + col + "," + row + ")";
+    }
 }
