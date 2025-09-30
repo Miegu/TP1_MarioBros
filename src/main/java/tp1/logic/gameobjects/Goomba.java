@@ -14,8 +14,8 @@ public class Goomba extends GameObject {
     }
 
     @Override
-    public char getIcon() {
-        return 'G';
+    public String getIcon() {
+        return "🐻";
     }
     @Override
     public void update() {

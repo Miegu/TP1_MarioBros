@@ -9,8 +9,8 @@ public class Land extends GameObject {
     }
 
     @Override
-    public char getIcon() {
-        return 'L';
+    public String getIcon() {
+        return "▓";
     }
     
 }

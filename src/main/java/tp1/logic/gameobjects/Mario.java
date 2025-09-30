@@ -27,12 +27,12 @@ public class Mario extends GameObject {
 		//TODO fill your code
 	}
 	@Override
-	public char getIcon() {
+	public String getIcon() {
 		if(facingRight){
-			return 'M';
+			return "🧍";
 		}
 		else{
-			return 'W'; //W es Mario mirando a la izquierda
+			return "🚶"; 
 		}
 	}	
 

@@ -9,8 +9,8 @@ public class ExitDoor extends GameObject {
     }
 
     @Override
-    public char getIcon() {
-        return 'E';
+    public String getIcon() {
+        return "🚪";
     }
 
 }

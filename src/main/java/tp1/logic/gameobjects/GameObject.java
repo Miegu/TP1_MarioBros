@@ -22,10 +22,10 @@ public abstract class GameObject {
     }
     //Cambia la posicion del objeto
     public void setPosition(Position position){
-        this.pos = pos;  
+        this.pos = position;  
     }
     //Metodo abstracto que sera implementado por las subclases
-    public abstract char getIcon();
+    public abstract String getIcon();
 
     public void update() {
         // Default implementation (can be overridden by subclasses)

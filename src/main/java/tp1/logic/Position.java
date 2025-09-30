@@ -12,9 +12,10 @@ public class Position {
 
 	//TODO fill your code
 	//Constructor
-	public Position(int col, int row){
-		this.col = col;
+	public Position(int row, int col){
 		this.row = row;
+		this.col = col;
+		
 	}
 	//Metodos (que puede hacer)
 	//Getters
@@ -27,8 +28,8 @@ public class Position {
 	}
 	
 	//Metodo para moverse: devuelve una nueva posicion, Posicion actual + desplazamiento
-	public Position move(int deltaCol,int deltaRow){
-		return new Position(col + deltaCol, row + deltaRow);
+	public Position move(int deltaRow, int deltaCol){
+		return new Position( row + deltaRow, col + deltaCol);
 	}
 
 	//Comprobar si la posicion es valida
