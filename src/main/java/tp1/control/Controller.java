@@ -31,15 +31,18 @@ public class Controller {
 		boolean exit = false;
 		
 		//TODO fill your code: The main loop that displays the game, asks the user for input, and executes the action.
+
 		while(!exit && !game.playerWins() && !game.playerLoses()){
    			 view.showGame();
     		String[] words = view.getPrompt();  
    			 exit = processCommand(String.join(" ", words));
 	}
-
-		
-		
-		
+		//Cuando pierde o gana
+		if(game.playerWins()){
+			System.out.println("Has ganado!");
+		}else if(game.playerLoses()){
+			System.out.println("Game Over");
+		}
 	}
 	/*
 	 * Procesa la accion dada por el usuario
@@ -55,7 +58,10 @@ public class Controller {
 		String command = parts[0].toLowerCase();
 
 		switch(command){
-			case "help", "h" -> showHelp();
+			case "help", "h" -> {
+				showHelp();
+				return false;
+			}
 			
 			case "exit", "e" -> {
                  return true;
@@ -69,27 +75,39 @@ public class Controller {
                 }
 
 			case "action","a" -> {
-				if (parts.length < 2) {
-					System.out.println("Error: Se requiere al menos una accion.");
-					return false;
-				}
-
-				for (int i = 1; i < parts.length; i++) {
-					Action action = Action.parse(parts[i]);
-					if (action == null) {
-						System.out.println("Error: Accion no valida: " + parts[i]);
-					} else {
-
-					}
-				}
+				return handleActions(parts);
 			}
                 
 			
-			default -> System.out.println("Comando no reconocido");
+			default -> {
+				System.out.println("Comando no reconocido");
+			}
 		}
 		return false;
 	}
+	private boolean handleActions(String[] parts){
+		if(parts.length < 2){
+			System.out.println("Error: Se requiere al menos una accion");
+			return false;
+		}
 
+		boolean hasValidActions = false;
+		for(int i = 1; i < parts.length; i++){
+			Action action = Action.parse(parts[i]);
+			if(action == null){
+				System.out.println("Error: Accion no valida");
+			}else{
+				game.addAction(action);
+				hasValidActions = true;
+			}
+		}
+		if(hasValidActions){
+			game.update();
+		}
+
+		return false;
+	}
+	
 	//Muestra la ayuda
 	private void showHelp() {
 		System.out.println("Comandos disponibles:");

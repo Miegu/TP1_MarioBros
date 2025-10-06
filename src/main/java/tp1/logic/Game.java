@@ -45,7 +45,29 @@ public class Game {
 			playerLost = true;
 		}
 	}
-	// Mario muere
+
+	public void addAction(Action accion){
+		if(mario != null){
+			mario.addAction(accion);
+		}
+	}
+	public void doInteractionsFrom(Mario mario){
+		gameObjects.doInteractionsFrom(mario);
+	}
+
+	/*
+	 * Mario llega ala puerta de salida
+	 */
+
+	 public void marioExited(){
+		points += remainingTime * 10;
+		playerWon = true;
+	 }
+	 public void addPoints(int points){
+		this.points += points;
+	 }
+
+	// Mario muere :c
 	public void marioDies(){
 		lives--;
 		if(lives <= 0){
@@ -60,25 +82,8 @@ public class Game {
 		}
 	}
 	//NEcesarioMario y Goomba puedan acceder al contenedor
-public GameObjectContainer getGameObjects() {
-    return gameObjects;
-}
-
-	private void initLevel(int nLevel) {
-
-		this.gameObjects = new GameObjectContainer();
-
-		switch(nLevel){
-			case 0:
-				initLevel0();
-				break;
-			case 1:
-				//initLevel1();
-				break;
-			default:
-				initLevel0();
-				break;
-		}
+	public GameObjectContainer getGameObjects() {
+		return gameObjects;
 	}
 	
 	public String positionToString(int col, int row) {
@@ -116,7 +121,21 @@ public GameObjectContainer getGameObjects() {
 		// TODO returns a textual representation of the object
 		return "Vidas: " + lives + "\nTiempo: " + remainingTime + "\nPuntos: " + points;
 	}
-	
+
+	private void initLevel(int nLevel) {
+		this.gameObjects = new GameObjectContainer();
+		switch(nLevel){
+			case 0:
+				initLevel0();
+				break;
+			case 1:
+				initLevel1();
+				break;
+			default:
+				initLevel0();
+				break;
+		}		
+	}
 	
 	private void initLevel0() {
 		this.nLevel = 0;
@@ -159,6 +178,10 @@ public GameObjectContainer getGameObjects() {
 		gameObjects.add(this.mario);
 
 		gameObjects.add(new Goomba(this, new Position(0, 19)));
+	}
+
+	private void initLevel1(){
+		initLevel0(); // Por ahora el mismo nivel
 	}
 	/**
  * Resetea el juego al estado inicial manteniendo puntos y vidas

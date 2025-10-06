@@ -44,11 +44,12 @@ public class GameObjectContainer {
             mario.update();
         }
         
+		checkMarioInExit();
         // 2. DESPUÉS los Goombas
         for (Goomba goomba : goombas) {
             goomba.update();
         }
-        
+        doInteractionsFrom(mario);
         // 3. Eliminar Goombas muertos
         goombas.removeIf(goomba -> !goomba.estaVivo());
     }
@@ -60,6 +61,21 @@ public class GameObjectContainer {
 			}
 		}
 		return false;
+	}
+	public void checkMarioInExit(){
+		if(mario != null && exitDoor != null && mario.isInPosition(exitDoor.getPosition())){
+			//Mario ha llegado a la puerta de salida
+			mario.interactWith(exitDoor);
+		}
+	}	
+
+	public void doInteractionsFrom(Mario mario){
+		if(mario == null) return; //Si no hay Mario no hace nada
+
+		//Comprueba interacciones con Goombas
+		for(Goomba goomba : goombas){
+			mario.interactWith(goomba);
+		}
 	}
 
 	public String positionToString(Position position){

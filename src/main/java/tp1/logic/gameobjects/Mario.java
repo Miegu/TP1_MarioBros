@@ -1,5 +1,7 @@
 package tp1.logic.gameobjects;
 
+import tp1.logic.Action;
+import tp1.logic.ActionList;
 import tp1.logic.Game;
 import tp1.logic.GameObjectContainer;
 import tp1.logic.Position;
@@ -13,6 +15,8 @@ public class Mario extends GameObject {
 	private int direccion; // -1 izquierda, 1 derecha
 	private boolean big;
 	private boolean facingRight; //true si mira a la derecha, false si mira a la izquierda
+	private ActionList accionesPendientes;
+	private boolean hasMovedThisTurn; //Para saber si ya se ha movido en el turno actual;
 
 	//Constructor de Mario
 	public Mario(Game game, Position position){
@@ -21,6 +25,8 @@ public class Mario extends GameObject {
 		this.direccion = 1; //Por defecto mira a la derecha
 		this.big = true; //Por defecto es grande
 		this.facingRight = true;
+		this.accionesPendientes = new ActionList();
+		this.hasMovedThisTurn = false;
 	}	
 	
 	/**
@@ -29,17 +35,32 @@ public class Mario extends GameObject {
 	@Override
 	public void update() {
 		//TODO fill your code
-		//1: Movimiento horizontal
-		Position newPos = pos.move(0, direccion);
-
-		if(canMoveTo(newPos)){
-			pos = newPos;
-		}else{
-			direccion = -direccion; //Cambia de direccion si se choca
-			facingRight = (direccion == 1);
+		hasMovedThisTurn = false;
+		//1. Primero procesamos las acciones
+		processPlayerActions();
+		//2. Si no se ha movido, movimiento automatico
+		if(!hasMovedThisTurn){
+			performAutomaticMovement();
 		}
-		//2 Gravedad (cuando se cae o no hay suelo)
+
+		//3 Aplicar la gravedad
 		applyGravity();
+
+		//4. Chequea? Checkea? Comprueba si interactua con algo (Wombat? MAybe)
+		game.doInteractionsFrom(this);
+		
+	}
+	//Procesa las acciones del jugador
+	private void processPlayerActions(){
+		if(accionesPendientes.isEmpty()){
+			return;
+		}
+
+		for(Action action : accionesPendientes.getActions()){
+			executeAction(action);
+		}
+
+		accionesPendientes.clear();
 	}
 
 	private void applyGravity(){
@@ -48,6 +69,7 @@ public class Mario extends GameObject {
 		 while (debajo.isValidPosition() && !game.getGameObjects().isSolid(debajo)) {
             pos = debajo;
             debajo = pos.move(1,0);
+			hasMovedThisTurn = true;
         }
 		//Si se sale del tablero muere
 		if(!pos.isValidPosition()){
@@ -55,6 +77,119 @@ public class Mario extends GameObject {
 		}
 	}
 
+	//Comprueba si Mario esta en el suelo
+	 private boolean isOnGround() {
+        Position below = pos.move(1, 0);
+        return !below.isValidPosition() || game.getGameObjects().isSolid(below);
+    }
+
+	//Ejecuta una accion
+	private void executeAction(Action action){
+		switch(action){
+			case LEFT:
+				direccion = -1;
+				facingRight= false;
+				moveHorizontally(-1);
+				break;
+
+			case RIGHT:
+				direccion = 1;
+				facingRight = true;
+				moveHorizontally(1);
+				break;
+
+			case UP:
+				moveVertically(-1);
+				break;
+			case DOWN:
+				direccion = 0;
+				break;
+			
+			case STOP:
+				direccion = 0;
+				break;
+		}
+
+	}
+
+	//Movimiento Horizontal
+
+	private void moveHorizontally(int deltaX){
+		Position newPos = pos.move(0, deltaX);
+		if(canMoveTo(newPos)){
+			pos = newPos;
+			hasMovedThisTurn = true;
+		}
+	}
+
+	//Movimiento Vertical (Para los que no hablen ingles)
+
+	private void moveVertically(int deltaY){
+		Position newPos = pos.move(deltaY, 0);
+		if(canMoveTo(newPos)){
+			pos = newPos;
+			hasMovedThisTurn = true;
+		}
+	}
+	// Movimiento automatico version nueva y renovada
+
+	private void performAutomaticMovement(){
+		if(direccion == 0) return; //Estamos en STOP;
+
+		Position newPos = pos.move(0, direccion);
+
+		if(canMoveTo(newPos)){
+			pos = newPos;
+		}else{
+			direccion = -direccion; //Cambia de direccion si se choca
+			facingRight = (direccion == 1);
+		}
+	}
+	//INteractua con la puerta de salida
+	public boolean interactWith(ExitDoor door){
+		if(this.pos.equals(door.getPosition())){
+			game.marioExited();
+			return true;
+		}
+		return false;
+	}
+
+	// interactua con el Gomba? Siempre les he dicho Wombats
+
+	public boolean interactWith(Goomba goomba){
+
+		if(!this.pos.equals(goomba.getPosition())){
+			return false;
+		}
+		//Esta saltando sobre el?
+		boolean isFalling = !isOnGround();
+
+		if(isFalling){
+			goomba.receiveInteraction(this);
+			game.addPoints(100);
+		}else{
+			if(big){
+				//No muere, pero se hace pequeño
+				big = false;
+				goomba.receiveInteraction(this); //El goomba muere
+				game.addPoints(100);
+			}else{
+				//Muere, logicamente...
+				goomba.receiveInteraction(this); //Pero aun así muere el goomba?? @PETA
+				game.marioDies();
+			}
+		}
+		return true;
+	}
+
+
+	/**
+	 * Añadir Accion a la lista de acciones
+	 * 
+	 */
+	public void addAction(Action action){
+		accionesPendientes.addAction(action);
+	}
 	private boolean canMoveTo(Position position){
 		//Comprueba si la posicion es valida y no hay ningun Land en esa posicion
 		return position.isValidPosition() && !game.getGameObjects().isSolid(position);
@@ -62,14 +197,17 @@ public class Mario extends GameObject {
 
 	@Override
 	public String getIcon() {
-		if(facingRight){
+		if(direccion == 0){
+			return Messages.MARIO_STOP;
+		}else if(facingRight){
 			return Messages.MARIO_RIGHT;
 		}
 		else{
 			return Messages.MARIO_LEFT; 
 		}
 	}	
-	 public GameObjectContainer getGameObjects() {
+
+	public GameObjectContainer getGameObjects() {
         return game.getGameObjects();
     }
 
@@ -80,6 +218,7 @@ public class Mario extends GameObject {
 	public void setBig(boolean big){
 		this.big = big;
 	}
+
 	@Override
 	public boolean isInPosition(Position position){
 		if(pos.equals(position)){

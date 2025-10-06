@@ -25,7 +25,8 @@ public class Goomba extends GameObject {
     
     @Override
     public void update() {
-        if(!vivo) return; //Si no esta vivo no hace nada
+        if(!vivo) return; //Si no esta vivo no hace nada duh
+
         //1: Movimiento horizontal
         Position newPos = pos.move(0, direccion);
         if(canMoveTo(newPos)){
@@ -36,6 +37,7 @@ public class Goomba extends GameObject {
         //Gravedad
         applyGravity();
     }
+
     private void applyGravity(){
         Position debajo = pos.move(1, 0);
         //Si no hay suelo cae
@@ -48,6 +50,11 @@ public class Goomba extends GameObject {
             die();
         }
     }
+
+    public boolean receiveInteraction(Mario mario){
+        die();
+        return true;
+    }
     private boolean canMoveTo(Position position){
         //Comprueba si la posicion es valida y no hay ningun Land en esa posicion
         return position.isValidPosition() && !game.getGameObjects().isSolid(position);
@@ -55,6 +62,7 @@ public class Goomba extends GameObject {
     public void die(){
         vivo = false;
     }
+    
     public boolean estaVivo(){
         return vivo;
     }
