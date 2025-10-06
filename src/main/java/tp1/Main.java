@@ -18,8 +18,6 @@ public class Main {
 	 * @param args Arguments for the game.
 	 */
 	public static void main(String[] args) {
-		System.setProperty("file.encoding", "UTF-8");
-    	System.setProperty("console.encoding", "UTF-8");
 		// Required to avoid issues with tests
         Locale.of("es", "ES");
 		

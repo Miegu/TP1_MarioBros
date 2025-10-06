@@ -2,6 +2,7 @@ package tp1.control;
 
 import java.util.Scanner;
 
+import tp1.logic.Action;
 import tp1.logic.Game;
 import tp1.view.GameView;
 /**
@@ -31,21 +32,14 @@ public class Controller {
 		
 		//TODO fill your code: The main loop that displays the game, asks the user for input, and executes the action.
 		while(!exit && !game.playerWins() && !game.playerLoses()){
-			//1Draw:Muestra el juego
-			view.showGame();
+   			 view.showGame();
+    		String[] words = view.getPrompt();  
+   			 exit = processCommand(String.join(" ", words));
+	}
 
-			//2Input: Pide la accion al usuario
-			System.out.print("Accion: ");
-			String accion = scanner.nextLine().trim();
-
-			//3Update: Procesar la accion
-			exit = processCommand(accion);
-
-		}
 		
 		
-		view.showEndMessage();
-		scanner.close();
+		
 	}
 	/*
 	 * Procesa la accion dada por el usuario
@@ -74,8 +68,22 @@ public class Controller {
 				game.update();
                 }
 
-			case "action","a" -> // Por ahora no hace nada hasta implementar acciones (Hito D)
-                System.out.println("Acciones no implementadas");
+			case "action","a" -> {
+				if (parts.length < 2) {
+					System.out.println("Error: Se requiere al menos una accion.");
+					return false;
+				}
+
+				for (int i = 1; i < parts.length; i++) {
+					Action action = Action.parse(parts[i]);
+					if (action == null) {
+						System.out.println("Error: Accion no valida: " + parts[i]);
+					} else {
+
+					}
+				}
+			}
+                
 			
 			default -> System.out.println("Comando no reconocido");
 		}
@@ -107,3 +115,4 @@ public class Controller {
         }
     }
 }
+

@@ -3,6 +3,7 @@ package tp1.logic.gameobjects;
 import tp1.logic.Game;
 import tp1.logic.GameObjectContainer;
 import tp1.logic.Position;
+import tp1.view.Messages;
 
 //Mario class extiende de GameObject, es su hijo
 public class Mario extends GameObject {
@@ -62,10 +63,10 @@ public class Mario extends GameObject {
 	@Override
 	public String getIcon() {
 		if(facingRight){
-			return "M";
+			return Messages.MARIO_RIGHT;
 		}
 		else{
-			return "W"; 
+			return Messages.MARIO_LEFT; 
 		}
 	}	
 	 public GameObjectContainer getGameObjects() {

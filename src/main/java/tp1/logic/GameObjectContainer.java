@@ -7,6 +7,7 @@ import tp1.logic.gameobjects.ExitDoor;
 import tp1.logic.gameobjects.Goomba;
 import tp1.logic.gameobjects.Land;
 import tp1.logic.gameobjects.Mario;
+import tp1.view.Messages;
 public class GameObjectContainer {
 	//TODO fill your code
 	
@@ -82,7 +83,7 @@ public class GameObjectContainer {
 				return land.getIcon();
 			}
 		}
-		return " "; //Si no hay nada en esa posicion, devuelve un espacio en blanco
+		return Messages.EMPTY; //Si no hay nada en esa posicion, devuelve un espacio en blanco
 	}
 	
 }
