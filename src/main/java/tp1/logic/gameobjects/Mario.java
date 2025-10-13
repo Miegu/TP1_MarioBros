@@ -83,7 +83,7 @@ public class Mario extends GameObject {
         return !below.isValidPosition() || game.getGameObjects().isSolid(below);
     }
 
-	//Ejecuta una accion
+	//Ejecuta una accion // MALA IMPLEMENTACION SOY SUBNORMAL!!!!
 	private void executeAction(Action action){
 		switch(action){
 			case LEFT:

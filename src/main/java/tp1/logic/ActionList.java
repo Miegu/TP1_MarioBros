@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class ActionList {
     private List<Action> actions;
-    private static final int MAX_ACTIONS = 4;
+    private static final int MAX_ACTIONS = 4  ;
 
     public ActionList(){
         this.actions = new ArrayList<>();

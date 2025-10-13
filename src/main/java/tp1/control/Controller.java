@@ -5,6 +5,7 @@ import java.util.Scanner;
 import tp1.logic.Action;
 import tp1.logic.Game;
 import tp1.view.GameView;
+import tp1.view.Messages;
 /**
  *  Accepts user input and coordinates the game execution logic
  */
@@ -39,9 +40,9 @@ public class Controller {
 	}
 		//Cuando pierde o gana
 		if(game.playerWins()){
-			System.out.println("You Win!");
+			System.out.println(Messages.MARIO_WINS);
 		}else if(game.playerLoses()){
-			System.out.println("Game Over");
+			System.out.println(Messages.GAME_OVER);
 		}
 	}
 	/*
@@ -80,14 +81,14 @@ public class Controller {
                 
 			
 			default -> {
-				System.out.println("Comando no reconocido");
+				System.out.println("");
 			}
 		}
 		return false;
 	}
 	private boolean handleActions(String[] parts){
 		if(parts.length < 2){
-			System.out.println("Error: Se requiere al menos una accion");
+			System.out.println(Messages.ERROR.formatted(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER));
 			return false;
 		}
 
@@ -95,7 +96,7 @@ public class Controller {
 		for(int i = 1; i < parts.length; i++){
 			Action action = Action.parse(parts[i]);
 			if(action == null){
-				System.out.println("Error: Accion no valida");
+				System.out.println(Messages.ERROR.formatted(Messages.INVALID_COMMAND_PARAMETERS));
 			}else{
 				game.addAction(action);
 				hasValidActions = true;
@@ -110,12 +111,9 @@ public class Controller {
 	
 	//Muestra la ayuda
 	private void showHelp() {
-		System.out.println("Comandos disponibles:");
-		System.out.println("[a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]+: Posibles acciones del usuario");
-        System.out.println("[u]pdate | \"\": no hace nada");
-        System.out.println("[r]eset [numLevel]: resetea el juego, opcionalmente a un nivel especifico");
-        System.out.println("[h]elp: muestra el mensaje de ayuda");
-        System.out.println("[e]xit: sales del juego");
+		for (String line : Messages.HELP_LINES) {
+			System.out.println(line);
+		}
 	}
 
 	private void handleReset(String[] parts) {
@@ -125,7 +123,7 @@ public class Controller {
                 int level = Integer.parseInt(parts[1]);
                 game.reset(level);
             } catch (NumberFormatException e) {
-                System.out.println("Error: Nivel no valido: " + parts[1]);
+                System.out.println(Messages.ERROR.formatted(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER.formatted(parts[1])));
             }
         } else {
             // Reset sin nivel especificado
