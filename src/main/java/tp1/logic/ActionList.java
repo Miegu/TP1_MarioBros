@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class ActionList {
     private List<Action> actions;
-    private static final int MAX_ACTIONS = 5;
+    private static final int MAX_ACTIONS = 4;
 
     public ActionList(){
         this.actions = new ArrayList<>();
@@ -16,7 +16,7 @@ public class ActionList {
 
     /**
      * Añade una accion, respetando las restricciones
-     * -Máximo 5 acciones por turno
+     * -Máximo 4 acciones por turno
      * -LEFT/RIGHT si aparecen seguidas se ignora la segunda
      * -UP/DOWN pues lo mismo
      */

@@ -39,7 +39,7 @@ public class Controller {
 	}
 		//Cuando pierde o gana
 		if(game.playerWins()){
-			System.out.println("Has ganado!");
+			System.out.println("You Win!");
 		}else if(game.playerLoses()){
 			System.out.println("Game Over");
 		}
