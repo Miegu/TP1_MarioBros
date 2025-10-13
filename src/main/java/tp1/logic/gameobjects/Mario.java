@@ -23,7 +23,7 @@ public class Mario extends GameObject {
 		super(position);
 		this.game = game;
 		this.direccion = 1; //Por defecto mira a la derecha
-		this.big = true; //Por defecto es grande
+		this.big = false; //Por defecto es pequeño
 		this.facingRight = true;
 		this.accionesPendientes = new ActionList();
 		this.hasMovedThisTurn = false;
@@ -35,9 +35,12 @@ public class Mario extends GameObject {
 	@Override
 	public void update() {
 		//TODO fill your code
+		boolean playerHasActions = !accionesPendientes.isEmpty();
 		hasMovedThisTurn = false;
+
 		//1. Primero procesamos las acciones
-		processPlayerActions();
+		if(playerHasActions) processPlayerActions();
+
 		//2. Si no se ha movido, movimiento automatico
 		if(!hasMovedThisTurn){
 			performAutomaticMovement();
@@ -50,6 +53,7 @@ public class Mario extends GameObject {
 		game.doInteractionsFrom(this);
 		
 	}
+
 	//Procesa las acciones del jugador
 	private void processPlayerActions(){
 		if(accionesPendientes.isEmpty()){
@@ -83,26 +87,44 @@ public class Mario extends GameObject {
         return !below.isValidPosition() || game.getGameObjects().isSolid(below);
     }
 
-	//Ejecuta una accion // MALA IMPLEMENTACION SOY SUBNORMAL!!!!
+	//Ejecuta una accion
 	private void executeAction(Action action){
+		Position newPos;
+
 		switch(action){
 			case LEFT:
+				newPos = pos.move(action.getY(), action.getX());
+				if(canMoveTo(newPos)){
+					pos = newPos;
+					hasMovedThisTurn = true;
+				}
 				direccion = -1;
 				facingRight= false;
-				moveHorizontally(-1);
 				break;
 
 			case RIGHT:
+				newPos = pos.move(action.getY(), action.getX());
+				if(canMoveTo(newPos)){
+					pos = newPos;
+					hasMovedThisTurn = true;
+				}
 				direccion = 1;
-				facingRight = true;
-				moveHorizontally(1);
+				facingRight= true;
 				break;
 
 			case UP:
-				moveVertically(-1);
+				newPos = pos.move(action.getY(), action.getX());
+				if(canMoveTo(newPos)){
+					pos = newPos;
+					hasMovedThisTurn = true;
+				}
 				break;
 			case DOWN:
-				direccion = 0;
+				newPos = pos.move(action.getY(), action.getX());
+				if(canMoveTo(newPos)){
+					pos = newPos;
+					hasMovedThisTurn = true;
+				}
 				break;
 			
 			case STOP:
@@ -112,25 +134,6 @@ public class Mario extends GameObject {
 
 	}
 
-	//Movimiento Horizontal
-
-	private void moveHorizontally(int deltaX){
-		Position newPos = pos.move(0, deltaX);
-		if(canMoveTo(newPos)){
-			pos = newPos;
-			hasMovedThisTurn = true;
-		}
-	}
-
-	//Movimiento Vertical (Para los que no hablen ingles)
-
-	private void moveVertically(int deltaY){
-		Position newPos = pos.move(deltaY, 0);
-		if(canMoveTo(newPos)){
-			pos = newPos;
-			hasMovedThisTurn = true;
-		}
-	}
 	// Movimiento automatico version nueva y renovada
 
 	private void performAutomaticMovement(){

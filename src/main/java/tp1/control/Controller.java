@@ -68,11 +68,13 @@ public class Controller {
                  return true;
 			}
 				
-			case "reset", "r" -> handleReset(parts);
-				
-			
+			case "reset", "r" -> {
+				handleReset(parts);
+				return false;
+			}
 			case "update","u" -> {
 				game.update();
+				return false;
                 }
 
 			case "action","a" -> {
@@ -81,11 +83,12 @@ public class Controller {
                 
 			
 			default -> {
-				System.out.println("");
+				System.out.println(Messages.ERROR.formatted(Messages.UNKNOWN_COMMAND.formatted(command)));
+				return false;
 			}
 		}
-		return false;
 	}
+	
 	private boolean handleActions(String[] parts){
 		if(parts.length < 2){
 			System.out.println(Messages.ERROR.formatted(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER));
