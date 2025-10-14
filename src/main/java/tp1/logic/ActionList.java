@@ -31,7 +31,8 @@ public class ActionList {
     
           // Verificar conflictos
           if(hasConflictingAction(action)){
-            return; // Ignora si hay conflicto
+             actions.add(Action.STOP);
+             return;
           }
     
           actions.add(action);

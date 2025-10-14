@@ -58,7 +58,6 @@ public class Mario extends GameObject {
 			return;
 		}
 		
-
 		for(Action action : accionesPendientes.getActions()){
 			executeAction(action);
 		}
