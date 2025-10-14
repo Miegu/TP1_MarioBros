@@ -47,10 +47,7 @@ public class Mario extends GameObject {
 			performAutomaticMovement();
 		}
 
-		//3 Aplicar la gravedad
-		applyGravity();
-
-		//4. Chequea? Checkea? Comprueba si interactua con algo (Wombat? MAybe)
+		//3. Chequea? Checkea? Comprueba si interactua con algo (Wombat? MAybe)
 		game.doInteractionsFrom(this);
 		
 	}
@@ -60,6 +57,7 @@ public class Mario extends GameObject {
 		if(accionesPendientes.isEmpty()){
 			return;
 		}
+		
 
 		for(Action action : accionesPendientes.getActions()){
 			executeAction(action);
@@ -126,10 +124,7 @@ public class Mario extends GameObject {
 					while(!isOnGround()){
 						applyGravity();
 					}
-				}else{
-					direccion = 0;
 				}
-				
 				break;
 			
 			case STOP:

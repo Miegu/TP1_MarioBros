@@ -8,6 +8,8 @@ import java.util.List;
  */
 public class ActionList {
     private List<Action> actions;
+    private static final int MAX_ACTIONS = 4 ;
+
 
     public ActionList(){
         this.actions = new ArrayList<>();
@@ -21,13 +23,19 @@ public class ActionList {
      */
 
      public void addAction(Action action){
-        if(hasConflictingAction(action)){
-            return; //Ignora si hay conflicto;
-        }
 
-        actions.add(action); //Añade a la lista
-     }
-
+          // Verificar si ya hay 4 acciones
+          if(actions.size() >= MAX_ACTIONS) {
+            return; // No añadir más
+          }
+    
+          // Verificar conflictos
+          if(hasConflictingAction(action)){
+            return; // Ignora si hay conflicto
+          }
+    
+          actions.add(action);
+        }  
      /*
       * Verifica si la nueva accion es conflictiva
       */

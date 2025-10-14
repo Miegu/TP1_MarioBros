@@ -133,7 +133,9 @@ public class Game {
 				break;
 		}		
 	}
-	
+	private void initMap(){
+		
+	}
 	private void initLevel0() {
 		this.nLevel = 0;
 		this.remainingTime = 100;
@@ -184,7 +186,7 @@ public class Game {
 		gameObjects.add(new Goomba(this, new Position(4, 6)));
 		gameObjects.add(new Goomba(this, new Position(12, 6)));
 		gameObjects.add(new Goomba(this, new Position(12, 8)));
-		gameObjects.add(new Goomba(this, new Position(0, 10)));
+		gameObjects.add(new Goomba(this, new Position(10, 10)));
 		gameObjects.add(new Goomba(this, new Position(12, 11)));
 		gameObjects.add(new Goomba(this, new Position(12, 14)));
 	}
