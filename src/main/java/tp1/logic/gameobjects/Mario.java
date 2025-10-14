@@ -122,13 +122,14 @@ public class Mario extends GameObject {
 				}
 				break;
 			case DOWN:
-				if(isOnGround()){
-					direccion = 0; //No se mueve horizontalmente mientras cae
-				}else{
+				if(!isOnGround()){
 					while(!isOnGround()){
 						applyGravity();
 					}
+				}else{
+					direccion = 0;
 				}
+				
 				break;
 			
 			case STOP:
@@ -142,7 +143,10 @@ public class Mario extends GameObject {
 
 	private void performAutomaticMovement(){
 		if(direccion == 0) return; //Estamos en STOP;
-
+		if(!isOnGround() && !hasMovedThisTurn){
+			applyGravity();
+			return;
+		}
 		Position newPos = pos.move(0, direccion);
 
 		if(canMoveTo(newPos)){

@@ -28,15 +28,14 @@ public class Controller {
 	 */
 	public void run() {
 		view.showWelcome();
-
+		view.showGame();
 		boolean exit = false;
 		
 		//TODO fill your code: The main loop that displays the game, asks the user for input, and executes the action.
 
 		while(!exit && !game.playerWins() && !game.playerLoses()){
-   			 view.showGame();
     		String[] words = view.getPrompt();  
-   			 exit = processCommand(String.join(" ", words));
+   			exit = processCommand(String.join(" ", words));
 	}
 		//Cuando pierde o gana
 		if(game.playerWins()){
@@ -52,6 +51,7 @@ public class Controller {
 		if(accion.isEmpty()){
 			//Si el comando esta vacio, se actualiza
 			game.update();
+			view.showGame();
 			return false;
 		}
 
@@ -60,11 +60,16 @@ public class Controller {
 
 		switch(command){
 			case "help", "h" -> {
-				showHelp();
+				if(parts.length > 1) {
+       				System.out.println(Messages.ERROR.formatted(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER));
+    			} else {
+        			showHelp();
+    		}
 				return false;
 			}
 			
 			case "exit", "e" -> {
+				System.out.println(Messages.PLAYER_QUITS);
                  return true;
 			}
 				
@@ -74,6 +79,7 @@ public class Controller {
 			}
 			case "update","u" -> {
 				game.update();
+				view.showGame();
 				return false;
                 }
 
@@ -83,7 +89,7 @@ public class Controller {
                 
 			
 			default -> {
-				System.out.println(Messages.ERROR.formatted(Messages.UNKNOWN_COMMAND.formatted(command)));
+				System.out.println(Messages.ERROR.formatted(Messages.UNKNOWN_COMMAND.formatted(parts[0])));
 				return false;
 			}
 		}
@@ -99,24 +105,22 @@ public class Controller {
 		for(int i = 1; i < parts.length; i++){
 			Action action = Action.parse(parts[i]);
 			if(action == null){
-				System.out.print(Messages.ERROR.formatted(Messages.INVALID_COMMAND_PARAMETERS));
+				System.out.println(Messages.ERROR.formatted(Messages.UNKNOWN_ACTION.formatted(parts[i])));
 			}else{
 				game.addAction(action);
 				hasValidActions = true;
 			}
 		}
-		if(hasValidActions){
-			game.update();
-		}
+		
+		game.update();
+		view.showGame();
 
 		return false;
 	}
 	
 	//Muestra la ayuda
 	private void showHelp() {
-		for (String line : Messages.HELP_LINES) {
-			System.out.println(line);
-		}
+		System.out.println(Messages.HELP);
 	}
 
 	private void handleReset(String[] parts) {
@@ -125,12 +129,14 @@ public class Controller {
             try {
                 int level = Integer.parseInt(parts[1]);
                 game.reset(level);
+				view.showGame();
             } catch (NumberFormatException e) {
-                System.out.println(Messages.ERROR.formatted(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER.formatted(parts[1])));
+                System.out.println(Messages.ERROR.formatted(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER));
             }
         } else {
             // Reset sin nivel especificado
             game.reset();
+			view.showGame();
         }
     }
 }

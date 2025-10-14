@@ -8,7 +8,6 @@ import java.util.List;
  */
 public class ActionList {
     private List<Action> actions;
-    private static final int MAX_ACTIONS = 4  ;
 
     public ActionList(){
         this.actions = new ArrayList<>();
@@ -22,10 +21,6 @@ public class ActionList {
      */
 
      public void addAction(Action action){
-        if(actions.size() >= MAX_ACTIONS){
-            return; //Ignoras las adicionales, pero no da error
-        }
-
         if(hasConflictingAction(action)){
             return; //Ignora si hay conflicto;
         }
