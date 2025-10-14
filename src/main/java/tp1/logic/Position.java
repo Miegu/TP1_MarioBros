@@ -29,7 +29,7 @@ public class Position {
 	
 	//Metodo para moverse: devuelve una nueva posicion, Posicion actual + desplazamiento
 	public Position move( int deltaRow, int deltaCol){
-		return new Position(  row + deltaRow, col + deltaCol);
+		return new Position( row + deltaRow, col + deltaCol);
 	}
 
 	//Comprobar si la posicion es valida

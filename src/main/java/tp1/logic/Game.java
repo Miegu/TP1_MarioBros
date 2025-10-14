@@ -121,7 +121,6 @@ public class Game {
 	}
 
 	private void initLevel(int nLevel) {
-		this.gameObjects = new GameObjectContainer();
 		switch(nLevel){
 			case 0:
 				initLevel0();

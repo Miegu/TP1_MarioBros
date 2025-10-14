@@ -99,7 +99,7 @@ public class Controller {
 		for(int i = 1; i < parts.length; i++){
 			Action action = Action.parse(parts[i]);
 			if(action == null){
-				System.out.println(Messages.ERROR.formatted(Messages.INVALID_COMMAND_PARAMETERS));
+				System.out.print(Messages.ERROR.formatted(Messages.INVALID_COMMAND_PARAMETERS));
 			}else{
 				game.addAction(action);
 				hasValidActions = true;

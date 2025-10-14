@@ -1,5 +1,6 @@
 package tp1.logic.gameobjects;
 
+import tp1.logic.Action;
 import tp1.logic.Game;
 import tp1.logic.Position;
 import tp1.view.Messages;
@@ -10,6 +11,7 @@ public class Goomba extends GameObject {
     private Game game;
     private int direccion; // -1 izquierda, 1 derecha Wombat empieza hacia la izq
     private boolean vivo;
+    private boolean isFalling;
 
     public Goomba(Game game, Position pos) {
         super(pos);
@@ -26,29 +28,34 @@ public class Goomba extends GameObject {
     @Override
     public void update() {
         if(!vivo) return; //Si no esta vivo no hace nada duh
-
-        //1: Movimiento horizontal
+        //1: Aplicar gravedad
+        applyGravity();
+        //2: Movimiento horizontal si no esta cayendo
+        if(!isFalling){
         Position newPos = pos.move(0, direccion);
         if(canMoveTo(newPos)){
             pos = newPos;
         }else{
             direccion = -direccion; //Cambia de direccion si se choca       
         }
-        //Gravedad
-        applyGravity();
+        }
+        
     }
 
     private void applyGravity(){
-        Position debajo = pos.move(1, 0);
-        //Si no hay suelo cae
-         while (debajo.isValidPosition() && !game.getGameObjects().isSolid(debajo)) {
-            pos = debajo;
-            debajo = pos.move(1, 0);
-        }
-        //Si se sale del tablero muere
+        Position debajo = pos.move(Action.DOWN.getY(), Action.DOWN.getX());
+         //Si se sale del tablero muere
         if(!pos.isValidPosition()){
             die();
         }
+         if (!game.getGameObjects().isSolid(debajo)) {
+            isFalling = true;
+            pos = debajo;
+        }else{
+            isFalling = false;
+        }
+       
+        
     }
 
     public boolean receiveInteraction(Mario mario){
