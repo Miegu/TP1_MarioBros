@@ -11,7 +11,7 @@ public class ExitDoor extends GameObject {
 
     @Override
     public String getIcon() {
-        return Messages.EXIT_DOOR ;
+        return Messages.EXIT_DOOR;
     }
 
 }

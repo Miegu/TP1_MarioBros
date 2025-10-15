@@ -100,15 +100,12 @@ public class Controller {
 			System.out.println(Messages.ERROR.formatted(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER));
 			return false;
 		}
-
-		boolean hasValidActions = false;
 		for(int i = 1; i < parts.length; i++){
 			Action action = Action.parse(parts[i]);
 			if(action == null){
 				System.out.println(Messages.ERROR.formatted(Messages.UNKNOWN_ACTION.formatted(parts[i])));
 			}else{
 				game.addAction(action);
-				hasValidActions = true;
 			}
 		}
 		

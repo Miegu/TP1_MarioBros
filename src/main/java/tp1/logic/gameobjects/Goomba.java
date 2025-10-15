@@ -5,7 +5,6 @@ import tp1.logic.Game;
 import tp1.logic.Position;
 import tp1.view.Messages;
 
-
 public class Goomba extends GameObject {
 
     private Game game;
@@ -24,53 +23,55 @@ public class Goomba extends GameObject {
     public String getIcon() {
         return Messages.GOOMBA;
     }
-    
+
     @Override
     public void update() {
-        if(!vivo) return; //Si no esta vivo no hace nada duh
-        //1: Aplicar gravedad
+        if (!vivo) {
+            return; //Si no esta vivo no hace nada duh
+        }        //1: Aplicar gravedad
         applyGravity();
         //2: Movimiento horizontal si no esta cayendo
-        if(!isFalling){
-        Position newPos = pos.move(0, direccion);
-        if(canMoveTo(newPos)){
-            pos = newPos;
-        }else{
-            direccion = -direccion; //Cambia de direccion si se choca       
+        if (!isFalling) {
+            Position newPos = pos.move(0, direccion);
+            if (canMoveTo(newPos)) {
+                pos = newPos;
+            } else {
+                direccion = -direccion; //Cambia de direccion si se choca       
+            }
         }
-        }
-        
+
     }
 
-    private void applyGravity(){
+    private void applyGravity() {
         Position debajo = pos.move(Action.DOWN.getY(), Action.DOWN.getX());
-         //Si se sale del tablero muere
-        if(!pos.isValidPosition()){
+        //Si se sale del tablero muere
+        if (!pos.isValidPosition()) {
             die();
         }
-         if (!game.getGameObjects().isSolid(debajo)) {
+        if (!game.getGameObjects().isSolid(debajo)) {
             isFalling = true;
             pos = debajo;
-        }else{
+        } else {
             isFalling = false;
         }
-       
-        
+
     }
 
-    public boolean receiveInteraction(Mario mario){
+    public boolean receiveInteraction(Mario mario) {
         die();
         return true;
     }
-    private boolean canMoveTo(Position position){
+
+    private boolean canMoveTo(Position position) {
         //Comprueba si la posicion es valida y no hay ningun Land en esa posicion
         return position.isValidPosition() && !game.getGameObjects().isSolid(position);
     }
-    public void die(){
+
+    public void die() {
         vivo = false;
     }
-    
-    public boolean estaVivo(){
+
+    public boolean estaVivo() {
         return vivo;
     }
 }
