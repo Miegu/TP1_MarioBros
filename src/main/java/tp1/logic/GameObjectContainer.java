@@ -85,6 +85,13 @@ public class GameObjectContainer {
         for (Goomba goomba : goombas) {
             mario.interactWith(goomba);
         }
+        
+        // Luego Goombas intentan interactuar con Mario (si no hubo interacción previa)
+        for (Goomba goomba : goombas) {
+         if (goomba.estaVivo() && goomba.interactWith(mario)) {
+            break; // Solo una interacción por turno
+        }
+    }
     }
 
     public String positionToString(Position position) {

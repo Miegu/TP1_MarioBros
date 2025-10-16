@@ -181,6 +181,16 @@ public class Mario extends GameObject {
         }
         return false;
     }
+    public boolean receiveInteraction(Goomba goomba) {
+        // Mario recibe daño del Goomba
+        game.marioDies();
+        return true;
+    }
+
+        // También agregar un getter público para isFalling si no existe
+    public boolean isFalling() {
+        return isFalling;
+    }
 
     // interactua con el Gomba? Siempre les he dicho Wombats
     public boolean interactWith(Goomba goomba) {
@@ -195,7 +205,7 @@ public class Mario extends GameObject {
             goomba.receiveInteraction(this);
             game.addPoints(100);
         }else{
-            if(big){
+            if(this.isBig()){
                 //Se hace pequeño, pero no muere
                 setBig(false);
                 //El si que muere goomba 

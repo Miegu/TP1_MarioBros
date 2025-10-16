@@ -64,6 +64,44 @@ public class Goomba extends GameObject {
         die();
         return true;
     }
+    public boolean interactWith(Mario mario) {
+    if (!getPosition().equals(mario.getPosition())) {
+        return false;
+    }
+    
+    // Si el Goomba está cayendo sobre Mario
+    if (isFalling) {
+        if (mario.isBig()) {
+            // Mario grande se hace pequeño
+            mario.setBig(false);
+            die();
+            game.addPoints(100); 
+        } else {
+            // Mario pequeño muere
+            mario.receiveInteraction(this);
+            die();
+            game.addPoints(100);
+        }
+        return true;
+    }
+    
+    // Colisión horizontal normal (Goomba camina hacia Mario)
+    if (!isFalling && !mario.isFalling()) {
+        if (mario.isBig()) {
+            mario.setBig(false);
+            die();
+            game.addPoints(100);
+        } else {
+            mario.receiveInteraction(this);
+            die();
+            game.addPoints(100);
+        }
+        return true;
+    }
+    
+    return false;
+}
+
 
     private boolean canMoveTo(Position position) {
         //Comprueba si la posicion es valida y no hay ningun Land en esa posicion
