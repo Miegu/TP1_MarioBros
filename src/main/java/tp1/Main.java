@@ -9,7 +9,8 @@ import tp1.view.ConsoleView;
 import tp1.view.GameView;
 import tp1.view.Messages;
 
-
+//Nicole Vergara
+//Cristina Trueba
 
 public class Main {
 	/**
