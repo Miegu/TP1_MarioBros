@@ -175,7 +175,7 @@ public class Mario extends GameObject {
     //INteractua con la puerta de salida
 
     public boolean interactWith(ExitDoor door) {
-        if (getPosition().equals(door.getPosition())) {
+        if (isInPosition(door.getPosition())) {
             game.marioExited();
             return true;
         }
@@ -195,7 +195,10 @@ public class Mario extends GameObject {
     // interactua con el Gomba? Siempre les he dicho Wombats
     public boolean interactWith(Goomba goomba) {
 
-        if (!getPosition().equals(goomba.getPosition())) {
+        if (!isInPosition(goomba.getPosition())) {
+            return false;
+        }
+        if (!goomba.estaVivo()) {
             return false;
         }
         //Esta saltando sobre el wombat?

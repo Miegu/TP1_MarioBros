@@ -51,7 +51,7 @@ public class GameObjectContainer {
         for (Goomba goomba : goombas) {
             goomba.update();
         }
-        //doInteractionsFrom(mario);
+        doInteractionsFrom(mario);
         // 3. Eliminar Goombas muertos
         cleanupDeadGoombas();
     }
@@ -82,22 +82,10 @@ public class GameObjectContainer {
     }
     
     for (Goomba goomba : goombas) {
-        if (!goomba.estaVivo() || !goomba.getPosition().equals(mario.getPosition())) {
-            continue;
+        if (mario.interactWith(goomba)) {
+            break;
         }
         
-        // Decidir quién procesa basado en el contexto
-        if (goomba.isFalling() && !mario.isFalling()) {
-            // Goomba cae sobre Mario parado
-            goomba.interactWith(mario);
-        } else if (mario.isFalling() && !goomba.isFalling()) {
-            // Mario salta sobre Goomba parado
-            mario.interactWith(goomba);
-        } else {
-            // Ambos cayendo o ambos en suelo - Mario procesa
-            mario.interactWith(goomba);
-        }
-            break; // Solo una interacción por turno
     }
     }
 
