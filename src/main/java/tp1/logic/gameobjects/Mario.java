@@ -193,18 +193,21 @@ public class Mario extends GameObject {
         if (isFalling) {
             //El goomba muere RIP
             goomba.receiveInteraction(this);
-            game.marioDies();
+            game.addPoints(100);
         }else{
             if(big){
                 //Se hace pequeño, pero no muere
                 setBig(false);
                 //El si que muere goomba 
                 goomba.receiveInteraction(this);
+                game.addPoints(100);
             }else{
                 //El goomba tambien muere?? @PETA
                 goomba.receiveInteraction(this);
                 //Mario pequeño muere
                 game.marioDies();
+                //Esto ya es morboso
+                game.addPoints(100);
             }
         }
         return true;
