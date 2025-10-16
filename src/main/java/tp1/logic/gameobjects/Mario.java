@@ -35,6 +35,13 @@ public class Mario extends GameObject {
      */
     @Override
     public void update() {
+        Position pos = getPosition();
+
+        if (!pos.isValidPosition() || (big && new Position(pos.getRow() + 1, pos.getCol()).getRow() > 14)) {
+            // Si Mario es grande y la casilla superior (row-1) está fuera
+            game.marioDies();
+            return;
+        }
         //TODO fill your code
         boolean playerHasActions = !accionesPendientes.isEmpty();
         isFalling = false;
@@ -69,14 +76,20 @@ public class Mario extends GameObject {
     }
 
     private void applyGravity() {
+        Position pos = getPosition();
         Position debajo = pos.move(Action.DOWN.getY(), Action.DOWN.getX());
         //Si se sale del tablero muere
         if (!pos.isValidPosition()) {
             game.marioDies();
+            return;
+        }
+        if (!debajo.isValidPosition()) {
+            game.marioDies();
+            return;
         }
         //Si no hay suelo cae
         if (debajo.isValidPosition() && !game.getGameObjects().isSolid(debajo)) {
-            pos = debajo;
+            setPosition(debajo);
             isFalling = true;
             hasMovedThisTurn = true;
         }
@@ -85,19 +98,21 @@ public class Mario extends GameObject {
 
     //Comprueba si Mario esta en el suelo
     private boolean isOnGround() {
+        Position pos = getPosition();
         Position below = pos.move(Action.DOWN.getY(), Action.DOWN.getX());
         return !below.isValidPosition() || game.getGameObjects().isSolid(below);
     }
 
     //Ejecuta una accion
     private void executeAction(Action action) {
+        Position pos = getPosition();
         Position newPos;
 
         switch (action) {
             case LEFT:
                 newPos = pos.move(action.getY(), action.getX());
                 if (canMoveTo(newPos)) {
-                    pos = newPos;
+                    setPosition(newPos);
                     hasMovedThisTurn = true;
                 }
                 direccion = -1;
@@ -107,7 +122,7 @@ public class Mario extends GameObject {
             case RIGHT:
                 newPos = pos.move(action.getY(), action.getX());
                 if (canMoveTo(newPos)) {
-                    pos = newPos;
+                    setPosition(newPos);
                     hasMovedThisTurn = true;
                 }
                 direccion = 1;
@@ -117,16 +132,16 @@ public class Mario extends GameObject {
             case UP:
                 newPos = pos.move(action.getY(), action.getX());
                 if (canMoveTo(newPos)) {
-                    pos = newPos;
+                    setPosition(newPos);
                     hasMovedThisTurn = true;
                 }
                 break;
             case DOWN:
                 if(isOnGround()){
-                    direccion = 0; //Queda en STOP
+                   direccion = 0; //Queda en STOP
                 }else{
-                    while (!isOnGround()) {
-                        applyGravity();
+                   while (!isOnGround()) {
+                     applyGravity();
                     }
                 }
                 break;
@@ -140,6 +155,7 @@ public class Mario extends GameObject {
 
     // Movimiento automatico version nueva y renovada
     private void performAutomaticMovement() {
+        Position pos = getPosition();
         if (direccion == 0) {
             return; //Estamos en STOP;
 
@@ -150,7 +166,7 @@ public class Mario extends GameObject {
         Position newPos = pos.move(0, direccion);
 
         if (canMoveTo(newPos)) {
-            pos = newPos;
+            setPosition(newPos);
         } else {
             direccion = -direccion; //Cambia de direccion si se choca
             facingRight = (direccion == 1);
@@ -159,7 +175,7 @@ public class Mario extends GameObject {
     //INteractua con la puerta de salida
 
     public boolean interactWith(ExitDoor door) {
-        if (this.pos.equals(door.getPosition())) {
+        if (getPosition().equals(door.getPosition())) {
             game.marioExited();
             return true;
         }
@@ -169,25 +185,31 @@ public class Mario extends GameObject {
     // interactua con el Gomba? Siempre les he dicho Wombats
     public boolean interactWith(Goomba goomba) {
 
-        if (!this.pos.equals(goomba.getPosition())) {
+        if (!getPosition().equals(goomba.getPosition())) {
             return false;
         }
         //Esta saltando sobre el?
 
-        if (isFalling) {
-            goomba.receiveInteraction(this);
-            game.addPoints(100);
-            return true;
-        }
-        if (big) {
+        if (!isFalling) {
+            if (big) {
             //No muere, pero se hace pequeño
-            big = false;
+            
             goomba.receiveInteraction(this); //El goomba muere RIP
-            game.addPoints(100);
+            big = false;
+            //game.addPoints(100);
+            } else {
+                //Muere, logicamente...
+                goomba.receiveInteraction(this);
+                game.marioDies();
+                
+                
+                //game.addPoints(100);
+        }
         } else {
-            //Muere, logicamente...
             goomba.receiveInteraction(this); //Pero aun así muere el goomba?? @PETA
-            game.marioDies();
+            game.addPoints(100);
+            
+            
         }
         return true;
     }
@@ -230,6 +252,7 @@ public class Mario extends GameObject {
 
     @Override
     public boolean isInPosition(Position position) {
+        Position pos = getPosition();
         if (pos.equals(position)) {
             return true;
         }

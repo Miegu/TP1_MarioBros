@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package tp1.logic.gameobjects;
 
 import tp1.logic.Position;
@@ -11,7 +7,7 @@ import tp1.logic.Position;
  */
 public abstract class GameObject {
 
-    protected Position pos;
+    private Position pos;
 
     //Constructor base para todos los objetos del juego
     protected GameObject(Position pos) {

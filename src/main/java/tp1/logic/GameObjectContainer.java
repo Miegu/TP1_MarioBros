@@ -53,7 +53,7 @@ public class GameObjectContainer {
         }
         doInteractionsFrom(mario);
         // 3. Eliminar Goombas muertos
-        goombas.removeIf(goomba -> !goomba.estaVivo());
+        cleanupDeadGoombas();
     }
 
     public boolean isSolid(Position position) {
@@ -72,6 +72,9 @@ public class GameObjectContainer {
             mario.interactWith(exitDoor);
         }
     }
+    private void cleanupDeadGoombas() {
+        goombas.removeIf(goomba -> !goomba.estaVivo());
+    }
 
     public void doInteractionsFrom(Mario mario) {
 
@@ -85,28 +88,34 @@ public class GameObjectContainer {
     }
 
     public String positionToString(Position position) {
+        StringBuilder sb = new StringBuilder();
         //Comprueba si la posicion es la de Mario
         if (mario != null && mario.isInPosition(position)) {
-            return mario.getIcon();
+            sb.append(mario.getIcon());
         }
         //Comprueba si la posicion es la de la puerta de salida
         if (exitDoor != null && exitDoor.isInPosition(position)) {
-            return exitDoor.getIcon();
+            sb.append(exitDoor.getIcon());
         }
         //Comprueba si la posicion es la de algun Goomba
         for (Goomba goomba : goombas) {
             if (goomba.isInPosition(position)) {
-                return goomba.getIcon();
+                sb.append(goomba.getIcon());
             }
         }
 
         //Comprueba si la posicion es la de alguna tierra
         for (Land land : lands) {
             if (land.isInPosition(position)) {
-                return land.getIcon();
+                sb.append(land.getIcon());
             }
         }
-        return Messages.EMPTY; //Si no hay nada en esa posicion, devuelve un espacio en blanco
+
+        if (sb.length() == 0) {
+         return Messages.EMPTY; //Si no hay nada en esa posicion, devuelve un espacio en blanco
+        } 
+        // Devolver todos los iconos concatenados
+        return sb.toString();
     }
 
 }

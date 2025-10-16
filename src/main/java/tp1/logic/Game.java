@@ -60,6 +60,7 @@ public class Game {
      */
     public void marioExited() {
         points += remainingTime * 10;
+        remainingTime = 0;
         playerWon = true;
     }
 

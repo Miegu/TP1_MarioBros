@@ -28,13 +28,15 @@ public class Goomba extends GameObject {
     public void update() {
         if (!vivo) {
             return; //Si no esta vivo no hace nada duh
-        }        //1: Aplicar gravedad
+        }        
+        //1: Aplicar gravedad
         applyGravity();
         //2: Movimiento horizontal si no esta cayendo
         if (!isFalling) {
+            Position pos = getPosition();
             Position newPos = pos.move(0, direccion);
             if (canMoveTo(newPos)) {
-                pos = newPos;
+                setPosition(newPos);
             } else {
                 direccion = -direccion; //Cambia de direccion si se choca       
             }
@@ -43,6 +45,7 @@ public class Goomba extends GameObject {
     }
 
     private void applyGravity() {
+        Position pos = getPosition();
         Position debajo = pos.move(Action.DOWN.getY(), Action.DOWN.getX());
         //Si se sale del tablero muere
         if (!pos.isValidPosition()) {
@@ -50,7 +53,7 @@ public class Goomba extends GameObject {
         }
         if (!game.getGameObjects().isSolid(debajo)) {
             isFalling = true;
-            pos = debajo;
+            setPosition(debajo);
         } else {
             isFalling = false;
         }
@@ -71,6 +74,7 @@ public class Goomba extends GameObject {
         vivo = false;
     }
 
+    @Override
     public boolean estaVivo() {
         return vivo;
     }
