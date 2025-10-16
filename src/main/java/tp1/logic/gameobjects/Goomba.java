@@ -23,6 +23,9 @@ public class Goomba extends GameObject {
     public String getIcon() {
         return Messages.GOOMBA;
     }
+    public boolean isFalling() {
+        return isFalling;
+    }
 
     @Override
     public void update() {

@@ -77,22 +77,30 @@ public class GameObjectContainer {
     }
 
     public void doInteractionsFrom(Mario mario) {
-
-        if (mario == null) {
-            return; //Si no hay Mario no hace nada
-        }
-        //Comprueba interacciones con Goombas
-        for (Goomba goomba : goombas) {
-            mario.interactWith(goomba);
+    if (mario == null) {
+        return;
+    }
+    
+    for (Goomba goomba : goombas) {
+        if (!goomba.estaVivo() || !goomba.getPosition().equals(mario.getPosition())) {
+            continue;
         }
         
-        // Luego Goombas intentan interactuar con Mario (si no hubo interacción previa)
-        for (Goomba goomba : goombas) {
-         if (goomba.estaVivo() && goomba.interactWith(mario)) {
-            break; // Solo una interacción por turno
+        // Decidir quién procesa basado en el contexto
+        if (goomba.isFalling() && !mario.isFalling()) {
+            // Goomba cae sobre Mario parado
+            goomba.interactWith(mario);
+        } else if (mario.isFalling() && !goomba.isFalling()) {
+            // Mario salta sobre Goomba parado
+            mario.interactWith(goomba);
+        } else {
+            // Ambos cayendo o ambos en suelo - Mario procesa
+            mario.interactWith(goomba);
         }
+            break; // Solo una interacción por turno
     }
     }
+
 
     public String positionToString(Position position) {
         StringBuilder sb = new StringBuilder();
