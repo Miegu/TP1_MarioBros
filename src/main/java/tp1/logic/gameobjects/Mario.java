@@ -158,8 +158,9 @@ public class Mario extends GameObject {
         Position pos = getPosition();
         if (direccion == 0) {
             return; //Estamos en STOP;
-
-                }if (!isOnGround() && !hasMovedThisTurn) {
+        }
+        
+        if (!isOnGround() && !hasMovedThisTurn) {
             applyGravity();
             return;
         }
