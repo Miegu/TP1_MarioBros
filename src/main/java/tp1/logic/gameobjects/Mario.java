@@ -79,10 +79,6 @@ public class Mario extends GameObject {
         Position pos = getPosition();
         Position debajo = pos.move(Action.DOWN.getY(), Action.DOWN.getX());
         //Si se sale del tablero muere
-        if (!pos.isValidPosition()) {
-            game.marioDies();
-            return;
-        }
         if (!debajo.isValidPosition()) {
             game.marioDies();
             return;
