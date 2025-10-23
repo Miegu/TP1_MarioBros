@@ -6,9 +6,7 @@ import tp1.logic.Action;
 import tp1.logic.Game;
 import tp1.view.GameView;
 import tp1.view.Messages;
-/**
- *  Accepts user input and coordinates the game execution logic
- */
+
 public class Controller {
 
 	private Game game;
