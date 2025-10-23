@@ -1,5 +1,5 @@
 package tp1.control;
-
+//hola
 import java.util.Scanner;
 
 import tp1.logic.Action;
@@ -20,10 +20,6 @@ public class Controller {
 	}
 
 
-	/**
-	 * Runs the game logic, coordinate Model(game) and View(view)
-	 * 
-	 */
 	public void run() {
 		view.showWelcome();
 		view.showGame();
