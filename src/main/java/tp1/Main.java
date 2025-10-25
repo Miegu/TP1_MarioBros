@@ -9,8 +9,10 @@ import tp1.view.ConsoleView;
 import tp1.view.GameView;
 import tp1.view.Messages;
 
-public class Main {
+//Nicole Vergara
+//Cristina Trueba
 
+public class Main {
 	/**
 	 * Entry point
 	 * 
@@ -22,7 +24,7 @@ public class Main {
 		
 		try {
 			
-			int nLevel = 1;
+			int nLevel = 0;
 			if (args.length != 0) nLevel = Integer.parseInt(args[0]);
 
             Game game = new Game(nLevel);
