@@ -83,6 +83,10 @@ public class Mario extends GameObject {
             game.marioDies();
             return;
         }
+        if (!pos.isValidPosition()) {
+            game.marioDies();
+            return;
+        }
         //Si no hay suelo cae
         if (debajo.isValidPosition() && !game.getGameObjects().isSolid(debajo)) {
             setPosition(debajo);
@@ -184,7 +188,7 @@ public class Mario extends GameObject {
         return true;
     }
 
-        // También agregar un getter público para isFalling si no existe
+    // También agregar un getter público para isFalling si no existe
     public boolean isFalling() {
         return isFalling;
     }
