@@ -16,7 +16,6 @@ public class Game {
     private int lives;
     private boolean playerWon;
     private boolean playerLost;
-
     private GameObjectContainer gameObjects;
     private Mario mario;
 
@@ -221,4 +220,9 @@ public class Game {
         initLevel(this.nLevel);
     }
 
+
+    //metodo para saber si el juego termina(hace falta?)
+    public boolean isFinished (){
+    	return this.remainingTime==0|| this.playerLost || this.playerWon;
+    }
 }
