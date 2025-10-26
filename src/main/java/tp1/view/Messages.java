@@ -77,4 +77,17 @@ public class Messages {
 	public static final String MARIO_RIGHT = "🧍";//"🧍➡️";
 	public static final String MARIO_LEFT = "🚶";//"⬅️🚶";
 	public static final String GOOMBA = "🐻";
+	
+	
+	
+	//preguntar al profe si hace falta esta parte o cómo se haría:
+	public static final String COMMAND_HELP_NAME     = "help";
+	public static final String COMMAND_HELP_SHORTCUT = "h";
+	public static final String COMMAND_HELP_DETAILS  = "[h]elp";
+	public static final String COMMAND_HELP_HELP     = "print this help message";
+	
+	
+	
+	
+
 }
