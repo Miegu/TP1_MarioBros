@@ -12,7 +12,6 @@ public class Controller {
 
 	private Game game;
 	private GameView view;
-	private Scanner scanner;
 
 	public Controller(Game game, GameView view) {
 		this.game = game;
