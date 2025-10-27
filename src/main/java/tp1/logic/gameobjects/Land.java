@@ -5,8 +5,11 @@ import tp1.view.Messages;
 
 public class Land extends GameObject {
 
-    public Land(Position pos) {
-        super(pos);
+    public Land(GameWorld game, Position pos) {
+        super(game, pos);
+    }
+    protected Land(){
+        super();
     }
 
     @Override

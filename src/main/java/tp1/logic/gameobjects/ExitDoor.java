@@ -9,6 +9,10 @@ public class ExitDoor extends GameObject {
         super(pos);
     }
 
+    protected ExitDoor(){
+        super();
+    }
+
     @Override
     public String getIcon() {
         return Messages.EXIT_DOOR;

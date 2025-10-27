@@ -41,7 +41,7 @@ public class GameObjectContainer {
     }
 
     public void update() {
-        // 1. PRIMERO Mario (orden importante según especificación)
+        // 1. PRIMERO Mario (orden importante)
         if (mario != null) {
             mario.update();
         }

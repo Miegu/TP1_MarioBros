@@ -12,8 +12,12 @@ public class Goomba extends GameObject {
     private boolean vivo;
     private boolean isFalling;
 
+    protected Goomba(){
+        super();
+    }
+    
     public Goomba(Game game, Position pos) {
-        super(pos);
+        super(game, pos);
         this.game = game;
         this.direccion = -1; //Empieza mirando a la izquierda
         this.vivo = true;

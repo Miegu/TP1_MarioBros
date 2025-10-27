@@ -31,7 +31,25 @@ public class Controller {
 		view.showGame();
 		boolean exit = false;
 		
-		//TODO fill your code: The main loop that displays the game, asks the user for input, and executes the action.
+		/*
+		 * public void run() {
+
+		view.showWelcome();
+
+		view.showGame();
+		
+		while ( !game.isFinished()) {
+			String[] words = view.getPrompt();
+			Command command = CommandGenerator.parse(words);
+
+			if (command != null)
+				command.execute(game, view);
+			else 
+				view.showError(Messages.UNKNOWN_COMMAND.formatted(String.join(" ", words)));
+		}
+		view.showEndMessage();
+	}
+		 */
 
 		while(!exit && !game.playerWins() && !game.playerLoses()){
     		String[] words = view.getPrompt();  

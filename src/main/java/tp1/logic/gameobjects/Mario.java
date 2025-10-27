@@ -19,6 +19,9 @@ public class Mario extends GameObject {
     private boolean hasMovedThisTurn; //Para saber si ya se ha movido en el turno actual;
     private boolean isFalling;
 
+    protected Mario(){
+        super();
+    }
     //Constructor de Mario
     public Mario(Game game, Position position) {
         super(position);
