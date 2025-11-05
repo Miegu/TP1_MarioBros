@@ -411,11 +411,17 @@ interaction is initiated by one of the objects involved. A valid implementation 
 Each concrete subclass of `GameObject` must have an implementation of the `interactWith` method but it cannot obtain it
 by inheritance and dynamic binding, i.e. by simply using the above method code as that of a `default` method in the
 `GameItem` interface (or by simply placing this code in the `GameObject` class). This is because, though a call to a
-method of the object referenced by `this` in a `default` method body (e.g. `this.toString()`) will use normal dynamic binding and
-will work correctly (i.e. will use the method body of the dynamic type of the object implementing the interface), the same is not
-true in the `GameItem` interface because method overloading is resolved at compile time, meaning that the static type of the
-object referenced by `this` will be used. In consequence, in this *"false" double dispatch*, the code for the `interactWith`
-method has to be copied into each of the concrete subclasses of `GameObject`. 
+method of the object referenced by `this` in an interface (e.g. `this.toString()`) will
+use normal dynamic binding and
+will work correctly (i.e. will use the method body of the dynamic type of the object implementing the interface), the same is not true for choosing the method body in
+function of the argument, here of the `receiveInteraction` method, 
+because method overloading is resolved at compile time. Here, this means that in the
+argument of the call to `receiveInteraction` appearing in the body of the `interactWith`
+method, the method body used will be that of the static type of the
+object referenced by `this`. In consequence, in this *"false" double dispatch*, the code
+for the `interactWith` method has to be copied into each of the concrete subclasses of
+`GameObject` in order for the static type in question to correspond to the concrete type
+of the object whose `interactWith` method has been invoked [^11].
 
 We then extend this way of coding the interaction between game objects to the container by adding a method in the
 `GameObjectContainer` class that carries out all the interactions of a given object (provided as argument) with the
@@ -429,6 +435,9 @@ A boolean return value can be used to indicate whether any object has been modif
 game objects to be able to generate interactions with their environment, a method calling this container method should be added
 to the `Game` class and declared in the `GameWorld` interface, see the next section.
 
+[^11]: Strictly speaking, the call to `receiveInteraction(this)` is also breaking
+encapsulation but this is an unavoidable consequence of trying to implement
+double-dispatch in Java in a relatively simple way.
 
 <!-- TOC --><a name="interfaces-de-game"></a>
 ### Interfaces implemented by the `Game` class
@@ -441,7 +450,7 @@ The `Game` class offers services to different parts of the program, namely:
 
 - *Model*: the game objects (part of the *Model*, as is the `Game` class itself) invoke those methods of the game, such as `isSolid(Position)`, `addPoints(int)` or `marioArrived()`, that concern interactions between game objects. Since these calls *to* the game from the game objects result from calls *by* the game to the game objects (via the container, usually as part of an update), they are referred to as *callbacks*.
 
-Notice that with the current implementation, nothing prevents the *Model* invoking a method of `Game` that was designed for the *Controller* to invoke, e.g. a game object invoking the `reset` method, or the *View* invoking a method of `Game` designed for the *Model* to invoke, e.g. the game view invoking the `marioArrived` method, etc. In order for the compiler to detect such inconsistent invocations we can use interfaces to define *partial views* on the services offered by the `Game` class. To that end, we define the following three interfaces [^11]:
+Notice that with the current implementation, nothing prevents the *Model* invoking a method of `Game` that was designed for the *Controller* to invoke, e.g. a game object invoking the `reset` method, or the *View* invoking a method of `Game` designed for the *Model* to invoke, e.g. the game view invoking the `marioArrived` method, etc. In order for the compiler to detect such inconsistent invocations we can use interfaces to define *partial views* on the services offered by the `Game` class. To that end, we define the following three interfaces [^12]:
 
 - `GameWorld` to represent the *Model*'s internal view of the services offered by the `Game` class.
 
@@ -489,7 +498,7 @@ Finally, in each of the three parts of the program, we must replace each occurre
 public abstract void execute(GameModel game, GameView view);
 ```
 
-[^11]: **Design principles**: This is in accordance with the **I** of the **SOLID** design principles (the *Interface Segregation Principle*).
+[^12]: **Design principles**: This is in accordance with the **I** of the **SOLID** design principles (the *Interface Segregation Principle*).
 
 <!-- TOC --><a name="pruebas"></a>
 ## Testing
@@ -498,6 +507,8 @@ Recall that after refactoring, the program should have exactly the same function
 error messages may need to be less precise) and should therefore pass the same system tests, even though the implementation now contains many more classes.
 
 The template that we provide you with includes classes called `tp1.Tests_V2_1` and `tp1.Tests_V2_1` which, like `tp1.Tests`, are classes of JUnit tests, the former containing the test cases for part I of this assignment and the latter containing test cases for the extensions implemented in part II of this assignment.
+
+
 
 
 

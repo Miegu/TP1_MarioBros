@@ -25,17 +25,32 @@
 In this assignment, we will extend the code with new functionality. The principle objective is to add new commands and new game objects
 to the game. But first a **warning**:
 
-**IMPORTANT**: Any of the following, on its own, is sufficient reason to fail:
+**IMPORTANT**: Any of the following serious errors, on its own, is sufficient reason to fail the assignment (**and to fail the exam if you commit such errors in the programming exam**):
 
-- breaking encapsulation (so all attributes must be private and a method cannot return an object that is a value of an attribute unless
-  that object is immutable or unless its type is an interface such as `GameItem` that severely restricts access to it),
-- the use of methods that return lists,
-- the use of `instanceof` or `getClass`, since identifying the dynamic type of objects is simply a way of avoiding the use of
-  polymorphism and dynamic binding, i.e. of avoiding the use of OOP.
-- the use of a *DIY instanceof* (e.g. each subclass of `GameObject` has a set of methods `isX`, one for each concrete subclass of
+- Breaking encapsulation, so:
+  * all attributes must be private,
+  * a class cannot export data that is `private`, in particular, an object that is the value of one of its (private)
+    attributes or an object that is referenced by the value of one of its (private) attributes, unless the exported
+    object is immutable or unless its type is an interface such as `GameItem` that severely restricts access to it;
+    in particular, the
+    `GameObjectContainer` class cannot export an object of type `GameObject` or one of its subtypes, nor a list of game
+    objects, nor a reference to itself, via `this`, in order to provide access to such a list. Note that a method
+    of the `GameObjectContainer` class that is `private` is not exporting anything.
+    + The term "export" here refers to giving access to an object either by defining a non-private method that returns 
+      it or by passing it as an argument in an invocation of a method of another class [^1].
+- Using `instanceof` or `getClass` (apart from in an equals method), since:
+  * identifying the dynamic type of objects is simply a way of avoiding the use of
+    polymorphism and dynamic binding, i.e. of avoiding the use of OOP.
+- Using a *DIY instanceof* (e.g. each subclass of `GameObject` has a set of methods `isX`, one for each concrete subclass of
   `GameObject`, where the method `isX` returns `true` in the concrete `GameObject` subclass `X` and `false` in any other concrete
-   `GameObject` subclass); such a solution is even worse than using `instanceof` or `getClass` since it is simply a clumsier, more
-   verbose, way of identifying the dynamic type of game objects.
+   `GameObject` subclass).
+   * Such a solution is even worse than using `instanceof` or `getClass` since it is simply a clumsier, more verbose, way
+     of identifying the dynamic type of game objects.
+
+[^1]: With regard to the second point, notice that in the generic interaction mechanism
+described in part I of this assignment, the type of the parameter of the methods
+`doInteractions` of the `GameObjectContainer` class and `interactWith` of the `GameItem`
+interface is `GameItem`, not `GameObject` nor a subtype of `GameObject`.
 
 <!-- TOC --><a name="AddObjectCommand-y-factoría-de-objetos"></a>
 ## The `addObject` command and the game object factory
@@ -67,7 +82,7 @@ which we clarify with the following examples of valid strings:
   represents a `Mario` object
 
   - whose current position is row 1, column 2,
-  - whose current direction of movement is left-to-right, the default value of this attribute, the other possible values being `LEFT` and `STOP` [^1],
+  - whose current direction of movement is left-to-right, the default value of this attribute, the other possible values being `LEFT` and `STOP` [^2],
   - whose current size is `BIG` (i.e. for whom the value of `isBig` is `true`), the default value of this attribute, the other possible value being `SMALL`.
 
   The existence of default values means that `(1,2) MARIO` represents the same object as the above string and, for example, `(1,2) MARIO LEFT` represents
@@ -97,7 +112,7 @@ which we clarify with the following examples of valid strings:
   
 In addition, abbreviations can be used for the game objects (``M``, ``G``, ``Gr`` y ``ED`` for ``Mario``, ``Goomba``, ``Ground``  and ``ExitDoor`` respectively), for the movement directions (``L``, ``R`` and `S` for ``LEFT``, ``RIGHT`` and `STOP` respectively) and for the sizes of Mario (``B`` and ``S`` for ``BIG`` and ``SMALL`` respectively).
 
-[^1]: Even if Mario is in the air in the position provided, his direction of movement is needed in order to draw him correctly;
+[^2]: Even if Mario is in the air in the position provided, his direction of movement is needed in order to draw him correctly;
 it will also determine his movement when he reaches the ground.
 
 
@@ -156,13 +171,13 @@ Examples of use of this command:
 
 *Hints*
 - In the `parse` method of the `AddObjectCommand` class, you may wish to use the method `copyOfRange(words, from, to)` of the
-  `java.util.Arrays` utility class [^2], which returns a copy of the part of the array `words` that starts at index `from`
+  `java.util.Arrays` utility class [^3], which returns a copy of the part of the array `words` that starts at index `from`
   (inclusive) and finishes at index `to` (exclusive).
 - In the `run` method of the controller, you may wish to use the method `join(separator, words)` of the `String` class,
   which concatenates the strings of the array `words` adding the character string `separator` between each pair of elements 
   of `words` (use `" "` for the separator).
 
-[^2]: A *utility class* is one that contains only static methods, which therefore never needs to be instantiated.
+[^3]: A *utility class* is one that contains only static methods, which therefore never needs to be instantiated.
 
 <!-- TOC --><a name="draw-map"></a>
 ### Creating maps using the `addObject` command
@@ -221,7 +236,7 @@ by a grey background, if the box is empty.
 
 To test these two extensions, we suggest you create a level `2` which is the same as level `1` except for a box in position
 `(9,4)` and two mushrooms in positions `(12,8)` y `(2,20)` (using the format `(fila,columna)`). Alternatively, you can simply
-add these objects at the start of level `1` using the `addObject` command.
+add these objects at the start of level `1` using the `addObject` command. Examples of the external representation for boxes to be used with the `addObject` command are the following: `"(3,6) Box"`, `"(3,5) Box Full"`, `"(3,4) Box Empty"` where the latter represents an empty box and the other two, a full box (i.e. the default is `Full`). The abbreviations `"F"` and `"E"` can be used for `"Full"` and `"Empty"` respectively.
 
 <!-- TOC --><a name="pruebas"></a>
 ## Testing
@@ -232,6 +247,16 @@ add these objects at the start of level `1` using the `addObject` command.
 ## Submission
 
 ... to be added
+
+
+
+
+
+
+
+
+
+
 
 
 

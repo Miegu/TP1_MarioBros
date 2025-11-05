@@ -26,7 +26,7 @@ En esta práctica vamos a extender el código con nuevas funcionalidades. El pri
 
 Antes de comenzar, tened en cuenta la **advertencia**:
 
-> La falta de encapsulación, el uso de métodos que devuelvan listas, y el uso de `instanceof` o `getClass()` tiene como consecuencia un **suspenso directo** en la práctica. Es incluso peor implementar un `instanceof` casero, por ejemplo así: cada subclase de la clase `GameObject` contiene un conjunto de métodos `esX`, uno por cada subclase X de `GameObject`; el método `esX` de la clase X devuelve `true` y los demás métodos `esX` de la clase X devuelven `false`.
+> La falta de encapsulación, el uso de métodos que devuelvan listas, y el uso de `instanceof` o `getClass()` (fuera de metodos ``equals(Object other)``) tiene como consecuencia un **suspenso directo** en la práctica. Es incluso peor implementar un `instanceof` casero, por ejemplo así: cada subclase de la clase `GameObject` contiene un conjunto de métodos `esX`, uno por cada subclase X de `GameObject`; el método `esX` de la clase X devuelve `true` y los demás métodos `esX` de la clase X devuelven `false`.
 
 
 <!-- TOC --><a name="AddObjectCommand-y-factoría-de-objetos"></a>
@@ -174,7 +174,7 @@ En la vista con colores está ya implementado de la siguiente forma: Si la caja 
 
 Para probar estas estensiones crear un nuevo nivel ``2`` que sea exactamente igual el nivel ``1`` pero con una caja en la posición `(9,4)` y dos setas en las posiciones `(12,8)` y `(2,20)`. Las posiciones indicadas siguen el formato: ``(fila,columna)``.
 
-Ten en cuenta que también puedes probar dichos objetos a través del comando definido antes ``AddObjectCommand``.
+Ten en cuenta que también puedes probar dichos objetos a través del comando definido antes ``AddObjectCommand``. Para ello se podrá utilizar los siguientes formtatos de las cajas ``"(3,6) Box"``, ``"(3,5) Box Full"``, ``"(3,4) Box Empty"`` que reprentan una caja llena para las dos primeras y vacía para la última. También podrán utilizarse las abreviaturas ``F``y ``E`` para ``Full`` y ``Empty`` respectivamente.
 
 <!-- TOC --><a name="pruebas"></a>
 ## Pruebas
