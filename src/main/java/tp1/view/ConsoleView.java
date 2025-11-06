@@ -2,12 +2,15 @@ package tp1.view;
 
 import java.util.Scanner;
 
-import tp1.logic.Game;
+import tp1.logic.GameStatus;
 import tp1.util.MyStringUtils;
 import static tp1.util.MyStringUtils.repeat;
 
 public class ConsoleView extends GameView {
 	
+	private static final int DIM_X = 30;
+	private static final int DIM_Y = 15;
+
 	protected static final String SPACE = " ";
 
 	private static final String CELL_BORDER_CHAR = "—";
@@ -22,7 +25,7 @@ public class ConsoleView extends GameView {
 
 	private static final String CELL_BORDER = repeat(CELL_BORDER_CHAR, CELL_SIZE);
 
-	private static final String ROW_BORDER = repeat(CELL_BORDER, Game.DIM_X);
+	private static final String ROW_BORDER = repeat(CELL_BORDER, DIM_X);
 
 	private static final String UPPER_ROW_BORDER = "┌" + ROW_BORDER + "┐" + NEW_LINE;
 	private static final String LOWER_ROW_BORDER = "└" + ROW_BORDER + "┘" + NEW_LINE;
@@ -32,7 +35,7 @@ public class ConsoleView extends GameView {
 
 	Scanner scanner;
 
-	public ConsoleView(Game game) {
+	public ConsoleView(GameStatus game) {
 		super(game);
 		scanner = new Scanner(System.in);
 	}
@@ -76,15 +79,15 @@ public class ConsoleView extends GameView {
 		str.append(NEW_LINE);
 
 		// Paint game board
-		str.append(colLine(Game.DIM_X));
+		str.append(colLine(DIM_X));
 		str.append(LATERAL_TAB);
 		str.append(UPPER_ROW_BORDER);
 
-		for (int row = 0; row < Game.DIM_Y; row++) {
+		for (int row = 0; row < DIM_Y; row++) {
 			str.append(MyStringUtils.right( getRowName(row) , LATERAL_TAB_SIZE) );
 			str.append(VERTICAL_DELIMITER);
 
-			for (int col = 0; col < Game.DIM_X; col++) {
+			for (int col = 0; col < DIM_X; col++) {
 				str.append(consoleCell(game.positionToString(col, row)));
 				//str.append(VERTICAL_DELIMITER);
 			}
@@ -96,7 +99,7 @@ public class ConsoleView extends GameView {
 
 		str.append(LATERAL_TAB);
 		str.append(LOWER_ROW_BORDER);
-		str.append(colLine(Game.DIM_X));
+		str.append(colLine(DIM_X));
 
 		return str.toString();
 	}

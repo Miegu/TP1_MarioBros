@@ -91,6 +91,19 @@ public class Messages {
 	public static final String COMMAND_HELP_DETAILS = "[h]elp";
 	public static final String COMMAND_HELP_HELP = "print this help message";
 
+	// RESET
+	public static final String COMMAND_RESET_NAME = "reset";
+	public static final String COMMAND_RESET_SHORTCUT = "r";
+	public static final String COMMAND_RESET_DETAILS = "[r]eset [numLevel]";
+	public static final String COMMAND_RESET_HELP = "reset the game to initial configuration if not numLevel else load the numLevel map";
+
+	// ACTION
+	public static final String COMMAND_ACTION_NAME = "action";
+	public static final String COMMAND_ACTION_SHORTCUT = "a";
+	public static final String COMMAND_ACTION_DETAILS = "[a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]";
+	public static final String COMMAND_ACTION_HELP = "user performs actions";
+
+
 //Symbols
 	public static final String EMPTY = "";
 	public static final String LAND = MyStringUtils.repeat("▓",ConsoleView.CELL_SIZE);

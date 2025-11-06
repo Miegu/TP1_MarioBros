@@ -31,13 +31,6 @@ public class Controller {
 		view.showGame();
 		boolean exit = false;
 		
-		/*
-		 * public void run() {
-
-		view.showWelcome();
-
-		view.showGame();
-		
 		while ( !game.isFinished()) {
 			String[] words = view.getPrompt();
 			Command command = CommandGenerator.parse(words);
@@ -49,9 +42,10 @@ public class Controller {
 		}
 		view.showEndMessage();
 	}
+}
 		 */
 
-		while(!exit && !game.playerWins() && !game.playerLoses()){
+		/*while(!exit && !game.playerWins() && !game.playerLoses()){
     		String[] words = view.getPrompt();  
    			exit = processCommand(String.join(" ", words));
 	}
@@ -64,7 +58,7 @@ public class Controller {
 	}
 	/*
 	 * Procesa la accion dada por el usuario
-	 */
+	 
 	private boolean processCommand(String accion) {
 		if(accion.isEmpty()){
 			//Si el comando esta vacio, se actualiza
@@ -156,3 +150,4 @@ public class Controller {
     }
 }
 
+*/

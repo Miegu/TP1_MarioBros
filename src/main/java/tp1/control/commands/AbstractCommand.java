@@ -12,9 +12,9 @@ public abstract class AbstractCommand implements Command {
 	private final String details;
 	private final String help;
 	
-	public AbstractCommand(String name, String shorcut, String details, String help) {
+	public AbstractCommand(String name, String shortcut, String details, String help) {
 		this.name = name;
-		this.shortcut = shorcut;
+		this.shortcut = shortcut;
 		this.details = details;
 		this.help = help;
 	}

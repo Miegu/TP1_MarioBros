@@ -4,7 +4,7 @@ import tp1.logic.Action;
 import tp1.logic.GameWorld;
 import tp1.logic.Position;
 
-public abstract class GameObject { 
+public abstract class GameObject implements GameItem { 
 
 	protected Position pos; // If you can, make it private.
 	private boolean isAlive;
@@ -42,7 +42,7 @@ public abstract class GameObject {
     public Position getPosition(){
         return pos;
     }
-	// TODO implement and decide, Which one is abstract?
+	//implement and decide, Which one is abstract?
     public abstract String getIcon();
 	public abstract boolean isSolid();
     //Las subclases pueden sobreescribirlo
@@ -64,47 +64,25 @@ public abstract class GameObject {
     public String toString() {
         return getClass().getSimpleName() + " en " + pos.toString();
     }
+    @Override
+    public boolean interactWith(GameItem other) {
+        boolean canInteract = other.isInPosition(this.pos);
+        if (canInteract) {
+         return other.receiveInteraction(this);  // ← Double-dispatch mágico
+     }
+        return false;
+    }
+
+// implementaciones por defecto (cada subclase las personaliza)
+    @Override
+    public boolean receiveInteraction(Land obj) { return false; }
+
+    @Override  
+    public boolean receiveInteraction(ExitDoor obj) { return false; }
+
+    @Override
+    public boolean receiveInteraction(Mario obj) { return false; }
+
+    @Override
+    public boolean receiveInteraction(Goomba obj) { return false; }
 }
-
-/**
- *public abstract class GameObject {
-
-    
-
-    private Position pos;
-
-    //Constructor base para todos los objetos del juego
-    protected GameObject(Position pos) {
-        this.pos = pos;
-    }
-
-    //Obtiene la posicion actual del objeto
-    public Position getPosition() {
-        return pos;
-    }
-
-    //Cambia la posicion del objeto
-    public void setPosition(Position position) {
-        this.pos = position;
-    }
-
-    //Metodo abstracto que sera implementado por las subclases
-    public abstract String getIcon();
-
-    public void update() {
-        // Default implementation (can be overridden by subclasses)
-    }
-
-    //Comprueba si el objeto esta en una posicion concreta
-    public boolean isInPosition(Position position) {
-        return this.pos.equals(position);
-    }
-
-    public boolean estaVivo() {
-        return true; // Por defecto, los objetos estan vivos
-    }
-
-    
-}
- */
-
