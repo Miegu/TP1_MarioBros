@@ -8,7 +8,7 @@ public interface GameItem {
     boolean isInPosition(Position pos);
     
     // Double-dispatch principal
-    boolean interactWith(GameItem item);
+    boolean interactWith(GameItem other);
     
     // Métodos sobrecargados para double-dispatch
     boolean receiveInteraction(Land obj);

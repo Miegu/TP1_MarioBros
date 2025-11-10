@@ -1,8 +1,7 @@
 package tp1.logic;
 
 /**
- *
- * TODO: Immutable class to encapsulate and manipulate positions in the game
+ * Immutable class to encapsulate and manipulate positions in the game
  * board
  *
  */

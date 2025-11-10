@@ -1,11 +1,12 @@
 package tp1.logic;
 
 import tp1.logic.gameobjects.ExitDoor;
+import tp1.logic.gameobjects.GameObject;
 import tp1.logic.gameobjects.Goomba;
 import tp1.logic.gameobjects.Land;
 import tp1.logic.gameobjects.Mario;
 
-public class Game {
+public class Game implements GameModel, GameStatus, GameWorld{
 
     public static final int DIM_X = 30;
     public static final int DIM_Y = 15;
@@ -16,24 +17,25 @@ public class Game {
     private int lives;
     private boolean playerWon;
     private boolean playerLost;
+    private boolean playerExit;
 
     private GameObjectContainer gameObjects;
     private Mario mario;
 
-    //TODO fill your code
     // Atributos del juego
     public Game(int nLevel) {
-        // TODO Auto-generated constructor stub
         this.nLevel = nLevel;
         this.remainingTime = 100;
         this.points = 0;
         this.lives = 3;
         this.playerWon = false;
         this.playerLost = false;
+        this.playerExit = false;
 
         initLevel(nLevel);
     }
 
+    @Override
     public void update() {
         //1 Reducir el tiempo
         if (remainingTime <= 0) {
@@ -45,35 +47,107 @@ public class Game {
         gameObjects.update();
     }
 
+    @Override
+    public boolean isFinished() {
+        return playerWon || playerLost || playerExit;
+    }
+
+    @Override
+    public void reset() {
+        reset(this.nLevel); // Mantiene el nivel actual
+    }
+
+    @Override
+    public void reset(int level) {
+        this.remainingTime = 100;
+        this.playerWon = false;
+        this.playerLost = false;
+        this.playerExit = false;
+        this.nLevel = level;
+        initLevel(this.nLevel);
+    }
+    @Override
     public void addAction(Action accion) {
         if (mario != null) {
             mario.addAction(accion);
         }
     }
-
-    public void doInteractionsFrom(Mario mario) {
-        gameObjects.doInteractionsFrom(mario);
+    @Override
+    public void exit() {
+        this.playerExit = true;
     }
 
-    /*
-	 * Mario llega ala puerta de salida
-     */
-    public void marioExited() {
-        points += remainingTime * 10;
-        remainingTime = 0;
-        playerWon = true;
+    /*GameStatus */
+    @Override
+    public int points() {
+        return points;
+    } 
+
+    @Override
+    public int numLives() {
+        return lives;
     }
 
-    public void addPoints(int points) {
-        this.points += points;
+    @Override
+    public int remainingTime() {
+        return remainingTime;
+    } 
+
+    @Override
+    public String positionToString(int col, int row) {
+        Position position = new Position(row, col);
+        return gameObjects.positionToString(position);
     }
 
-    // Mario muere :c
-    public void marioDies() {
+    /*GameWorld */
+    @Override
+    public int getRows() {
+        return DIM_Y;
+    }
+
+    @Override
+    public int getCols() {
+        return DIM_X;
+    }
+    @Override
+    public boolean isInside(Position pos) {
+        if(pos == null) return false;
+        return pos.getCol() >= 0 && pos.getCol() < DIM_X
+            && pos.getRow() >= 0 && pos.getRow() < DIM_Y;
+    }
+
+    @Override
+    public boolean isSolid(Position pos) {
+       return gameObjects.isSolid(pos);
+    }
+
+    @Override
+    public boolean addObject(GameObject obj) {
+        gameObjects.add(obj);
+        return true;
+    }
+
+    @Override
+    public boolean removeObjectAt(Position pos) {
+        return gameObjects.removeObjectAt(pos);
+    }  
+
+    @Override
+    public GameObject getObjectAt(Position pos) {
+        return gameObjects.getObjectAt(pos);
+    }
+
+    @Override
+    public void addScore(int pointsToAdd){
+        this.points += pointsToAdd;
+    }
+
+    @Override
+    public void loseLife(){
         lives--;
-        if (lives <= 0) {
+        if(lives <= 0){
             playerLost = true;
-        } else {
+        }else{
             //Reiniciar el nivel, pero mantienes puntos y vidas
             int currentPoints = this.points;
             int currentLives = this.lives;
@@ -82,40 +156,54 @@ public class Game {
             this.lives = currentLives;
         }
     }
+
+    @Override
+    public void resetLevel(int levelId){
+        reset(levelId);
+    }
+
+    @Override
+    public void updateAll(){
+        update();
+    }
+
+    // Metodos adicionales
+
+    public void doInteractionsFrom(Mario mario) {
+        gameObjects.doInteractionsFrom(mario);
+    }
+
+    /*
+	 * Mario llega a la puerta de salida
+     */
+    public void marioExited() {
+        points += remainingTime * 10;
+        remainingTime = 0;
+        playerWon = true;
+    }
+
+    public void addPoints(int points) {
+        addScore(points);
+    }
+
+    // Mario muere :c
+    public void marioDies() {
+        loseLife();
+    }
+
     //NEcesarioMario y Goomba puedan acceder al contenedor
 
     public GameObjectContainer getGameObjects() {
         return gameObjects;
     }
 
-    public String positionToString(int col, int row) {
-        Position position = new Position(row, col);
-        return gameObjects.positionToString(position);
-    }
 
     public boolean playerWins() {
-        // TODO Auto-generated method stub
         return playerWon;
     }
 
     public boolean playerLoses() {
-        // TODO Auto-generated method stub
-        return lives <= 0;
-    }
-
-    public int remainingTime() {
-        // TODO Auto-generated method stub
-        return remainingTime;
-    }
-
-    public int points() {
-        // TODO Auto-generated method stub
-        return points;
-    }
-
-    public int numLives() {
-        // TODO Auto-generated method stub
-        return lives;
+        return playerLost;
     }
 
     @Override
@@ -195,31 +283,6 @@ public class Game {
         gameObjects.add(new Goomba(this, new Position(10, 10)));
         gameObjects.add(new Goomba(this, new Position(12, 11)));
         gameObjects.add(new Goomba(this, new Position(12, 14)));
-    }
-
-    /**
-     * Resetea el juego al estado inicial manteniendo puntos y vidas
-     */
-    public void reset() {
-        reset(this.nLevel); // Mantiene el nivel actual
-    }
-
-    /**
-     * Resetea el juego con un nivel específico
-     *
-     * @param level nivel a cargar
-     */
-    public void reset(int level) {
-        // Resetear tiempo pero mantener puntos y vidas
-        this.remainingTime = 100;
-
-        // Solo cambiar nivel si existe, si no mantener el actual
-        if (level == 0 || level == 1) { // Añadir más niveles según necesites
-            this.nLevel = level;
-        }
-
-        // Reinicializar el nivel
-        initLevel(this.nLevel);
     }
 
 }

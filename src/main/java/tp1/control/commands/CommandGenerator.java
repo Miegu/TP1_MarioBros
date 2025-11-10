@@ -11,12 +11,13 @@ public class CommandGenerator {
 			new UpdateCommand(),
 			new HelpCommand(),
 			new ExitCommand(),
-			new ResetCommand()
+			new ResetCommand(),
+			new ActionCommand()
 	);
 
 	public static Command parse(String[] commandWords) {
 		if (commandWords == null || commandWords.length == 0) {
-            return null;
+            return new UpdateCommand();
         }
 		//Probar cada comando disponible		
 		for (Command c: availableCommands) {

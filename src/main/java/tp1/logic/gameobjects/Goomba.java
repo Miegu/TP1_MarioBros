@@ -1,26 +1,21 @@
 package tp1.logic.gameobjects;
 
-import tp1.logic.Action;
-import tp1.logic.Game;
+import tp1.logic.GameWorld;
 import tp1.logic.Position;
 import tp1.view.Messages;
 
 public class Goomba extends GameObject {
 
-    private Game game;
-    private int direccion; // -1 izquierda, 1 derecha Wombat empieza hacia la izq
-    private boolean vivo;
+    private int direction; // -1 izquierda, 1 derecha Wombat empieza hacia la izq
     private boolean isFalling;
 
     protected Goomba(){
         super();
     }
     
-    public Goomba(Game game, Position pos) {
+    public Goomba(GameWorld game, Position pos) {
         super(game, pos);
-        this.game = game;
-        this.direccion = -1; //Empieza mirando a la izquierda
-        this.vivo = true;
+        this.direction = -1; //Empieza mirando a la izquierda
     }
 
     @Override
@@ -31,59 +26,60 @@ public class Goomba extends GameObject {
         return isFalling;
     }
 
+     @Override
+    public boolean isSolid() {
+        return false;
+    }
+
     @Override
     public void update() {
-        if (!vivo) {
-            return; //Si no esta vivo no hace nada duh
-        }        
-        //1: Aplicar gravedad
+     if (!isAlive()) {
+            return;
+        }
+        
+        // 1: Apply gravity
         applyGravity();
-        //2: Movimiento horizontal si no esta cayendo
+        
+        // 2: Horizontal movement if not falling
         if (!isFalling) {
-            Position pos = getPosition();
-            Position newPos = pos.move(0, direccion);
+            Position currentPos = getPosition();
+            Position newPos = currentPos.move(0, direction);
             if (canMoveTo(newPos)) {
                 setPosition(newPos);
             } else {
-                direccion = -direccion; //Cambia de direccion si se choca       
+                direction = -direction;
             }
         }
-
     }
 
     private void applyGravity() {
         Position pos = getPosition();
-        Position debajo = pos.move(Action.DOWN.getY(), Action.DOWN.getX());
+        Position debajo = pos.down();
+
         //Si se sale del tablero muere
-        if (!pos.isValidPosition()) {
-            die();
+        if (!game.isInside(pos)) {
+            dead();
+            return;
         }
-        if (!game.getGameObjects().isSolid(debajo)) {
+        if (!game.isSolid(debajo)) {
             isFalling = true;
             setPosition(debajo);
         } else {
             isFalling = false;
         }
-
     }
-
+    @Override
     public boolean receiveInteraction(Mario mario) {
-        die();
+        dead();
         return true;
     }
 
 
     private boolean canMoveTo(Position position) {
         //Comprueba si la posicion es valida y no hay ningun Land en esa posicion
-        return position.isValidPosition() && !game.getGameObjects().isSolid(position);
+        return game.isInside(position) && !game.isSolid(position);
     }
 
-    public void die() {
-        vivo = false;
-    }
 
-    @Override
-    public boolean estaVivo() {
-        return vivo;
-    }
+
 }

@@ -42,9 +42,13 @@ public abstract class GameObject implements GameItem {
     public Position getPosition(){
         return pos;
     }
+    protected void setPosition(Position newPos){
+        this.pos = newPos;
+    }
 	//implement and decide, Which one is abstract?
     public abstract String getIcon();
 	public abstract boolean isSolid();
+
     //Las subclases pueden sobreescribirlo
 	 public void update(){
 
@@ -68,7 +72,7 @@ public abstract class GameObject implements GameItem {
     public boolean interactWith(GameItem other) {
         boolean canInteract = other.isInPosition(this.pos);
         if (canInteract) {
-         return other.receiveInteraction(this);  // ← Double-dispatch mágico
+         return other.receiveInteraction(this);  // Double Dispatch
      }
         return false;
     }
