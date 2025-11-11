@@ -228,6 +228,10 @@ public class Mario extends GameObject {
         //Comprueba si la posicion es valida y no hay ningun Land en esa posicion
         return game.isInside(position) && !game.isSolid(position);
     }
+    @Override
+    public boolean shouldUpdateInLoop() {
+        return false; //Mario se actualiza desde game
+    }
 
     @Override
     public String getIcon() {

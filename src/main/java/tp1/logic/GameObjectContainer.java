@@ -32,7 +32,7 @@ public class GameObjectContainer {
     public void update() {
        // Actualizar todos los objetos (polimórfico)
         for (GameObject obj : new ArrayList<>(objects)) {
-            if (obj.isAlive()) {
+            if (obj.isAlive() && obj.shouldUpdateInLoop()) {
                 obj.update();
             }
         }

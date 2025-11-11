@@ -57,7 +57,7 @@ public abstract class GameObject implements GameItem {
 
      }
 
-	// Not mandatory but recommended
+	// Movimiento del objeto en una direccion dada
 	protected void move(Action dir) {
         if(dir != null && pos != null){
             Position newPos = pos.move(dir);
@@ -66,6 +66,11 @@ public abstract class GameObject implements GameItem {
             }
         }
 	}
+    //Indica si el objeto debe actualizarse en el bucle
+    public boolean shouldUpdateInLoop(){
+        return true;
+    }
+
     // Representacion en String del objeto
     @Override
     public abstract String toString();

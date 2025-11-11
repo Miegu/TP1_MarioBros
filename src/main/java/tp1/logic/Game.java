@@ -44,6 +44,9 @@ public class Game implements GameModel, GameStatus, GameWorld{
             remainingTime--;
         }
         //2, Actualizar todos los objetos del juego
+        if(mario != null && mario.isAlive()) {
+            mario.update();
+        }
         gameObjects.update();
 
         checkInteractions();
