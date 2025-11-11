@@ -22,7 +22,6 @@ public class Game implements GameModel, GameStatus, GameWorld{
     private GameObjectContainer gameObjects;
     private Mario mario;
 
-    // Atributos del juego
     public Game(int nLevel) {
         this.nLevel = nLevel;
         this.remainingTime = 100;
@@ -31,24 +30,23 @@ public class Game implements GameModel, GameStatus, GameWorld{
         this.playerWon = false;
         this.playerLost = false;
         this.playerExit = false;
-
         initLevel(nLevel);
     }
 
     @Override
     public void update() {
-        //1 Reducir el tiempo
         if (remainingTime <= 0) {
             playerLost = true;
         } else {
             remainingTime--;
         }
-        //2, Actualizar todos los objetos del juego
+        // ORDEN CORRECTO: 1. Mario update primero
         if(mario != null && mario.isAlive()) {
             mario.update();
         }
+        // 2. Luego todos los demás objetos (Goombas, etc)
         gameObjects.update();
-
+        // 3. Interacciones mediante double dispatch
         checkInteractions();
     }
 
@@ -59,7 +57,7 @@ public class Game implements GameModel, GameStatus, GameWorld{
 
     @Override
     public void reset() {
-        reset(this.nLevel); // Mantiene el nivel actual
+        reset(this.nLevel);
     }
 
     @Override
@@ -82,7 +80,6 @@ public class Game implements GameModel, GameStatus, GameWorld{
         this.playerExit = true;
     }
 
-    /*GameStatus */
     @Override
     public int points() {
         return points;
@@ -104,7 +101,6 @@ public class Game implements GameModel, GameStatus, GameWorld{
         return gameObjects.positionToString(position);
     }
 
-    /*GameWorld */
     @Override
     public int getRows() {
         return DIM_Y;
@@ -153,7 +149,6 @@ public class Game implements GameModel, GameStatus, GameWorld{
         if(lives <= 0){
             playerLost = true;
         }else{
-            //Reiniciar el nivel, pero mantienes puntos y vidas
             int currentPoints = this.points;
             int currentLives = this.lives;
             initLevel(this.nLevel);
@@ -172,11 +167,6 @@ public class Game implements GameModel, GameStatus, GameWorld{
         update();
     }
 
-    // Metodos adicionales
-
-    /*
-	 * Mario llega a la puerta de salida
-     */
     public void marioExited() {
         points += remainingTime * 10;
         remainingTime = 0;
@@ -191,21 +181,21 @@ public class Game implements GameModel, GameStatus, GameWorld{
         addScore(points);
     }
 
-    // Mario muere :c
     public void marioDies() {
         loseLife();
     }
 
+    // CORRECCIÓN: Double dispatch polimórfico sin instanceof
     private void checkInteractions() {
         if (mario == null || !mario.isAlive()) return;
-        
+        // Cada objeto interactúa con Mario mediante double dispatch
         for (GameObject obj : gameObjects.getObjects()) {
-            if (obj != mario) {
-                mario.interactWith(obj);
+            if (obj != mario && obj.isAlive()) {
+                // Double dispatch: obj decide cómo interactúa con Mario
+                obj.interactWith(mario);
             }
         }
     }
-
 
     public boolean playerWins() {
         return playerWon;
@@ -234,57 +224,41 @@ public class Game implements GameModel, GameStatus, GameWorld{
         }
     }
 
-    private void initMap() {
-
-    }
-
     private void initLevel0() {
         this.nLevel = 0;
         this.remainingTime = 100;
-
-        // 1. Mapa
         gameObjects = new GameObjectContainer();
         for (int col = 0; col < 15; col++) {
             gameObjects.add(new Land(this, new Position(13, col)));
             gameObjects.add(new Land(this, new Position(14, col)));
         }
-
         gameObjects.add(new Land(this, new Position(Game.DIM_Y - 3, 9)));
         gameObjects.add(new Land(this, new Position(Game.DIM_Y - 3, 12)));
         for (int col = 17; col < Game.DIM_X; col++) {
             gameObjects.add(new Land(this, new Position(Game.DIM_Y - 2, col)));
             gameObjects.add(new Land(this, new Position(Game.DIM_Y - 1, col)));
         }
-
         gameObjects.add(new Land(this, new Position(9, 2)));
         gameObjects.add(new Land(this, new Position(9, 5)));
         gameObjects.add(new Land(this, new Position(9, 6)));
         gameObjects.add(new Land(this, new Position(9, 7)));
         gameObjects.add(new Land(this, new Position(5, 6)));
-
-        // Salto final
         int tamX = 8, tamY = 8;
         int posIniX = Game.DIM_X - 3 - tamX, posIniY = Game.DIM_Y - 3;
-
         for (int col = 0; col < tamX; col++) {
             for (int fila = 0; fila < col + 1; fila++) {
                 gameObjects.add(new Land(this, new Position(posIniY - fila, posIniX + col)));
             }
         }
-
         gameObjects.add(new ExitDoor(this, new Position(Game.DIM_Y - 3, Game.DIM_X - 1)));
-
-        // 3. Personajes
         this.mario = new Mario(this, new Position(Game.DIM_Y - 3, 0));
         gameObjects.add(this.mario);
-
         gameObjects.add(new Goomba(this, new Position(0, 19)));
     }
 
     private void initLevel1() {
         initLevel0();
         this.nLevel = 1;
-
         gameObjects.add(new Goomba(this, new Position(4, 6)));
         gameObjects.add(new Goomba(this, new Position(12, 6)));
         gameObjects.add(new Goomba(this, new Position(12, 8)));
@@ -292,5 +266,4 @@ public class Game implements GameModel, GameStatus, GameWorld{
         gameObjects.add(new Goomba(this, new Position(12, 11)));
         gameObjects.add(new Goomba(this, new Position(12, 14)));
     }
-
 }
