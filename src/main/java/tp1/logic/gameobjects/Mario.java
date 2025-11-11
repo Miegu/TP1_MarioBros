@@ -17,7 +17,6 @@ public class Mario extends GameObject {
     protected Mario(){
         super();
     }
-    //Constructor de Mario
     public Mario(GameWorld game, Position position) {
         super(game, position);
         this.direction = Action.RIGHT;
@@ -29,7 +28,6 @@ public class Mario extends GameObject {
     @Override
     public void update() {
         Position currentPos = getPosition();
-
         if (!game.isInside(currentPos)) {
             game.loseLife();
             return;
@@ -46,6 +44,11 @@ public class Mario extends GameObject {
         }
         if (!hasMovedThisTurn) {
             performAutomaticMovement();
+        }
+        // Extra bounds check: Mario muere si sale tras cualquier update
+        currentPos = getPosition();
+        if (!game.isInside(currentPos)) {
+            game.loseLife();
         }
     }
 
@@ -150,7 +153,6 @@ public class Mario extends GameObject {
 
     @Override
     public boolean receiveInteraction(Goomba goomba) {
-        // Siempre que un Goomba interactúe con Mario, Mario pierde vida
         game.loseLife();
         return true;
     }
@@ -163,12 +165,9 @@ public class Mario extends GameObject {
         if (!isInPosition(goomba.getPosition()) || !goomba.isAlive()) {
             return false;
         }
-        // Simetría: Mario siempre mata al Goomba, caiga o no (por requerimiento)
         goomba.receiveInteraction(this);
         game.addScore(100);
-        // Mario solo muere si NO es grande, si es grande, se hace pequeño
         if (isFalling) {
-            // Si está cayendo, NO muere, solo suma puntos
             return true;
         }
         if (this.isBig()) {
