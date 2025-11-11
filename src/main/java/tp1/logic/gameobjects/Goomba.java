@@ -33,14 +33,14 @@ public class Goomba extends GameObject {
 
     @Override
     public void update() {
-     if (!isAlive()) {
+      if (!isAlive()) {
             return;
         }
-        
-        // 1: Apply gravity
+    
+        // 1: Aplicar gravedad (el goomba solo cae verticalmente si está cayendo)
         applyGravity();
-        
-        // 2: Horizontal movement if not falling
+    
+        // 2: Movimiento horizontal SOLO si NO está cayendo
         if (!isFalling) {
             Position currentPos = getPosition();
             Position newPos = currentPos.move(0, direction);
@@ -54,26 +54,32 @@ public class Goomba extends GameObject {
 
     private void applyGravity() {
         Position pos = getPosition();
-        Position debajo = pos.down();
+        Position below = pos.down();
 
         //Si se sale del tablero muere
         if (!game.isInside(pos)) {
             dead();
             return;
         }
-        if (!game.isSolid(debajo)) {
+        // Si debajo está fuera del tablero, muere
+        if (!game.isInside(below)) {
+            setPosition(below);
+            dead();
+            return;
+        }
+        if (!game.isSolid(below)) {
             isFalling = true;
-            setPosition(debajo);
+            setPosition(below);
         } else {
             isFalling = false;
         }
     }
+
     @Override
     public boolean receiveInteraction(Mario mario) {
-        dead();
+        dead(); // Siempre muere al interactuar con Mario (caiga o no)
         return true;
     }
-
 
     private boolean canMoveTo(Position position) {
         //Comprueba si la posicion es valida y no hay ningun Land en esa posicion
@@ -84,5 +90,4 @@ public class Goomba extends GameObject {
     public String toString() {
         return "Goomba at " + pos.toString();
     }
-
 }
