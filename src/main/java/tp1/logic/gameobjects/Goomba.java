@@ -6,7 +6,7 @@ import tp1.view.Messages;
 
 public class Goomba extends GameObject {
 
-    private int direction; // -1 izquierda, 1 derecha Wombat empieza hacia la izq
+    private int direction; // -1 izquierda, 1 derecha
     private boolean isFalling;
 
     protected Goomba(){
@@ -36,10 +36,8 @@ public class Goomba extends GameObject {
       if (!isAlive()) {
             return;
         }
-    
         // 1: Aplicar gravedad (el goomba solo cae verticalmente si está cayendo)
         applyGravity();
-    
         // 2: Movimiento horizontal SOLO si NO está cayendo
         if (!isFalling) {
             Position currentPos = getPosition();
@@ -55,13 +53,10 @@ public class Goomba extends GameObject {
     private void applyGravity() {
         Position pos = getPosition();
         Position below = pos.down();
-
-        //Si se sale del tablero muere
         if (!game.isInside(pos)) {
             dead();
             return;
         }
-        // Si debajo está fuera del tablero, muere
         if (!game.isInside(below)) {
             setPosition(below);
             dead();
@@ -75,14 +70,27 @@ public class Goomba extends GameObject {
         }
     }
 
+    // Double dispatch: cuando un Goomba interactúa con Mario
+    public boolean interactWith(Mario mario) {
+        if (!isAlive() || !mario.isAlive()) {
+            return false;
+        }
+        // Verifica si están en la misma posición
+        if (isInPosition(mario.getPosition()) || mario.isInPosition(this.getPosition())) {
+            // El Goomba delega la interacción a Mario
+            return mario.receiveInteraction(this);
+        }
+        return false;
+    }
+
     @Override
     public boolean receiveInteraction(Mario mario) {
-        dead(); // Siempre muere al interactuar con Mario (caiga o no)
+        // Cuando Mario interactúa con el Goomba, el Goomba SIEMPRE muere
+        dead();
         return true;
     }
 
     private boolean canMoveTo(Position position) {
-        //Comprueba si la posicion es valida y no hay ningun Land en esa posicion
         return game.isInside(position) && !game.isSolid(position);
     }
 
