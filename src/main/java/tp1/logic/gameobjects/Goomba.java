@@ -33,7 +33,7 @@ public class Goomba extends GameObject {
 
     @Override
     public void update() {
-     if (!isAlive()) {
+        if (!isAlive()) {
             return;
         }
         
@@ -54,20 +54,39 @@ public class Goomba extends GameObject {
 
     private void applyGravity() {
         Position pos = getPosition();
-        Position debajo = pos.down();
+        Position below = pos.down();
 
         //Si se sale del tablero muere
         if (!game.isInside(pos)) {
             dead();
             return;
         }
-        if (!game.isSolid(debajo)) {
+        if (!game.isInside(below)) {
+            setPosition(below);
+            dead();
+            return;
+        }
+        if(!game.isSolid(below)) {
             isFalling = true;
-            setPosition(debajo);
-        } else {
+            setPosition(below);
+        }else{
             isFalling = false;
         }
     }
+
+    //Double Dispatch: Cuando un Goomba interactua con Mario
+    public boolean interactWith(Mario mario) {
+        if (!isAlive() || !mario.isAlive()) {
+            return false;
+        }
+        // Verifica si están en la misma posición
+        if (isInPosition(mario.getPosition()) || mario.isInPosition(this.getPosition())) {
+            // El Goomba delega la interacción a Mario
+            return mario.receiveInteraction(this);
+        }
+        return false;
+    }
+
     @Override
     public boolean receiveInteraction(Mario mario) {
         dead();

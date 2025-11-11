@@ -61,7 +61,10 @@ public class Mario extends GameObject {
 
         //3. Chequea? Checkea? Comprueba si interactua con algo (Wombat? MAybe)
         //Ahora se hace desde gameobjectcontainer
-
+        currentPos = getPosition();
+        if (!game.isInside(currentPos)) {
+            game.loseLife();
+        }
     }
 
     //Procesa las acciones del jugador
@@ -83,6 +86,7 @@ public class Mario extends GameObject {
         Position below = currentPos.down();
         
         if (!game.isInside(below)) {
+            setPosition(below);
             game.loseLife();
             return;
         }
@@ -161,13 +165,14 @@ public class Mario extends GameObject {
             return;
         }
         
-        Position newPos = (direction == Action.RIGHT) ? pos.right() : pos.left();
-
-        if (canMoveTo(newPos)) {
-            setPosition(newPos);
-        } else {
-            // Change direction on collision
-            direction = (direction == Action.RIGHT) ? Action.LEFT : Action.RIGHT;
+        if (!isFalling) {
+            Position newPos = (direction == Action.RIGHT) ? pos.right() : pos.left();
+            if (canMoveTo(newPos)) {
+                setPosition(newPos);
+                hasMovedThisTurn = true;
+            } else {
+                direction = (direction == Action.RIGHT) ? Action.LEFT : Action.RIGHT;
+            }
         }
     }
     //INteractua con la puerta de salida
@@ -198,23 +203,21 @@ public class Mario extends GameObject {
        if (!isInPosition(goomba.getPosition()) || !goomba.isAlive()) {
             return false;
         }
+        goomba.receiveInteraction(this);
+        game.addScore(100);
 
         if (isFalling) {
-            goomba.receiveInteraction(this);
-            game.addScore(100);
+            return true;
         } else {
             if (this.isBig()) {
                 setBig(false);
-                goomba.receiveInteraction(this);
-                game.addScore(100);
+                return true;
             } else {
-                goomba.receiveInteraction(this);
                 game.loseLife();
-                game.addScore(100);
+                return true;
             }
-        }
-        return true;
     }
+}
 
     /**
      * Añadir Accion a la lista de acciones
