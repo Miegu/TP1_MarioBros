@@ -24,7 +24,7 @@ public class Main {
 		
 		try {
 			
-			int nLevel = 0;
+			int nLevel = 1;
 			if (args.length != 0) nLevel = Integer.parseInt(args[0]);
 
             Game game = new Game(nLevel);

@@ -30,16 +30,16 @@ public class GameObjectContainer {
     }
 
     public void update() {
-       // Actualizar todos los objetos (polimórfico)
+        // Actualizar todos los objetos (polimórfico)
+        
         for (GameObject obj : new ArrayList<>(objects)) {
             if (obj.isAlive() && obj.shouldUpdateInLoop()) {
                 obj.update();
             }
         }
         
-        // Limpiar objetos muertos
         objects.removeIf(obj -> !obj.isAlive() && obj.canBeRemoved());
-    }
+        }
 
     public boolean isSolid(Position position) {
         for (GameObject obj : objects){

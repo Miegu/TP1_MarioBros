@@ -53,23 +53,26 @@ public class Goomba extends GameObject {
     }
 
     private void applyGravity() {
-        Position pos = getPosition();
-        Position below = pos.down();
-
-        //Si se sale del tablero muere
-        if (!game.isInside(pos)) {
+        Position currentPos = getPosition();
+        Position below = currentPos.down();
+        
+        // Si Goomba está fuera del tablero, muere
+        if (!game.isInside(currentPos)) {
             dead();
             return;
         }
+        
+        // Si below está fuera del tablero, el Goomba debe morir
         if (!game.isInside(below)) {
-            setPosition(below);
             dead();
             return;
         }
-        if(!game.isSolid(below)) {
+        
+        // Si puede moverse abajo (no hay sólido), cae
+        if (!game.isSolid(below)) {
             isFalling = true;
             setPosition(below);
-        }else{
+        } else {
             isFalling = false;
         }
     }
@@ -88,8 +91,30 @@ public class Goomba extends GameObject {
     }
 
     @Override
+    public boolean interactWith(GameItem other) {
+        return other.receiveInteraction(this);
+    }
+
+   @Override
     public boolean receiveInteraction(Mario mario) {
+        
+        if (!mario.isInPosition(this.getPosition())) {
+            return false;
+        }
+        
+        // El Goomba siempre muere
         dead();
+        game.addScore(100);
+        
+        // Mario recibe daño SOLO si NO está cayendo
+        if (!mario.isFalling()) {
+            if (mario.isBig()) {
+                mario.setBig(false);
+            } else {
+                game.loseLife();
+            }
+        }
+        
         return true;
     }
 

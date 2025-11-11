@@ -16,7 +16,7 @@ public class CommandGenerator {
 	);
 
 	public static Command parse(String[] commandWords) {
-		if (commandWords == null || commandWords.length == 0) {
+		if (commandWords == null || commandWords.length == 0 || (commandWords.length == 1 && commandWords[0].isBlank())) {
             return new UpdateCommand();
         }
 		//Probar cada comando disponible		

@@ -197,15 +197,14 @@ public class Game implements GameModel, GameStatus, GameWorld{
     }
 
     private void checkInteractions() {
-        if (mario == null || !mario.isAlive()) return;
-        // Cada objeto interactúa con Mario mediante double dispatch
-        for (GameObject obj : gameObjects.getObjects()) {
-            if (obj != mario && obj.isAlive()) {
-                obj.interactWith(mario);
-            }
-
+    if (mario == null || !mario.isAlive()) return;
+    
+    for (GameObject obj : gameObjects.getObjects()) {
+        if (obj != mario && obj.isAlive()) {
+            boolean result = mario.interactWith(obj);
         }
     }
+}
 
 
     public boolean playerWins() {
