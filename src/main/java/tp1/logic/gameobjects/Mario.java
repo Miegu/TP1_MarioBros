@@ -2,7 +2,6 @@ package tp1.logic.gameobjects;
 
 import tp1.logic.Action;
 import tp1.logic.ActionList;
-import tp1.logic.GameObjectContainer;
 import tp1.logic.GameWorld;
 import tp1.logic.Position;
 import tp1.view.Messages;
@@ -176,7 +175,6 @@ public class Mario extends GameObject {
     public boolean interactWith(ExitDoor door) {
         if (isInPosition(door.getPosition())) {
             //Mario ha llegado a la puerta de salida
-            game.addScore(game.remainingTime() * 10);
             return true;
         }
         return false;
@@ -228,7 +226,7 @@ public class Mario extends GameObject {
 
     private boolean canMoveTo(Position position) {
         //Comprueba si la posicion es valida y no hay ningun Land en esa posicion
-        return position.isValidPosition() && !game.getGameObjects().isSolid(position);
+        return position.isValidPosition() && !game.isSolid(position);
     }
 
     @Override

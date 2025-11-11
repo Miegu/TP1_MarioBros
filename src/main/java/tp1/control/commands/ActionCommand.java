@@ -1,12 +1,12 @@
 package tp1.control.commands;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-import tp1.view.Messages;
 import tp1.logic.Action;
 import tp1.logic.GameModel;
 import tp1.view.GameView;
+import tp1.view.Messages;
 /* Comando para procesar las acciones del jugador */
 
 public class ActionCommand extends AbstractCommand {
@@ -16,14 +16,14 @@ public class ActionCommand extends AbstractCommand {
     private static final String DETAILS = Messages.COMMAND_ACTION_DETAILS;
     private static final String HELP = Messages.COMMAND_ACTION_HELP;
 
-    private List<String> actions;
+    private List<Action> actions;
 
     public ActionCommand() {
         super(NAME, SHORTCUT, DETAILS, HELP);
         this.actions = new ArrayList<>();
     }
 
-    private ActionCommand(List<String> actions) {
+    private ActionCommand(List<Action> actions) {
         super(NAME, SHORTCUT, DETAILS, HELP);
         this.actions = actions;
     }
@@ -43,7 +43,7 @@ public class ActionCommand extends AbstractCommand {
     @Override
     public Command parse(String[] commandWords){
         //Necesitamos al menos el comando y una accion
-        if (commandWords.length < 2 || commandWords == null) {
+        if (commandWords.length < 2) {
             return null;
         }
         //Comprueba si la primera palabra coincide con el comando

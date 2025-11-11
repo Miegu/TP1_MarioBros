@@ -3,8 +3,9 @@ package tp1.logic.gameobjects;
 import tp1.logic.Position;
 
 public interface GameItem {
-    boolean isSolid();
+
     boolean isAlive();
+
     boolean isInPosition(Position pos);
     
     // Double-dispatch principal
@@ -16,4 +17,8 @@ public interface GameItem {
     boolean receiveInteraction(Mario obj);
     boolean receiveInteraction(Goomba obj);
     
+    default boolean receiveInteraction(GameObject obj) {
+        // Por defecto no hace nada, las subclases sobrescriben si necesario
+        return false;
+    }
 }
