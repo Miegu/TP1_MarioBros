@@ -19,4 +19,19 @@ public class ExitDoor extends GameObject {
     public boolean isSolid() {
         return false;
     }
+
+    @Override
+    public boolean receiveInteraction(Mario mario) {
+        // Mario ha llegado a la puerta de salida
+        game.marioReachedExit();
+        return true;
+    }
+    @Override
+    public boolean canBeRemoved() {
+        return false;
+    }
+    @Override
+    public String toString() {
+        return "ExitDoor at " + pos.toString();
+    }
 }

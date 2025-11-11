@@ -80,6 +80,9 @@ public class Goomba extends GameObject {
         return game.isInside(position) && !game.isSolid(position);
     }
 
-
+    @Override
+    public String toString() {
+        return "Goomba at " + pos.toString();
+    }
 
 }

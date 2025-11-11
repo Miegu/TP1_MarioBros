@@ -175,7 +175,7 @@ public class Mario extends GameObject {
     public boolean interactWith(ExitDoor door) {
         if (isInPosition(door.getPosition())) {
             //Mario ha llegado a la puerta de salida
-            return true;
+            return door.receiveInteraction(this);
         }
         return false;
     }
@@ -226,7 +226,7 @@ public class Mario extends GameObject {
 
     private boolean canMoveTo(Position position) {
         //Comprueba si la posicion es valida y no hay ningun Land en esa posicion
-        return position.isValidPosition() && !game.isSolid(position);
+        return game.isInside(position) && !game.isSolid(position);
     }
 
     @Override
@@ -269,5 +269,12 @@ public class Mario extends GameObject {
         }
         return false;
     }
-
+    @Override
+    public boolean canBeRemoved() {
+        return false;  // Mario nunca se elimina
+    }
+    @Override
+    public String toString() {
+        return "Mario at " + pos.toString();
+    }
 }

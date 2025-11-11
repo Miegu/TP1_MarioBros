@@ -45,6 +45,8 @@ public class Game implements GameModel, GameStatus, GameWorld{
         }
         //2, Actualizar todos los objetos del juego
         gameObjects.update();
+
+        checkInteractions();
     }
 
     @Override
@@ -67,9 +69,9 @@ public class Game implements GameModel, GameStatus, GameWorld{
         initLevel(this.nLevel);
     }
     @Override
-    public void addAction(Action accion) {
+    public void addAction(Action action) {
         if (mario != null) {
-            mario.addAction(accion);
+            mario.addAction(action);
         }
     }
     @Override
@@ -169,10 +171,6 @@ public class Game implements GameModel, GameStatus, GameWorld{
 
     // Metodos adicionales
 
-    public void doInteractionsFrom(Mario mario) {
-        gameObjects.doInteractionsFrom(mario);
-    }
-
     /*
 	 * Mario llega a la puerta de salida
      */
@@ -180,6 +178,10 @@ public class Game implements GameModel, GameStatus, GameWorld{
         points += remainingTime * 10;
         remainingTime = 0;
         playerWon = true;
+    }
+    @Override
+    public void marioReachedExit() {
+        marioExited();
     }
 
     public void addPoints(int points) {
@@ -191,10 +193,14 @@ public class Game implements GameModel, GameStatus, GameWorld{
         loseLife();
     }
 
-    //NEcesarioMario y Goomba puedan acceder al contenedor
-
-    public GameObjectContainer getGameObjects() {
-        return gameObjects;
+    private void checkInteractions() {
+        if (mario == null || !mario.isAlive()) return;
+        
+        for (GameObject obj : gameObjects.getObjects()) {
+            if (obj != mario) {
+                mario.interactWith(obj);
+            }
+        }
     }
 
 
@@ -208,7 +214,6 @@ public class Game implements GameModel, GameStatus, GameWorld{
 
     @Override
     public String toString() {
-        // TODO returns a textual representation of the object
         return "Vidas: " + lives + "\nTiempo: " + remainingTime + "\nPuntos: " + points;
     }
 

@@ -45,6 +45,9 @@ public abstract class GameObject implements GameItem {
     protected void setPosition(Position newPos){
         this.pos = newPos;
     }
+    public boolean canBeRemoved() {
+        return true;  // Por defecto si se puede eliminar
+    }
 	//implement and decide, Which one is abstract?
     public abstract String getIcon();
 	public abstract boolean isSolid();
@@ -65,9 +68,8 @@ public abstract class GameObject implements GameItem {
 	}
     // Representacion en String del objeto
     @Override
-    public String toString() {
-        return getClass().getSimpleName() + " en " + pos.toString();
-    }
+    public abstract String toString();
+
     @Override
     public boolean interactWith(GameItem other) {
         boolean canInteract = other.isInPosition(this.pos);

@@ -17,6 +17,7 @@ public interface GameWorld {
     void addScore(int points);
     void loseLife();
     void resetLevel(int levelId);
+    void marioReachedExit();
 
     void updateAll();
 }
