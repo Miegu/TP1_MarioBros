@@ -29,10 +29,12 @@ public class ExitDoor extends GameObject {
         }
         return false;
     }
+
     @Override
     public boolean canBeRemoved() {
         return false;
     }
+
     @Override
     public String toString() {
         return "ExitDoor at " + pos.toString();

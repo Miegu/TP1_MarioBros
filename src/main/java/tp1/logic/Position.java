@@ -1,8 +1,7 @@
 package tp1.logic;
 
 /**
- * Immutable class to encapsulate and manipulate positions in the game
- * board
+ * Immutable class to encapsulate and manipulate positions in the game board
  *
  */
 public class Position {
@@ -26,20 +25,21 @@ public class Position {
     public int getRow() {
         return row;
     }
-    public Position right() { 
-        return new Position(this.row, this.col + 1); 
+
+    public Position right() {
+        return new Position(this.row, this.col + 1);
     }
-    
-    public Position left() { 
-        return new Position(this.row, this.col - 1); 
+
+    public Position left() {
+        return new Position(this.row, this.col - 1);
     }
-    
-    public Position up() { 
-        return new Position(this.row - 1, this.col); 
+
+    public Position up() {
+        return new Position(this.row - 1, this.col);
     }
-    
-    public Position down() { 
-        return new Position(this.row + 1, this.col); 
+
+    public Position down() {
+        return new Position(this.row + 1, this.col);
     }
 
     //Metodo para moverse: devuelve una nueva posicion, Posicion actual + desplazamiento
@@ -48,15 +48,23 @@ public class Position {
     }
 
     public Position move(Action action) {
-        if (action == null) return this;
-        
+        if (action == null) {
+            return this;
+        }
+
         switch (action) {
-            case LEFT:  return left();
-            case RIGHT: return right();
-            case UP:    return up();
-            case DOWN:  return down();
-            case STOP:  return this;  // No se mueve
-            default:    return this;
+            case LEFT:
+                return left();
+            case RIGHT:
+                return right();
+            case UP:
+                return up();
+            case DOWN:
+                return down();
+            case STOP:
+                return this;  // No se mueve
+            default:
+                return this;
         }
     }
 
@@ -69,13 +77,20 @@ public class Position {
     //Comparar Posiciones
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         Position position = (Position) obj;
         return col == position.col && row == position.row;
     }
+
     public boolean equals(Position other) {
-        if (other == null) return false;
+        if (other == null) {
+            return false;
+        }
         return this.col == other.col && this.row == other.row;
     }
 

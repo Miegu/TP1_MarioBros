@@ -9,10 +9,10 @@ public class Goomba extends GameObject {
     private int direction; // -1 izquierda, 1 derecha Wombat empieza hacia la izq
     private boolean isFalling;
 
-    protected Goomba(){
+    protected Goomba() {
         super();
     }
-    
+
     public Goomba(GameWorld game, Position pos) {
         super(game, pos);
         this.direction = -1; //Empieza mirando a la izquierda
@@ -22,11 +22,12 @@ public class Goomba extends GameObject {
     public String getIcon() {
         return Messages.GOOMBA;
     }
+
     public boolean isFalling() {
         return isFalling;
     }
 
-     @Override
+    @Override
     public boolean isSolid() {
         return false;
     }
@@ -36,10 +37,10 @@ public class Goomba extends GameObject {
         if (!isAlive()) {
             return;
         }
-        
+
         // 1: Apply gravity
         applyGravity();
-        
+
         // 2: Horizontal movement if not falling
         if (!isFalling) {
             Position currentPos = getPosition();
@@ -55,19 +56,19 @@ public class Goomba extends GameObject {
     private void applyGravity() {
         Position currentPos = getPosition();
         Position below = currentPos.down();
-        
+
         // Si Goomba está fuera del tablero, muere
         if (!game.isInside(currentPos)) {
             dead();
             return;
         }
-        
+
         // Si below está fuera del tablero, el Goomba debe morir
         if (!game.isInside(below)) {
             dead();
             return;
         }
-        
+
         // Si puede moverse abajo (no hay sólido), cae
         if (!game.isSolid(below)) {
             isFalling = true;
@@ -95,29 +96,24 @@ public class Goomba extends GameObject {
         return other.receiveInteraction(this);
     }
 
-   @Override
+    @Override
     public boolean receiveInteraction(Mario mario) {
-        
+
         if (!mario.isInPosition(this.getPosition())) {
             return false;
         }
-        
+
         // El Goomba siempre muere
         dead();
         game.addScore(100);
-        
+
         // Mario recibe daño SOLO si NO está cayendo
         if (!mario.isFalling()) {
-            if (mario.isBig()) {
-                mario.setBig(false);
-            } else {
-                game.loseLife();
-            }
+            mario.receiveDamage();
         }
-        
+
         return true;
     }
-
 
     private boolean canMoveTo(Position position) {
         //Comprueba si la posicion es valida y no hay ningun Land en esa posicion

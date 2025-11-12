@@ -19,10 +19,12 @@ public class Land extends GameObject {
     public boolean isSolid() {
         return true;
     }
+
     @Override
     public boolean canBeRemoved() {
         return false;
     }
+
     @Override
     public String toString() {
         return "Land at " + pos.toString();

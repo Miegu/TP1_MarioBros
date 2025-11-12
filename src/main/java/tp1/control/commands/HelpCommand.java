@@ -12,13 +12,13 @@ public class HelpCommand extends NoParamsCommand {
     private static final String HELP = Messages.COMMAND_HELP_HELP;
 
     public HelpCommand() {
-		super(NAME, SHORTCUT, DETAILS, HELP);
-	}
-	
-	@Override
-	public void execute(GameModel game, GameView view) {
-		
-		view.showMessage(CommandGenerator.commandHelp());
-	}
+        super(NAME, SHORTCUT, DETAILS, HELP);
+    }
+
+    @Override
+    public void execute(GameModel game, GameView view) {
+
+        view.showMessage(CommandGenerator.commandHelp());
+    }
 
 }

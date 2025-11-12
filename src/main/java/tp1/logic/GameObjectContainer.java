@@ -19,48 +19,52 @@ public class GameObjectContainer {
         objects.add(obj);
     }
 
-     // Método de borrado por posición
+    // Método de borrado por posición
     public boolean removeObjectAt(Position pos) {
         return objects.removeIf(obj -> obj.isInPosition(pos));
     }
 
     public GameObject getObjectAt(Position pos) {
-        for (GameObject obj : objects) if (obj.isInPosition(pos)) return obj;
+        for (GameObject obj : objects) {
+            if (obj.isInPosition(pos)) {
+                return obj;
+            }
+        }
         return null;
     }
 
     public void update() {
         // Actualizar todos los objetos (polimórfico)
-        
+
         for (GameObject obj : new ArrayList<>(objects)) {
             if (obj.isAlive() && obj.shouldUpdateInLoop()) {
                 obj.update();
             }
         }
-        
+
         objects.removeIf(obj -> !obj.isAlive() && obj.canBeRemoved());
-        }
+    }
 
     public boolean isSolid(Position position) {
-        for (GameObject obj : objects){
-            if (obj.isAlive() && obj.isSolid() && obj.isInPosition(position)){
+        for (GameObject obj : objects) {
+            if (obj.isAlive() && obj.isSolid() && obj.isInPosition(position)) {
                 return true;
-            } 
+            }
         }
         return false;
     }
 
-
-
     public String positionToString(Position position) {
         StringBuilder sb = new StringBuilder();
-        for (GameObject obj : objects)
-            if (obj.isAlive() && obj.isInPosition(position))
+        for (GameObject obj : objects) {
+            if (obj.isAlive() && obj.isInPosition(position)) {
                 sb.append(obj.getIcon());
+            }
+        }
         return sb.length() == 0 ? Messages.EMPTY : sb.toString();
     }
 
-     public List<GameObject> getObjects() {
+    public List<GameObject> getObjects() {
         return new ArrayList<>(objects);  // Defensive copy
     }
 }
