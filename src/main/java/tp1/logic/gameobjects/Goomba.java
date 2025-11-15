@@ -17,20 +17,16 @@ public class Goomba extends MovingObject {
 
     @Override
     public void update() {
-        if (!alive) return;
+        if (!isAlive()) return;
 
         // 1. Aplicar gravedad
         applyGravity();
 
         // 2. Movimiento horizontal si no está cayendo
         if (!isFalling) {
-            Position newPos = pos.move(0, dir);
-            if (canMoveTo(newPos)) {
-                pos = newPos;
-            } else {
-                dir = -dir; // Cambia de dirección
-            }
+            moveHorizontal();
         }
+        
     }
 
     public boolean receiveInteraction(Mario mario) {
