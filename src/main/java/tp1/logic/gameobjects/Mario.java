@@ -2,7 +2,7 @@ package tp1.logic.gameobjects;
 
 import tp1.logic.Action;
 import tp1.logic.ActionList;
-import tp1.logic.Game;
+import tp1.logic.GameWorld;
 import tp1.logic.GameItem;
 import tp1.logic.GameObjectContainer;
 import tp1.logic.Position;
@@ -18,7 +18,7 @@ public class Mario extends MovingObject {
 
     
     //Constructor de Mario
-    public Mario(Game game, Position position) {
+    public Mario(GameWorld game, Position position) {
     	// dir = 1 ---> empieza mirando a la derecha
         super(game, position, 1);
         this.big = true;// por defecto mario grande
@@ -243,8 +243,6 @@ public class Mario extends MovingObject {
         game.marioExited();
         return true;
     }
-
-    
     
 
 }

@@ -1,19 +1,18 @@
 package tp1.control;
-//hola
 import java.util.Scanner;
 
 import tp1.logic.Action;
-import tp1.logic.Game;
+import tp1.logic.GameModel;
 import tp1.control.commands.*;
 import tp1.view.GameView;
 import tp1.view.Messages;
 
 public class Controller {
 
-	private Game game;
+	private GameModel game;
 	private GameView view;
 
-	public Controller(Game game, GameView view) {
+	public Controller(GameModel game, GameView view) {
 		this.game = game;
 		this.view = view;
 	}

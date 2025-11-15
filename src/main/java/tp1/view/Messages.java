@@ -109,5 +109,9 @@ public class Messages {
 	public static final String COMMAND_ACTION_DETAILS  = "[a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]+";
 	public static final String COMMAND_ACTION_HELP     = "user performs actions";
 
+	public static final String COMMAND_ADD_OBJECT_NAME      = "addObject";
+	public static final String COMMAND_ADD_OBJECT_SHORTCUT  = "aO";
+	public static final String COMMAND_ADD_OBJECT_DETAILS   = "[a]dd[O]bject <object_description>";
+	public static final String COMMAND_ADD_OBJECT_HELP      = "adds to the board the object given by object_description";
 
 }
