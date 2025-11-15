@@ -3,6 +3,7 @@ package tp1.logic;
 import java.util.ArrayList;
 import java.util.List;
 import tp1.logic.gameobjects.GameObjectNew;
+import tp1.logic.gameobjects.GameItem;
 import tp1.view.Messages;
 
 public class GameObjectContainer {
@@ -19,15 +20,6 @@ public class GameObjectContainer {
     	gameObjects.add(o);
     }
     
-    public boolean isSolid(Position pos) {
-        for (GameObjectNew o : gameObjects) {
-            if (o.isInPosition(pos) && o.isSolid()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     public void update() {
     	for (GameObjectNew o : gameObjects) {
@@ -39,7 +31,7 @@ public class GameObjectContainer {
     }
 
     
- //Devolvemos el icono de un det objeto en una pos
+    //Devolvemos el icono de un det objeto en una pos
     public String getIconAt(Position pos) {
         for (GameObjectNew o : gameObjects) {
             if (o.isInPosition(pos)) {
@@ -49,13 +41,24 @@ public class GameObjectContainer {
         return Messages.EMPTY;
     }
     
-    //Devolvemos el 1º objeto que este en es pos -->para interacciones -->hace falta?
-    public GameObjectNew getObjectIn(Position pos) {
+    
+    //Miramos si hay un objeto solido en una pos
+    public boolean isSolid(Position pos) {
         for (GameObjectNew o : gameObjects) {
-            if (o.isInPosition(pos)) {
-                return o;
+            if (o.isInPosition(pos) && o.isSolid()) {
+                return true;
             }
         }
-        return null;
+        return false;
+    }
+
+
+    //Manejamos las interacciones
+    public void doInteraction(GameItem other) {
+        for (GameObjectNew o : gameObjects) {
+            if (o== other) continue; // no interactuar consigo mismo
+            other.interactWith(o);
+            o.interactWith(other);
+        }
     }
 }
