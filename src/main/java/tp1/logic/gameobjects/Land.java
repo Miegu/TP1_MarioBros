@@ -1,12 +1,13 @@
 package tp1.logic.gameobjects;
 
+import tp1.logic.Game;
 import tp1.logic.Position;
 import tp1.view.Messages;
 
-public class Land extends GameObject {
-
-    public Land(Position pos) {
-        super(pos);
+public class Land extends GameObjectNew {
+    
+    public Land(Game game, Position pos) {
+        super(game, pos);
     }
 
     @Override
@@ -14,4 +15,13 @@ public class Land extends GameObject {
         return Messages.LAND;
     }
 
+    @Override
+    public void update() {
+        //no se actualiza
+    }
+
+    @Override
+    public boolean isSolid() {
+        return true;
+    }
 }

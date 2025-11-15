@@ -18,6 +18,7 @@ public class Game {
     private boolean playerLost;
     private GameObjectContainer gameObjects;
     private Mario mario;
+    private boolean playerExited;
 
     //TODO fill your code
     // Atributos del juego
@@ -29,7 +30,7 @@ public class Game {
         this.lives = 3;
         this.playerWon = false;
         this.playerLost = false;
-
+        this.playerExited=false;
         initLevel(nLevel);
     }
 
@@ -136,9 +137,6 @@ public class Game {
         }
     }
 
-    private void initMap() {
-
-    }
 
     private void initLevel0() {
         this.nLevel = 0;
@@ -220,9 +218,14 @@ public class Game {
         initLevel(this.nLevel);
     }
 
+ // El jugador sale voluntariamente del juego (por el comando exit)
+    public void exit() {
+        this.playerExited = true;
+    }
+
 
     //metodo para saber si el juego termina(hace falta?)
     public boolean isFinished (){
-    	return this.remainingTime==0|| this.playerLost || this.playerWon;
+    	return this.remainingTime==0|| this.playerLost || this.playerWon || this.playerExited;
     }
 }

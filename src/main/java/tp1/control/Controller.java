@@ -16,7 +16,6 @@ public class Controller {
 	public Controller(Game game, GameView view) {
 		this.game = game;
 		this.view = view;
-		this.scanner = new Scanner(System.in);
 	}
 
 
