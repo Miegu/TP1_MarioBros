@@ -2,7 +2,6 @@ package tp1.logic;
 import java.util.ArrayList;
 import java.util.List;
 import tp1.logic.gameobjects.GameObjectNew;
-import tp1.logic.gameobjects.GameItem;
 import tp1.view.Messages;
 
 public class GameObjectContainer {

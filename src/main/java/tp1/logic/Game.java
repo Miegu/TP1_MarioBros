@@ -1,16 +1,14 @@
 package tp1.logic;
 
-import tp1.logic.gameobjects.GameItem;
 import tp1.logic.gameobjects.ExitDoor;
 import tp1.logic.gameobjects.Goomba;
 import tp1.logic.gameobjects.Land;
 import tp1.logic.gameobjects.Mario;
 
-public class Game {
+public class Game implements GameModel, GameStatus, GameWorld {
 
     public static final int DIM_X = 30;
     public static final int DIM_Y = 15;
-
     private int nLevel;
     private int remainingTime;
     private int points;
@@ -33,13 +31,13 @@ public class Game {
     }
 
     public void update() {
-        // 1. restar tiempo
+        //restar tiempo
         if (remainingTime <= 0) {
             playerLost = true;
         } else {
             remainingTime--;
         }
-        // 2. actualizar todos los objetos
+        //actualizar todos los objetos
         gameObjects.update();
     }
 
