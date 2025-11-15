@@ -1,4 +1,5 @@
 package tp1.logic;
+
 import tp1.logic.gameobjects.GameItem;
 import tp1.logic.gameobjects.ExitDoor;
 import tp1.logic.gameobjects.Goomba;
@@ -20,28 +21,25 @@ public class Game {
     private Mario mario;
     private boolean playerExited;
 
-    //TODO fill your code
-    // Atributos del juego
     public Game(int nLevel) {
-        // TODO Auto-generated constructor stub
         this.nLevel = nLevel;
         this.remainingTime = 100;
         this.points = 0;
         this.lives = 3;
         this.playerWon = false;
         this.playerLost = false;
-        this.playerExited=false;
+        this.playerExited = false;
         initLevel(nLevel);
     }
 
     public void update() {
-        //1 Reducir el tiempo
+        // 1. restar tiempo
         if (remainingTime <= 0) {
             playerLost = true;
         } else {
             remainingTime--;
         }
-        //2, Actualizar todos los objetos del juego
+        // 2. actualizar todos los objetos
         gameObjects.update();
     }
 
@@ -50,28 +48,25 @@ public class Game {
             mario.addAction(accion);
         }
     }
-
-   
-
-    /*
-	 * Mario llega ala puerta de salida
-     */
+    
+    //mario consigue salie
     public void marioExited() {
         points += remainingTime * 10;
         playerWon = true;
     }
-
+    
+    
+    //método para sumar puntos
     public void addPoints(int points) {
         this.points += points;
     }
 
-    // Mario muere :c
+    //metodo para cuando mario muere
     public void marioDies() {
         lives--;
         if (lives <= 0) {
             playerLost = true;
         } else {
-            //Reiniciar el nivel, pero mantienes puntos y vidas
             int currentPoints = this.points;
             int currentLives = this.lives;
             initLevel(this.nLevel);
@@ -79,106 +74,102 @@ public class Game {
             this.lives = currentLives;
         }
     }
-    //NEcesarioMario y Goomba puedan acceder al contenedor
 
     public GameObjectContainer getGameObjects() {
         return gameObjects;
     }
 
+    //metodo para devolver el icono segun el objeto en una det posiciom
     public String positionToString(int col, int row) {
         Position position = new Position(row, col);
-        return gameObjects.positionToString(position);
+        return gameObjects.getIconAt(position); 
     }
 
+    //getters y setters de los atributos:
     public boolean playerWins() {
-        // TODO Auto-generated method stub
         return playerWon;
     }
 
     public boolean playerLoses() {
-        // TODO Auto-generated method stub
         return lives <= 0;
     }
 
     public int remainingTime() {
-        // TODO Auto-generated method stub
         return remainingTime;
     }
 
     public int points() {
-        // TODO Auto-generated method stub
         return points;
     }
 
     public int numLives() {
-        // TODO Auto-generated method stub
         return lives;
     }
 
     @Override
     public String toString() {
-        // TODO returns a textual representation of the object
         return "Vidas: " + lives + "\nTiempo: " + remainingTime + "\nPuntos: " + points;
     }
-
+    
+    //metodo para iniciar el nivel indicado
     private void initLevel(int nLevel) {
         switch (nLevel) {
-            case 0:
-                initLevel0();
-                break;
-            case 1:
-                initLevel1();
-                break;
-            default:
-                initLevel0();
-                break;
+        case 0:
+            initLevel0();
+            break;
+        case 1:
+            initLevel1();
+            break;
+        default:
+            initLevel0();
+            break;
         }
     }
 
-
+    //nivel 0
     private void initLevel0() {
         this.nLevel = 0;
         this.remainingTime = 100;
 
-        // 1. Mapa
         gameObjects = new GameObjectContainer();
+
+        // 1. Suelo base
         for (int col = 0; col < 15; col++) {
-            gameObjects.add(new Land(new Position(13, col)));
-            gameObjects.add(new Land(new Position(14, col)));
+            gameObjects.add(new Land(this, new Position(13, col)));
+            gameObjects.add(new Land(this, new Position(14, col)));
         }
 
-        gameObjects.add(new Land(new Position(Game.DIM_Y - 3, 9)));
-        gameObjects.add(new Land(new Position(Game.DIM_Y - 3, 12)));
+        gameObjects.add(new Land(this, new Position(Game.DIM_Y - 3, 9)));
+        gameObjects.add(new Land(this, new Position(Game.DIM_Y - 3, 12)));
+
         for (int col = 17; col < Game.DIM_X; col++) {
-            gameObjects.add(new Land(new Position(Game.DIM_Y - 2, col)));
-            gameObjects.add(new Land(new Position(Game.DIM_Y - 1, col)));
+            gameObjects.add(new Land(this, new Position(Game.DIM_Y - 2, col)));
+            gameObjects.add(new Land(this, new Position(Game.DIM_Y - 1, col)));
         }
 
-        gameObjects.add(new Land(new Position(9, 2)));
-        gameObjects.add(new Land(new Position(9, 5)));
-        gameObjects.add(new Land(new Position(9, 6)));
-        gameObjects.add(new Land(new Position(9, 7)));
-        gameObjects.add(new Land(new Position(5, 6)));
+        gameObjects.add(new Land(this, new Position(9, 2)));
+        gameObjects.add(new Land(this, new Position(9, 5)));
+        gameObjects.add(new Land(this, new Position(9, 6)));
+        gameObjects.add(new Land(this, new Position(9, 7)));
+        gameObjects.add(new Land(this, new Position(5, 6)));
 
-        // Salto final
         int tamX = 8, tamY = 8;
         int posIniX = Game.DIM_X - 3 - tamX, posIniY = Game.DIM_Y - 3;
 
         for (int col = 0; col < tamX; col++) {
             for (int fila = 0; fila < col + 1; fila++) {
-                gameObjects.add(new Land(new Position(posIniY - fila, posIniX + col)));
+                gameObjects.add(new Land(this, new Position(posIniY - fila, posIniX + col)));
             }
         }
 
-        gameObjects.add(new ExitDoor(new Position(Game.DIM_Y - 3, Game.DIM_X - 1)));
-
-        // 3. Personajes
+        gameObjects.add(new ExitDoor(this, new Position(Game.DIM_Y - 3, Game.DIM_X - 1)));
         this.mario = new Mario(this, new Position(Game.DIM_Y - 3, 0));
         gameObjects.add(this.mario);
-
         gameObjects.add(new Goomba(this, new Position(0, 19)));
     }
 
+    
+    //nivel 1
     private void initLevel1() {
         initLevel0();
         this.nLevel = 1;
@@ -191,38 +182,29 @@ public class Game {
         gameObjects.add(new Goomba(this, new Position(12, 14)));
     }
 
-    
     public void reset() {
-        reset(this.nLevel); // Mantiene el nivel actual
+        reset(this.nLevel);
     }
 
-   
     public void reset(int level) {
-        // Resetear tiempo pero mantener puntos y vidas
         this.remainingTime = 100;
 
-        // Solo cambiar nivel si existe, si no mantener el actual
-        if (level == 0 || level == 1) { // Añadir más niveles según necesites
+        if (level == 0 || level == 1) {
             this.nLevel = level;
         }
 
-        // Reinicializar el nivel
         initLevel(this.nLevel);
     }
 
- // El jugador sale voluntariamente del juego (por el comando exit)
     public void exit() {
         this.playerExited = true;
     }
 
-
-    //metodo para saber si el juego termina(hace falta?)
-    public boolean isFinished (){
-    	return this.remainingTime==0|| this.playerLost || this.playerWon || this.playerExited;
+    public boolean isFinished() {
+        return this.remainingTime == 0 || this.playerLost || this.playerWon || this.playerExited;
     }
-    
+
     public void doInteractionsFrom(GameItem item) {
         gameObjects.doInteraction(item);
     }
-
 }
