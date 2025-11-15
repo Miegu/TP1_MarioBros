@@ -1,5 +1,4 @@
 package tp1.logic;
-
 import java.util.ArrayList;
 import java.util.List;
 import tp1.logic.gameobjects.GameObjectNew;
@@ -26,7 +25,7 @@ public class GameObjectContainer {
         	   o.update();  
            }
    
-    	//Elimianmos los muertos
+    	//Eliminamos los muertos
         gameObjects.removeIf(o -> !o.isAlive());
     }
 
@@ -56,7 +55,7 @@ public class GameObjectContainer {
     //Manejamos las interacciones
     public void doInteraction(GameItem other) {
         for (GameObjectNew o : gameObjects) {
-            if (o== other) continue; // no interactuar consigo mismo
+            if (o== other) continue; //no interactuar consigo mismo
             other.interactWith(o);
             o.interactWith(other);
         }
