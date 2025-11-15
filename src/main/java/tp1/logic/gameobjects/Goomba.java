@@ -26,11 +26,25 @@ public class Goomba extends MovingObject {
         if (!isFalling) {
             moveHorizontal();
         }
-        
     }
+    
+    //Metodos que controlan las interacciones:
+    @Override
+    public boolean interactWith(GameItem other) {
+        // Solo tiene sentido interactuar si están en la misma posición
+        boolean canInteract = other.isInPosition(this.pos);
+        if (!canInteract) {
+        	return false;
+        }
 
-    public boolean receiveInteraction(Mario mario) {
-        kill();
-        return true;
+        return other.receiveInteraction(this);
     }
+    
+    @Override
+    public boolean receiveInteraction(Mario mario) {
+    	kill();
+    	return true;
+    	
+    }
+    
 }

@@ -24,4 +24,13 @@ public class Land extends GameObjectNew {
     public boolean isSolid() {
         return true;
     }
+
+
+
+	//Land no tiene interacciones con nadie
+	@Override
+	public boolean interactWith(GameItem other) {
+		return false;
+		}
+
 }

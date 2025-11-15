@@ -19,4 +19,16 @@ public class ExitDoor extends GameObjectNew {
     public void update() {
         //no se actualiza
     }
+    
+    @Override
+    public boolean receiveInteraction(Mario mario) {
+        game.marioExited();
+        return true;
+    }
+
+    @Override
+    public boolean interactWith(GameItem other) {
+        return false;
+    }
+
 }

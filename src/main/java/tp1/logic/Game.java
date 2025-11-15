@@ -1,5 +1,5 @@
 package tp1.logic;
-
+import tp1.logic.gameobjects.GameItem;
 import tp1.logic.gameobjects.ExitDoor;
 import tp1.logic.gameobjects.Goomba;
 import tp1.logic.gameobjects.Land;
@@ -51,9 +51,7 @@ public class Game {
         }
     }
 
-    public void doInteractionsFrom(Mario mario) {
-        gameObjects.doInteractionsFrom(mario);
-    }
+   
 
     /*
 	 * Mario llega ala puerta de salida
@@ -193,18 +191,12 @@ public class Game {
         gameObjects.add(new Goomba(this, new Position(12, 14)));
     }
 
-    /**
-     * Resetea el juego al estado inicial manteniendo puntos y vidas
-     */
+    
     public void reset() {
         reset(this.nLevel); // Mantiene el nivel actual
     }
 
-    /**
-     * Resetea el juego con un nivel específico
-     *
-     * @param level nivel a cargar
-     */
+   
     public void reset(int level) {
         // Resetear tiempo pero mantener puntos y vidas
         this.remainingTime = 100;
@@ -228,4 +220,9 @@ public class Game {
     public boolean isFinished (){
     	return this.remainingTime==0|| this.playerLost || this.playerWon || this.playerExited;
     }
+    
+    public void doInteractionsFrom(GameItem item) {
+        gameObjects.doInteraction(item);
+    }
+
 }

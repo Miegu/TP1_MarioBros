@@ -1,5 +1,6 @@
 package tp1.logic.gameobjects;
 
+import tp1.logic.gameobjects.GameItem;
 import tp1.logic.Action;
 import tp1.logic.ActionList;
 import tp1.logic.Game;
@@ -38,38 +39,35 @@ public class Mario extends MovingObject {
             processPlayerActions();
         }
 
-        //2. Si no se ha movido con acciones--> movimiento automatico
+        //2. Si no se ha movido con acciones--> mov automatico
         if (!hasMovedThisTurn) {
             performAutomaticMovement();
         }
 
-        //3.Comprueba si interactua con algo (Wombat? MAybe)
+        //3.Comprueba si interactua con algo
         game.doInteractionsFrom(this);
 
     }
 
   
-    // Porcedamos las acciones del jugador (las q estan en lista accionespendientes)
+    // Procedamos las acciones del jugador (las q estan en lista accionespendientes)
     private void processPlayerActions() {
         if (accionesPendientes.isEmpty()) {
             return;
         }
-
         for (Action action : accionesPendientes.getActions()) {
             executeAction(action);
         }
-
         accionesPendientes.clear();
     }
     
-
-  
     
     // Ejecuta una acción det
     private void executeAction(Action action) {
         Position newPos;
-
         switch (action) {
+        
+        
         case LEFT:
             newPos = pos.move(action.getY(), action.getX());
             if (canMoveTo(newPos)) { 
@@ -115,7 +113,6 @@ public class Mario extends MovingObject {
     }
 
     
-    
     // Movimiento automático
     private void performAutomaticMovement() {
         if (dir == 0) {
@@ -137,59 +134,24 @@ public class Mario extends MovingObject {
         }
     }
 
-    //Interacciones:
-    // Interacción con la puerta de salida
-    public boolean interactWith(ExitDoor door) {
-        if (this.pos.equals(door.getPosition())) {
-            game.marioExited();
-            return true;
-        }
-        return false;
-    }
-    
-    //Interacción con Goomba
-    public boolean interactWith(Goomba goomba) {
-
-        if (!this.pos.equals(goomba.getPosition())) {
-            return false;
-        }
-
-        //Para saber si esta cayendo encima del goomba
-        if (isFalling) {
-            goomba.receiveInteraction(this);
-            game.addPoints(100);
-            return true;
-        }
-
-        if (big) {
-            //No muere pero se hace pequeño
-            big = false;
-            goomba.receiveInteraction(this); //el Goomba muere
-            game.addPoints(100);
-        } else {
-            //Mario muere
-            goomba.receiveInteraction(this);
-            game.marioDies();
-        }
-        return true;
-    }
-
-    
-    
+  
     //Añadimos una acción a la lista de acciones pendientes
     public void addAction(Action action) {
         accionesPendientes.addAction(action);
     }
+    
     
     // Acceso a los objetos del juego
     public GameObjectContainer getGameObjects() {
         return game.getGameObjects();
     }
 
+    
     public boolean isBig() {
         return big;
     }
 
+    
     public void setBig(boolean big) {
         this.big = big;
     }
@@ -201,18 +163,17 @@ public class Mario extends MovingObject {
     @Override
     protected void applyGravity() {
         Position debajo = pos.move(Action.DOWN.getY(), Action.DOWN.getX());
-
         if (!pos.isValidPosition()) {
             game.marioDies();
             return;
         }
-
         if (debajo.isValidPosition() && !game.getGameObjects().isSolid(debajo)) {
             pos = debajo;
             isFalling = true;
             hasMovedThisTurn = true;
         }
     }
+    
     
     //Icono de Mario según dirección y si es grande o no
     @Override
@@ -226,6 +187,7 @@ public class Mario extends MovingObject {
         }
     }
 
+    
     //Va a ser distinta tb pq tenemos q tener en cuenta si mario es grande o no
     @Override
     public boolean isInPosition(Position position) {
@@ -237,6 +199,52 @@ public class Mario extends MovingObject {
             Position above = new Position(pos.getRow() - 1, pos.getCol());
             return above.equals(position);
         }
+        
         return false;
     }
+    
+    
+    //Metodos para controlar las interaciion con otros objetos
+    @Override
+    public boolean interactWith(GameItem other) {
+        boolean canInteract = other.isInPosition(this.pos);
+        if (!canInteract) {
+        	return false;
+        }
+        return other.receiveInteraction(this);
+    }
+    
+    
+    @Override
+    public boolean receiveInteraction(Goomba goomba) {
+    	//si esta cayendo sobre el goomba el goomba muere
+        if (isFalling) {
+            goomba.kill();
+            game.addPoints(100);
+            return true;
+        }
+        if (big) {
+            //si mario era grande se hace pequeño y goomba muere
+            big = false;
+            goomba.kill();
+            game.addPoints(100);
+        } 
+        else {
+            // si mario era peque muere
+            goomba.kill();
+            game.marioDies();
+        }
+        return true;
+    }
+
+    
+    @Override
+    public boolean receiveInteraction(ExitDoor door) {
+        game.marioExited();
+        return true;
+    }
+
+    
+    
+
 }
