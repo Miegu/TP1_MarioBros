@@ -29,7 +29,7 @@ public class Land extends GameObjectNew {
 	//Land no tiene interacciones con nadie
 	@Override
 	public boolean interactWith(GameItem other) {
-		return false;
-		}
+	return false;
+	}
 
 }

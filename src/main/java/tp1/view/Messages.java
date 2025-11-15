@@ -4,7 +4,7 @@ import tp1.util.MyStringUtils;
 
 public class Messages {
 	
-	public static final String VERSION = "1.0";
+	public static final String VERSION = "2.X";
 
 	public static final String GAME_NAME = "MarioBross";
 
@@ -45,18 +45,21 @@ public class Messages {
 	public static final String LINE_2TABS = TAB + LINE_TAB;
 
 //Commands
+	// Errores de factorías:
 	public static final String UNKNOWN_COMMAND = "Unknown command: %s";
-	public static final String UNKNOWN_ACTION = "Unknown action: \"%s\"";
-	public static final String ILLEGAL_ACTION = "Illegal action: \"%s\"";
+	public static final String INVALID_GAME_OBJECT = "Invalid game object: %s";
 	// Errores de commandos:
 	public static final String COMMAND_PARAMETERS_MISSING = "Missing parameters";
 	public static final String COMMAND_INCORRECT_PARAMETER_NUMBER = "Incorrect parameter number";
+	public static final String UNKNOWN_ACTION = "Unknown action: \"%s\"";
+	public static final String ILLEGAL_ACTION = "Illegal action: \"%s\"";
 	public static final String INVALID_COMMAND = "Invalid command: %s";
 	public static final String INVALID_COMMAND_PARAMETERS = "Invalid command parameters";
 	public static final String ERROR_COMMAND_EXECUTE = "Command execute problem";
 
 	
 	public static final String HELP_AVAILABLE_COMMANDS = "Available commands:";
+	@Deprecated
 	/* @formatter:off */
 	public static final String[] HELP_LINES = new String[] { HELP_AVAILABLE_COMMANDS,
 		"[a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]+: user performs actions",
@@ -66,8 +69,27 @@ public class Messages {
 		"[e]xit: exits the game"
 	};
 	/* @formatter:on */
-
+	@Deprecated
 	public static final String HELP = String.join(LINE_SEPARATOR+"   ", HELP_LINES) + LINE_SEPARATOR;
+	public static final String COMMAND_HELP_TEXT = "%s: %s";
+	
+	// UPDATE
+	public static final String COMMAND_UPDATE_NAME = "update";
+	public static final String COMMAND_UPDATE_SHORTCUT = "u";
+	public static final String COMMAND_UPDATE_DETAILS = "[u]pdate | \"\"";
+	public static final String COMMAND_UPDATE_HELP = "user does not perform any action";
+		
+	// EXIT
+	public static final String COMMAND_EXIT_NAME = "exit";
+	public static final String COMMAND_EXIT_SHORTCUT = "e";
+	public static final String COMMAND_EXIT_DETAILS = "[e]xit";
+	public static final String COMMAND_EXIT_HELP = "exits the game";
+	
+	// HELP
+	public static final String COMMAND_HELP_NAME = "help";
+	public static final String COMMAND_HELP_SHORTCUT = "h";
+	public static final String COMMAND_HELP_DETAILS = "[h]elp";
+	public static final String COMMAND_HELP_HELP = "print this help message";
 
 //Symbols
 	public static final String EMPTY = "";
@@ -78,40 +100,7 @@ public class Messages {
 	public static final String MARIO_LEFT = "🚶";//"⬅️🚶";
 	public static final String GOOMBA = "🐻";
 	
-	
-	
-	//preguntar al profe si hace falta esta parte o cómo se haría:
-	public static final String COMMAND_HELP_NAME     = "help";
-	public static final String COMMAND_HELP_SHORTCUT = "h";
-	public static final String COMMAND_HELP_DETAILS  = "[h]elp";
-	public static final String COMMAND_HELP_HELP     = "print this help message";
-	
-	
-	public static final String COMMAND_EXIT_NAME     = "exit";
-	public static final String COMMAND_EXIT_SHORTCUT = "e";
-	public static final String COMMAND_EXIT_DETAILS  = "[e]xit";
-	public static final String COMMAND_EXIT_HELP     = "exits the game";
-
-	
-	public static final String COMMAND_UPDATE_NAME     = "update";
-	public static final String COMMAND_UPDATE_SHORTCUT = "u";
-	public static final String COMMAND_UPDATE_DETAILS  = "[u]pdate";
-	public static final String COMMAND_UPDATE_HELP     = "user does not perform any action";
-
-	public static final String COMMAND_RESET_NAME     = "reset";
-	public static final String COMMAND_RESET_SHORTCUT = "r";
-	public static final String COMMAND_RESET_DETAILS  = "[r]eset [numLevel]";
-	public static final String COMMAND_RESET_HELP     = 
-	    "reset the game to initial configuration if not numLevel else load the numLevel map";
-
-	public static final String COMMAND_ACTION_NAME     = "action";
-	public static final String COMMAND_ACTION_SHORTCUT = "a";
-	public static final String COMMAND_ACTION_DETAILS  = "[a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]+";
-	public static final String COMMAND_ACTION_HELP     = "user performs actions";
-
-	public static final String COMMAND_ADD_OBJECT_NAME      = "addObject";
-	public static final String COMMAND_ADD_OBJECT_SHORTCUT  = "aO";
-	public static final String COMMAND_ADD_OBJECT_DETAILS   = "[a]dd[O]bject <object_description>";
-	public static final String COMMAND_ADD_OBJECT_HELP      = "adds to the board the object given by object_description";
-
+	public static final String MUSHROOM = "🍄";
+	public static final String BOX = MyStringUtils.repeat("?",ConsoleView.CELL_SIZE);
+	public static final String EMPTY_BOX = MyStringUtils.repeat("0",ConsoleView.CELL_SIZE);
 }
