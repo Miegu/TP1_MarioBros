@@ -32,23 +32,32 @@ public class GameObjectContainer {
 
 
     public void update() {
-    	//Actualizamos mario primero
     	for (GameObjectNew o : gameObjects) {
-           if(o instanceof Mario) {
         	   o.update();  
            }
-        }
-    	
-    	//Actualizamos el resto
-    	for (GameObjectNew o : gameObjects) {
-            if(!(o instanceof Mario)) {
-         	   o.update();  
-            }
-    	}
-    	
+   
     	//Elimianmos los muertos
         gameObjects.removeIf(o -> !o.isAlive());
     }
 
-
+    
+ //Devolvemos el icono de un det objeto en una pos
+    public String getIconAt(Position pos) {
+        for (GameObjectNew o : gameObjects) {
+            if (o.isInPosition(pos)) {
+                return o.getIcon();
+            }
+        }
+        return Messages.EMPTY;
+    }
+    
+    //Devolvemos el 1º objeto que este en es pos -->para interacciones -->hace falta?
+    public GameObjectNew getObjectIn(Position pos) {
+        for (GameObjectNew o : gameObjects) {
+            if (o.isInPosition(pos)) {
+                return o;
+            }
+        }
+        return null;
+    }
 }
