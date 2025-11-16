@@ -1,5 +1,5 @@
 package tp1.view;
-
+//hola
 import tp1.util.MyStringUtils;
 
 public class Messages {
