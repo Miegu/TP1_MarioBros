@@ -37,6 +37,11 @@ Available commands:
 
 Command > [DEBUG] Executing: reset 1
 
+[DEBUG ResetCommand] level = 1
+[DEBUG reset()] Parámetro level recibido: 1
+[DEBUG reset()] ANTES - Lives: 3, Points: 0
+[DEBUG reset()] DESPUÉS initLevel - Lives: 3, Points: 0
+[DEBUG reset()] Verificando: level == -1? false
 Time: 100
 Points: 0
 Lives: 3

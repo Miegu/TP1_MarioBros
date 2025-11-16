@@ -36,12 +36,7 @@ public class GameObjectContainer {
     }
     // Actualizar todos los objetos vivos en orden de inserción
     public void update() {
-        // 1. Resetear flags de interacción al inicio del turno
-        for (GameObject obj : objects) {
-            obj.resetInteraction();
-        }
-
-        //2.Actualizar
+        //Actualizar
         for (GameObject obj : new ArrayList<>(objects)) {
             if (obj.isAlive()) {
                 obj.update();
@@ -52,13 +47,27 @@ public class GameObjectContainer {
     }
 
     public void doInteraction(GameItem item){
+        // Solo procesar si ambos están vivos y no son el mismo objeto
         for(GameObject obj : new ArrayList<>(objects)){
+        if(obj.isAlive() && item.isAlive() && obj != item){
+            // Primera llamada
+            boolean interacted1 = item.interactWith(obj);
+
+            // Si hubo interacción exitosa, salir del bucle
+            if(interacted1){
+                break;
+            }
             if(obj.isAlive() && item.isAlive()){
-                item.interactWith(obj);
-                obj.interactWith(item);
+                boolean interacted2 = obj.interactWith(item);
+                
+                // Si hubo interacción exitosa, salir del bucle
+                if(interacted2){
+                    break;
+                }
             }
         }
     }
+}
 
     public boolean isSolid(Position position) {
         for (GameObject obj : objects) {

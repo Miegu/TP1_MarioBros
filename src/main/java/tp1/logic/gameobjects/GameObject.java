@@ -9,7 +9,6 @@ public abstract class GameObject implements GameItem {
     private Position pos; // If you can, make it private.
     private boolean isAlive;
     protected GameWorld game;
-    private boolean hasInteractedThisTurn;
 
     //Constructor con GameWorld y Position
     public GameObject(GameWorld game, Position pos) {
@@ -51,20 +50,6 @@ public abstract class GameObject implements GameItem {
 
     public boolean canBeRemoved() {
         return true;  // Por defecto si se puede eliminar
-    }
-
-    // Marca que este objeto ya interactuó en este turno
-    public void markInteracted(){
-        this.hasInteractedThisTurn = true;
-    }
-
-     // Resetea el flag de interacción al inicio del turno
-    public void resetInteraction() {
-        this.hasInteractedThisTurn = false;
-    }
-     //Verifica si ya interactuó en este turno
-    public boolean hasInteracted() {
-        return hasInteractedThisTurn;
     }
 
     public abstract String getIcon();

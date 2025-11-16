@@ -29,6 +29,7 @@ public class ResetCommand extends AbstractCommand {
 
     @Override
     public Command parse(String[] commandWords) {
+        
         if (commandWords.length < 1 || commandWords.length > 2) {
             return null;
         }
@@ -38,7 +39,7 @@ public class ResetCommand extends AbstractCommand {
         }
          // Si solo es "reset", devolver instancia sin nivel
         if (commandWords.length == 1) {
-            return this;
+            return new ResetCommand();
         }
         // Si tiene 2 palabras, parsear el nivel
         try {
@@ -51,14 +52,7 @@ public class ResetCommand extends AbstractCommand {
 
     @Override
     public void execute(GameModel game, GameView view) {
-        if (level == -1) {
-            // Reset sin parámetros - resetea al nivel actual
-            game.reset();
-        } else {
-            // Reset con nivel específico
-            game.reset(level);
-        }
-
+        game.reset(level);
         // Mostrar el juego después del reset
         view.showGame();
     }

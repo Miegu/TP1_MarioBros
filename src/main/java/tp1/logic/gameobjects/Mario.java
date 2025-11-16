@@ -45,6 +45,8 @@ public class Mario extends MovingObject {
         isFalling = false;
         hasMovedThisTurn = false;
 
+        game.doInteractionsFrom(this);
+        
         //1. Primero procesamos las acciones
         if (playerHasActions) {
             processPlayerActions();
@@ -186,7 +188,6 @@ public class Mario extends MovingObject {
         if (!this.isInPosition(goomba.getPosition())) {
             return false;
         }
-
         // Lógica de derrota del Goomba
         defeatEnemy(goomba, 100);
         return true;
@@ -277,23 +278,57 @@ public class Mario extends MovingObject {
 
     @Override
     public GameObject parse(String[] objWords, GameWorld game) {
-        // Formato: (fila,col) MARIO [LEFT|RIGHT|STOP|L|R] [BIG|SMALL|B|S]
-        if (objWords.length < 2) return null;
-        
-        String type = objWords[1].toUpperCase();
-        if (!type.equals("MARIO") && !type.equals("M")) {
-            return null;
-        }
-        
-        // Parsear posición: (fila,columna)
-        Position pos = parsePosition(objWords[0]);
-        if (pos == null) return null;
-        
-        // Crear Mario con valores por defecto
-        Mario mario = new Mario(game, pos);
-        
-        return mario;
+       // Formato: (fila,col) MARIO [LEFT|RIGHT|STOP|L|R|S] [BIG|SMALL|B|S]
+    if (objWords.length < 2) return null;
+    
+    String type = objWords[1].toUpperCase();
+    if (!type.equals("MARIO") && !type.equals("M")) {
+        return null;
     }
+    
+    // Parsear posición
+    Position pos = parsePosition(objWords[0]);
+    if (pos == null) return null;
+    
+    // Crear Mario con valores por defecto
+    Mario mario = new Mario(game, pos);
+    
+    // Parsear dirección (si existe)
+    if (objWords.length > 2) {
+        String dirStr = objWords[2].toUpperCase();
+        switch (dirStr) {
+            case "LEFT":
+            case "L":
+                mario.direction = Action.LEFT;
+                break;
+            case "RIGHT":
+            case "R":
+                mario.direction = Action.RIGHT;
+                break;
+            case "STOP":
+            case "S":
+                mario.direction = Action.STOP;
+                break;
+        }
+    }
+    
+    // Parsear tamaño (si existe)
+    if (objWords.length > 3) {
+        String sizeStr = objWords[3].toUpperCase();
+        switch (sizeStr) {
+            case "BIG":
+            case "B":
+                mario.setBig(true);
+                break;
+            case "SMALL":
+            case "S":
+                mario.setBig(false);
+                break;
+        }
+    }
+    
+    return mario;
+}
 
     // Método auxiliar para parsear posición
     private Position parsePosition(String posStr) {

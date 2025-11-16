@@ -104,6 +104,11 @@ Lives: 3
 
 Command > [DEBUG] Executing: reset
 
+[DEBUG ResetCommand] level = -1
+[DEBUG reset()] Parámetro level recibido: 0
+[DEBUG reset()] ANTES - Lives: 3, Points: 0
+[DEBUG reset()] DESPUÉS initLevel - Lives: 3, Points: 0
+[DEBUG reset()] Verificando: level == -1? false
 Time: 100
 Points: 0
 Lives: 3
@@ -234,6 +239,11 @@ Lives: 3
 
 Command > [DEBUG] Executing: reset
 
+[DEBUG ResetCommand] level = -1
+[DEBUG reset()] Parámetro level recibido: 0
+[DEBUG reset()] ANTES - Lives: 3, Points: 0
+[DEBUG reset()] DESPUÉS initLevel - Lives: 3, Points: 0
+[DEBUG reset()] Verificando: level == -1? false
 Time: 100
 Points: 0
 Lives: 3
@@ -338,6 +348,11 @@ Lives: 3
 
 Command > [DEBUG] Executing: reset
 
+[DEBUG ResetCommand] level = -1
+[DEBUG reset()] Parámetro level recibido: 0
+[DEBUG reset()] ANTES - Lives: 3, Points: 0
+[DEBUG reset()] DESPUÉS initLevel - Lives: 3, Points: 0
+[DEBUG reset()] Verificando: level == -1? false
 Time: 100
 Points: 0
 Lives: 3

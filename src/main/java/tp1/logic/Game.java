@@ -64,11 +64,15 @@ public class Game implements GameModel, GameStatus, GameWorld{
 
     @Override
     public void reset(int level) {
+        //Resetea estado de juego
         this.remainingTime = 100;
         this.playerWon = false;
         this.playerLost = false;
         this.playerExit = false;
+
         this.nLevel = level;
+
+        initLevel(this.nLevel);
 
         //Solo resetear vidas si el nivel es -1
         if(level == -1) {
@@ -76,7 +80,7 @@ public class Game implements GameModel, GameStatus, GameWorld{
             this.points = 0;
         }
 
-        initLevel(this.nLevel);
+        
     }
 
     @Override
@@ -221,6 +225,7 @@ public class Game implements GameModel, GameStatus, GameWorld{
 
     private void initLevelMinus1(){
         this.nLevel = -1;
+        this.remainingTime = 100;
         //Mapa vacío para modo creativo
         gameObjects = new GameObjectContainer();
         this.mario = null;
