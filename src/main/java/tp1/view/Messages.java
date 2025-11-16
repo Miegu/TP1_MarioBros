@@ -91,6 +91,13 @@ public class Messages {
 	public static final String COMMAND_HELP_DETAILS = "[h]elp";
 	public static final String COMMAND_HELP_HELP = "print this help message";
 
+	// --- AddObjectCommand ---
+
+	public static final String COMMAND_ADD_OBJECT_NAME     = "addObject";
+	public static final String COMMAND_ADD_OBJECT_SHORTCUT = "aO";
+	public static final String COMMAND_ADD_OBJECT_DETAILS  = "[a]dd[O]bject <object_description>";
+	public static final String COMMAND_ADD_OBJECT_HELP     = "adds to the board the object given by object_description";
+
 //Symbols
 	public static final String EMPTY = "";
 	public static final String LAND = MyStringUtils.repeat("▓",ConsoleView.CELL_SIZE);
