@@ -260,11 +260,11 @@ public class Mario extends MovingObject {
         }
         //posición encima de la caja (donde aparece el Mushroom)
         Position above = new Position(box.getPosition().getRow() - 1, box.getPosition().getCol());
-        // Comprobamos que es una posición válida y no sólida
+        //comprobamos que es una posición válida y no sólida
         if (above.isValidPosition() && !game.getGameObjects().isSolid(above)) {
             game.getGameObjects().add(new Mushroom(game, above));
         }
-        // Caja se vacía y damos puntos
+        //caja se vacía y damos puntos
         box.changeBox(false);
         game.addPoints(50);
         return true;
