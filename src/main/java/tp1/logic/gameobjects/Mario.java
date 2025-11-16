@@ -272,6 +272,12 @@ public class Mario extends MovingObject {
     }
 
     @Override
+    public void onAdded(GameWorld game) {
+        // Cuando un Mario es añadido al juego, se registra como el Mario jugable
+        game.registerAsMain(this);
+    }
+
+    @Override
     public String toString() {
         return "Mario at " + getPosition().toString();
     }

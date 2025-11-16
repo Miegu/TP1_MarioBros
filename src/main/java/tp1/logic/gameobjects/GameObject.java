@@ -51,6 +51,15 @@ public abstract class GameObject implements GameItem {
     public boolean canBeRemoved() {
         return true;  // Por defecto si se puede eliminar
     }
+    /**
+     * Este método se llama cuando el objeto es añadido al juego.
+     * Por defecto no hace nada, pero las subclases pueden sobreescribirlo
+     * si necesitan realizar alguna acción especial al ser añadidas.
+     */
+    public void onAdded(GameWorld game) {
+        // Implementación vacía por defecto
+        // La mayoría de objetos no necesitan hacer nada especial
+    }
 
     public abstract String getIcon();
 

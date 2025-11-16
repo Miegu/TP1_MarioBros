@@ -20,6 +20,9 @@ public interface GameWorld{
     //Consulta sobre el estado del mundo
     boolean isSolid(Position pos);
 
+    //Establece el Mario jugable
+    void registerAsMain(GameObject mario);
+
     //Callbacks de eventos del juego
     void addScore(int points);
     void loseLife();

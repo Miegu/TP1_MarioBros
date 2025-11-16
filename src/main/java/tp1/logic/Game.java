@@ -89,6 +89,11 @@ public class Game implements GameModel, GameStatus, GameWorld{
             mario.addAction(action);
         }
     }
+    @Override  
+    public void registerAsMain(GameObject obj) {
+    // Game conoce a Mario, puede hacer cast
+        this.mario = (Mario) obj;
+    }
 
     @Override
     public void exit() {
@@ -151,6 +156,7 @@ public class Game implements GameModel, GameStatus, GameWorld{
     @Override
     public boolean addObject(GameObject obj) {
         gameObjects.add(obj);
+        obj.onAdded(this);
         return true;
     }
 
