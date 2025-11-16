@@ -29,6 +29,8 @@ public class Goomba extends MovingObject {
         }
         // 1: Apply gravity
         applyGravity();
+        game.doInteractionsFrom(this);
+
         // 2: Horizontal movement if not falling
         if (!isFalling) {
             Position currentPos = getPosition();
@@ -41,6 +43,7 @@ public class Goomba extends MovingObject {
 
             if(canMoveTo(newPos)){
                 setPosition(newPos);
+                game.doInteractionsFrom(this);
             }else{
                 //Cambiar direccion si choca con algo
                 direction = (direction == Action.LEFT) ? Action.RIGHT : Action.LEFT;
@@ -110,7 +113,7 @@ public class Goomba extends MovingObject {
         String[] parts = posStr.split(",");
         int row = Integer.parseInt(parts[0]);
         int col = Integer.parseInt(parts[1]);
-        return new Position(col, row);
+        return new Position(row, col);
     } catch (Exception e) {
         return null;
     }

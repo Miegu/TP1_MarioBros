@@ -57,7 +57,7 @@ public abstract class AbstractCommand implements Command {
      */
 	@Override
 	public String helpText(){
-		return Messages.LINE_TAB.formatted(Messages.COMMAND_HELP_TEXT.formatted(getDetails(), getHelp()));
+		return Messages.COMMAND_HELP_TEXT.formatted(getDetails(), getHelp());
 	}
 	
 	// execute() y parse() se implementan en las subclases

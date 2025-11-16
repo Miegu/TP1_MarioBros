@@ -115,7 +115,7 @@ public class Mushroom extends MovingObject {
             String[] parts = posStr.split(",");
             int row = Integer.parseInt(parts[0]);
             int col = Integer.parseInt(parts[1]);
-            return new Position(col, row);
+            return new Position(row, col);
         } catch (Exception e) {
             return null;
         }

@@ -18,7 +18,10 @@ public abstract class NoParamsCommand extends AbstractCommand {
     @Override
     public Command parse(String[] commandWords) {
         //Comandos sin parametros: solo debe haber una palabra
-        if (commandWords != null && commandWords.length == 1) {
+        if(commandWords.length == 0){
+            return null;
+        }
+        if (commandWords.length == 1) {
             // Usa el metodo heredado para verificar si coincide
             if (matchCommandName(commandWords[0])) {
                 return this; // devuelve el mismo comando

@@ -71,7 +71,7 @@ public class Messages {
 	/* @formatter:on */
 	@Deprecated
 	public static final String HELP = String.join(LINE_SEPARATOR+"   ", HELP_LINES) + LINE_SEPARATOR;
-	public static final String COMMAND_HELP_TEXT = "%s: %s";
+	public static final String COMMAND_HELP_TEXT = "   %s: %s";
 	
 	// UPDATE
 	public static final String COMMAND_UPDATE_NAME = "update";
@@ -100,14 +100,14 @@ public class Messages {
 	// ACTION
 	public static final String COMMAND_ACTION_NAME = "action";
 	public static final String COMMAND_ACTION_SHORTCUT = "a";
-	public static final String COMMAND_ACTION_DETAILS = "[a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]";
+	public static final String COMMAND_ACTION_DETAILS = "[a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]+";
 	public static final String COMMAND_ACTION_HELP = "user performs actions";
 
 	// ADDOBJECT COMMAND
 	public static final String COMMAND_ADDOBJECT_NAME = "addObject";
 	public static final String COMMAND_ADDOBJECT_SHORTCUT = "aO";
-	public static final String COMMAND_ADDOBJECT_DETAILS = "[a]dd[O]bject <objectDescription>";
-	public static final String COMMAND_ADDOBJECT_HELP = "adds to the board the object given by objectDescription";
+	public static final String COMMAND_ADDOBJECT_DETAILS = "[a]dd[O]bject <object_description>";
+	public static final String COMMAND_ADDOBJECT_HELP = "adds to the board the object given by object_description.\n      <object_description> = (col,row) objName [dir [BIG|SMALL]]. Ej. (12,3) Mario LEFT SMALL";
 
 
 //Symbols

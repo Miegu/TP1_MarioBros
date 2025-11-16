@@ -11,12 +11,12 @@ import tp1.view.Messages;
 public class CommandGenerator {
 
     private static final List<Command> AVAILABLE_COMMANDS = Arrays.<Command>asList(
-            new UpdateCommand(),
-            new HelpCommand(),
-            new ExitCommand(),
-            new ResetCommand(),
-            new ActionCommand(),
-            new AddObjectCommand()
+        new AddObjectCommand(),
+        new ActionCommand(),
+        new UpdateCommand(),
+        new ResetCommand(),
+        new HelpCommand(),
+        new ExitCommand()
     );
 
     /**

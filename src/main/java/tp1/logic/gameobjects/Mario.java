@@ -53,10 +53,8 @@ public class Mario extends MovingObject {
         //2. Si no se ha movido, movimiento automatico
         if (!hasMovedThisTurn) {
             performAutomaticMovement();
+            game.doInteractionsFrom(this);
         }
-
-        //3. Verificar interacciones después del movimiento
-        game.doInteractionsFrom(this);
 
         //4. Verificar si está fuera despues del movimiento
         if (!game.isInside(getPosition())) {
@@ -84,6 +82,7 @@ public class Mario extends MovingObject {
                 if (canMoveTo(newPos)) {
                     setPosition(newPos);
                     hasMovedThisTurn = true;
+                    game.doInteractionsFrom(this);
                 }
                 direction = Action.LEFT;
                 break;
@@ -93,6 +92,7 @@ public class Mario extends MovingObject {
                 if (canMoveTo(newPos)) {
                     setPosition(newPos);
                     hasMovedThisTurn = true;
+                    game.doInteractionsFrom(this);
                 }
                 direction = Action.RIGHT;
                 break;
@@ -102,6 +102,7 @@ public class Mario extends MovingObject {
                 if (canMoveTo(newPos)) {
                     setPosition(newPos);
                     hasMovedThisTurn = true;
+                    game.doInteractionsFrom(this);
                 }
                 break;
 
@@ -110,6 +111,7 @@ public class Mario extends MovingObject {
                     applyGravity();
                 } else {
                     direction = Action.STOP;
+                    game.doInteractionsFrom(this);
                 }
                 break;
 
@@ -124,12 +126,14 @@ public class Mario extends MovingObject {
     private void performAutomaticMovement() {
         if (!isOnGround()) {
             applyGravity();
+            game.doInteractionsFrom(this);
         }
         if (direction != Action.STOP && !isFalling) {
             Position newPos = (direction == Action.RIGHT) ? getPosition().right() : getPosition().left();
             if (canMoveTo(newPos)) {
                 setPosition(newPos);
                 hasMovedThisTurn = true;
+                game.doInteractionsFrom(this);
                 if (!game.isInside(getPosition())) {
                     game.loseLife();
                 }
@@ -179,7 +183,7 @@ public class Mario extends MovingObject {
     @Override
     public boolean receiveInteraction(Goomba goomba) {
         // Solo interactúa si están en la misma posición
-        if (!goomba.isInPosition(this.getPosition())) {
+        if (!this.isInPosition(goomba.getPosition())) {
             return false;
         }
 
@@ -299,7 +303,7 @@ public class Mario extends MovingObject {
             String[] parts = posStr.split(",");
             int row = Integer.parseInt(parts[0]);
             int col = Integer.parseInt(parts[1]);
-            return new Position(col, row);
+            return new Position(row, col);
         } catch (Exception e) {
             return null;
         }

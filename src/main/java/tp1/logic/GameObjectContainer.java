@@ -36,7 +36,12 @@ public class GameObjectContainer {
     }
     // Actualizar todos los objetos vivos en orden de inserción
     public void update() {
-        //Actualizar
+        // 1. Resetear flags de interacción al inicio del turno
+        for (GameObject obj : objects) {
+            obj.resetInteraction();
+        }
+
+        //2.Actualizar
         for (GameObject obj : new ArrayList<>(objects)) {
             if (obj.isAlive()) {
                 obj.update();
