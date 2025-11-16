@@ -91,12 +91,26 @@ public class Messages {
 	public static final String COMMAND_HELP_DETAILS = "[h]elp";
 	public static final String COMMAND_HELP_HELP = "print this help message";
 
-	// --- AddObjectCommand ---
+	// AddObjectCommand
 
 	public static final String COMMAND_ADD_OBJECT_NAME     = "addObject";
 	public static final String COMMAND_ADD_OBJECT_SHORTCUT = "aO";
 	public static final String COMMAND_ADD_OBJECT_DETAILS  = "[a]dd[O]bject <object_description>";
-	public static final String COMMAND_ADD_OBJECT_HELP     = "adds to the board the object given by object_description";
+	public static final String COMMAND_ADD_OBJECT_HELP     = "adds to the board the object given"
+			+ " by object_description";
+	
+	//ResetCommand
+	public static final String COMMAND_RESET_NAME     = "reset";
+	public static final String COMMAND_RESET_SHORTCUT = "r";
+	public static final String COMMAND_RESET_DETAILS  = "[r]eset <level>";
+	public static final String COMMAND_RESET_HELP     = "starts a new game or resets the current one";
+
+	//ActionCommand
+	public static final String COMMAND_ACTION_NAME     = "action";
+	public static final String COMMAND_ACTION_SHORTCUT = "a";
+	public static final String COMMAND_ACTION_DETAILS  = "[a]ction <action1> <action2> ... <actionN>";
+	public static final String COMMAND_ACTION_HELP     = "executes a list of actions";
+
 
 //Symbols
 	public static final String EMPTY = "";
