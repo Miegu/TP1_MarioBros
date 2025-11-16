@@ -1,46 +1,43 @@
 package tp1.logic.gameobjects;
 
-import tp1.logic.GameWorld;
-import tp1.logic.Position;
+import java.util.Arrays;
+import java.util.List;
 
+import tp1.logic.GameWorld;
+/**
+ * Factoría de objetos del juego.
+ * Parsea descripciones de objetos y crea instancias correspondientes.
+ */
 public class GameObjectFactory {
 
-    public static GameObject parse(String[] words, GameWorld game) {
-        //Verifica que hay al menos posicion y tipo de objeto
-        if (words == null || words.length < 2) {
+    // Lista de objetos disponibles
+    private static final List<GameObject> availableObjects = Arrays.<GameObject>asList(
+        new Land(),
+        new ExitDoor(),
+        new Goomba(),
+        new Mario(),
+        new Mushroom(),
+        new Box()
+    );
+    /**
+     * Parsea una descripción de objeto y devuelve la instancia correspondiente.
+     * 
+     * @param objWords Array de palabras que describen el objeto
+     * @param game Referencia al mundo del juego
+     * @return GameObject parseado o null si no se reconoce
+     */
+    public static GameObject parse(String[] objWords, GameWorld game) {
+        if (objWords == null || objWords.length == 0) {
             return null;
         }
-        String objectType = words[0].toLowerCase();
-
-        // Formato esperado: "tipo fila columna"
-        // Ejemplo: "land 5 10" o "door 3 29"
-        if (words.length < 3) {
-            return null;
-        }
-
-        try {
-            int row = Integer.parseInt(words[1]);
-            int col = Integer.parseInt(words[2]);
-            Position pos = new Position(row, col);
-
-            switch (objectType) {
-                case "land", "l":
-                    return new Land(game, pos);
-
-                case "door", "d", "exit":
-                    return new ExitDoor(game, pos);
-
-                case "goomba", "g":
-                    return new Goomba(game, pos);
-
-                case "mario", "m":
-                    return new Mario(game, pos);
-
-                default:
-                    return null;
+        // Intentar parsear con cada prototipo de objeto
+        for (GameObject prototype : availableObjects) {
+            GameObject obj = prototype.parse(objWords, game);
+            if (obj != null) {
+                return obj;
             }
-        } catch (NumberFormatException e) {
-            return null;
         }
+        // Si ningún prototipo reconoce la descripción
+        return null;
     }
 }

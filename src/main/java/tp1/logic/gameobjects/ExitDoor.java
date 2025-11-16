@@ -9,6 +9,10 @@ public class ExitDoor extends GameObject {
     public ExitDoor(GameWorld game, Position pos) {
         super(game, pos);
     }
+    
+    protected ExitDoor() {
+        super();
+    }
 
     @Override
     public String getIcon() {
@@ -18,6 +22,12 @@ public class ExitDoor extends GameObject {
     @Override
     public boolean isSolid() {
         return false;
+    }
+
+    @Override
+    public boolean interactWith(GameItem other) {
+        // La puerta permite que otros interactúen con ella
+        return other.receiveInteraction(this);
     }
 
     @Override
@@ -37,6 +47,35 @@ public class ExitDoor extends GameObject {
 
     @Override
     public String toString() {
-        return "ExitDoor at " + pos.toString();
+        return "ExitDoor at " + getPosition().toString();
+    }
+
+    @Override
+    public GameObject parse(String[] objWords, GameWorld game) {
+        // Formato: (fila,col) EXITDOOR
+        if (objWords.length < 2) return null;
+        
+        String type = objWords[1].toUpperCase();
+        if (!type.equals("EXITDOOR") && !type.equals("ED")) {
+            return null;
+        }
+        
+        Position pos = parsePosition(objWords[0]);
+        if (pos == null) return null;
+        
+        return new ExitDoor(game, pos);
+    }
+
+    private Position parsePosition(String posStr) {
+        try {
+        // Formato: (fila,columna)
+        posStr = posStr.replace("(", "").replace(")", "");
+        String[] parts = posStr.split(",");
+        int row = Integer.parseInt(parts[0]);
+        int col = Integer.parseInt(parts[1]);
+        return new Position(col, row);
+    } catch (Exception e) {
+        return null;
+        }
     }
 }

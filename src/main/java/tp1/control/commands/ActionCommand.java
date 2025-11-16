@@ -7,7 +7,7 @@ import tp1.logic.Action;
 import tp1.logic.GameModel;
 import tp1.view.GameView;
 import tp1.view.Messages;
-/* Comando para procesar las acciones del jugador */
+/* Comando para procesar las acciones de Mario */
 
 public class ActionCommand extends AbstractCommand {
     
@@ -18,19 +18,28 @@ public class ActionCommand extends AbstractCommand {
 
     private List<Action> actions;
 
+    /**
+     * Constructor por defecto (sin acciones).
+     */
     public ActionCommand() {
         super(NAME, SHORTCUT, DETAILS, HELP);
         this.actions = new ArrayList<>();
     }
-
+     /**
+     * Constructor con lista de acciones específicas
+     */
     private ActionCommand(List<Action> actions) {
         super(NAME, SHORTCUT, DETAILS, HELP);
         this.actions = actions;
     }
 
+    /**
+     * Ejecuta el comando de acción.
+     * Añade todas las acciones a Mario y actualiza el juego.
+     */
     @Override
     public void execute(GameModel game, GameView view){
-        //Agregar las acciones a la logica del juego
+        //Añade todas las acciones a Mario
         for(Action action : actions){
             game.addAction(action);
         }
@@ -40,6 +49,7 @@ public class ActionCommand extends AbstractCommand {
         //Muestra el estado actualizado
         view.showGame();
     }
+
     @Override
     public Command parse(String[] commandWords){
         //Necesitamos al menos el comando y una accion
@@ -53,9 +63,11 @@ public class ActionCommand extends AbstractCommand {
 
         //Parsea las acciones
         List<Action> parsedActions = new ArrayList<>();
+
         for(int i = 1; i < commandWords.length; i++){
             Action action = Action.parse(commandWords[i]);
             if(action == null){
+                // Si alguna dirección no es válida, devolver null
                 System.out.println(Messages.ERROR.formatted(Messages.UNKNOWN_ACTION.formatted(commandWords[i])));
                 return null;
             }

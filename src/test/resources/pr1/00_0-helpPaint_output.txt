@@ -1,4 +1,4 @@
-MarioBross 1.0
+MarioBross 2.X
 
 Time: 100
 Points: 0
@@ -27,33 +27,54 @@ Lives: 3
 Command > [DEBUG] Executing: h
 
 Available commands:
-   [a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]+: user performs actions
    [u]pdate | "": user does not perform any action
-   [r]eset [numLevel]: reset the game to initial configuration if not numLevel else load the numLevel map
+
    [h]elp: print this help message
+
    [e]xit: exits the game
+
+   [r]eset [numLevel]: reset the game to initial configuration if not numLevel else load the numLevel map
+
+   [a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]: user performs actions
+
+   [a]dd[O]bject <objectDescription>: adds to the board the object given by objectDescription
+
 
 Command > [DEBUG] Executing: help
 
 Available commands:
-   [a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]+: user performs actions
    [u]pdate | "": user does not perform any action
-   [r]eset [numLevel]: reset the game to initial configuration if not numLevel else load the numLevel map
+
    [h]elp: print this help message
+
    [e]xit: exits the game
+
+   [r]eset [numLevel]: reset the game to initial configuration if not numLevel else load the numLevel map
+
+   [a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]: user performs actions
+
+   [a]dd[O]bject <objectDescription>: adds to the board the object given by objectDescription
+
 
 Command > [DEBUG] Executing: helP
 
 Available commands:
-   [a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]+: user performs actions
    [u]pdate | "": user does not perform any action
-   [r]eset [numLevel]: reset the game to initial configuration if not numLevel else load the numLevel map
+
    [h]elp: print this help message
+
    [e]xit: exits the game
+
+   [r]eset [numLevel]: reset the game to initial configuration if not numLevel else load the numLevel map
+
+   [a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]: user performs actions
+
+   [a]dd[O]bject <objectDescription>: adds to the board the object given by objectDescription
+
 
 Command > [DEBUG] Executing: help con argumentosIncorrectos
 
-[ERROR] Error: Incorrect parameter number
+[ERROR] Error: Unknown command: help con argumentosIncorrectos
 Command > [DEBUG] Executing: n
 
 [ERROR] Error: Unknown command: n

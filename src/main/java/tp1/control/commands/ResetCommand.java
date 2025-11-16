@@ -3,10 +3,13 @@ package tp1.control.commands;
 import tp1.logic.GameModel;
 import tp1.view.GameView;
 import tp1.view.Messages;
-
+/**
+ * Comando para reiniciar el juego.
+ * Puede reiniciar el nivel actual o un nivel específico.
+ * Uso: "reset" o "reset <nivel>"
+ */
 public class ResetCommand extends AbstractCommand {
 
-    //Forman parte de atributos de estado
     private static final String NAME = Messages.COMMAND_RESET_NAME;
     private static final String SHORTCUT = Messages.COMMAND_RESET_SHORTCUT;
     private static final String DETAILS = Messages.COMMAND_RESET_DETAILS;
@@ -26,24 +29,24 @@ public class ResetCommand extends AbstractCommand {
 
     @Override
     public Command parse(String[] commandWords) {
-        if (commandWords != null && commandWords.length >= 1 && commandWords.length <= 2) {
-            // IMPORTANTE: Verificar que la primera palabra coincide con el comando
-            if (matchCommandName(commandWords[0])) {
-                if (commandWords.length == 1) {
-                    //Reset sin parametros
-                    return new ResetCommand(); //Usa el nivel por defecto
-                } else if (commandWords.length == 2) {
-                    // Reset con nivel
-                    try {
-                        int level = Integer.parseInt(commandWords[1]);
-                        return new ResetCommand(level);
-                    } catch (NumberFormatException e) {
-                        return null; // Parámetro inválido
-                    }
-                }
-            }
+        if (commandWords.length < 1 || commandWords.length > 2) {
+            return null;
         }
-        return null; // No coincide con el comando 
+        // IMPORTANTE: Verificar que la primera palabra sea "reset" o "r"
+        if (!matchCommandName(commandWords[0])) {
+            return null;
+        }
+         // Si solo es "reset", devolver instancia sin nivel
+        if (commandWords.length == 1) {
+            return this;
+        }
+        // Si tiene 2 palabras, parsear el nivel
+        try {
+            int level = Integer.parseInt(commandWords[1]);
+                return new ResetCommand(level);
+        } catch (NumberFormatException e) {
+            return null; // Parámetro inválido
+        }
     }
 
     @Override

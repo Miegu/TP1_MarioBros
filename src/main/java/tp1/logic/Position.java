@@ -1,7 +1,7 @@
 package tp1.logic;
 
 /**
- * Immutable class to encapsulate and manipulate positions in the game board
+ * Clase inmutable para manejar la posicion y mantener la encapsulación
  *
  */
 public class Position {
@@ -97,5 +97,20 @@ public class Position {
     @Override
     public String toString() {
         return "(" + col + "," + row + ")";
+    }
+
+    public static Position parsePosition(String posStr) {
+        try {
+            // Formato: (fila,columna)
+            posStr = posStr.replace("(", "").replace(")", "").trim();
+            String[] parts = posStr.split(",");
+            if (parts.length != 2) return null;
+            
+            int row = Integer.parseInt(parts[0].trim());
+            int col = Integer.parseInt(parts[1].trim());
+            return new Position(row, col);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

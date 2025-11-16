@@ -103,6 +103,12 @@ public class Messages {
 	public static final String COMMAND_ACTION_DETAILS = "[a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]";
 	public static final String COMMAND_ACTION_HELP = "user performs actions";
 
+	// ADDOBJECT COMMAND
+	public static final String COMMAND_ADDOBJECT_NAME = "addObject";
+	public static final String COMMAND_ADDOBJECT_SHORTCUT = "aO";
+	public static final String COMMAND_ADDOBJECT_DETAILS = "[a]dd[O]bject <objectDescription>";
+	public static final String COMMAND_ADDOBJECT_HELP = "adds to the board the object given by objectDescription";
+
 
 //Symbols
 	public static final String EMPTY = "";

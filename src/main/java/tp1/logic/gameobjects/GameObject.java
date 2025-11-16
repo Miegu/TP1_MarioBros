@@ -6,7 +6,7 @@ import tp1.logic.Position;
 
 public abstract class GameObject implements GameItem {
 
-    protected Position pos; // If you can, make it private.
+    private Position pos; // If you can, make it private.
     private boolean isAlive;
     protected GameWorld game;
 
@@ -27,11 +27,11 @@ public abstract class GameObject implements GameItem {
     public GameObject parse(String[] objWords, GameWorld game) {
         return null; // Implementación por defecto
     }
-
+    @Override
     public boolean isInPosition(Position p) {
         return this.pos != null && this.pos.equals(p);
     }
-
+    @Override
     public boolean isAlive() {
         return isAlive;
     }
@@ -51,15 +51,15 @@ public abstract class GameObject implements GameItem {
     public boolean canBeRemoved() {
         return true;  // Por defecto si se puede eliminar
     }
-    //implement and decide, Which one is abstract?
 
     public abstract String getIcon();
 
+    @Override
     public abstract boolean isSolid();
 
     //Las subclases pueden sobreescribirlo
     public void update() {
-
+        //Implementación vacía, cada objeto se actualiza a su modo
     }
 
     // Movimiento del objeto en una direccion dada
@@ -72,27 +72,23 @@ public abstract class GameObject implements GameItem {
         }
     }
 
-    //Indica si el objeto debe actualizarse en el bucle
-    public boolean shouldUpdateInLoop() {
-        return true;
-    }
 
     // Representacion en String del objeto
     @Override
     public abstract String toString();
-
+    
+    //Cada subclase debe implementar su propio Interact With
     @Override
-    public boolean interactWith(GameItem other) {
-        boolean canInteract = other.isInPosition(this.pos);
-        if (canInteract) {
-            return other.receiveInteraction(this);  // Double Dispatch
-        }
-        return false;
-    }
+    public abstract boolean interactWith(GameItem other);
 
-// implementaciones por defecto (cada subclase las personaliza)
+    // Implementaciones por defecto (cada subclase las personaliza)
     @Override
     public boolean receiveInteraction(ExitDoor obj) {
+        return false;
+    }
+    
+    @Override
+    public boolean receiveInteraction(Land obj) {
         return false;
     }
 
@@ -105,4 +101,15 @@ public abstract class GameObject implements GameItem {
     public boolean receiveInteraction(Goomba obj) {
         return false;
     }
+
+    @Override
+    public boolean receiveInteraction(Mushroom mushroom) { 
+        return false; 
+    }
+
+    @Override
+    public boolean receiveInteraction(Box box) { 
+        return false; 
+    }
+
 }

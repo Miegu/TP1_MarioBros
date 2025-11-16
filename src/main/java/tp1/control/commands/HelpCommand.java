@@ -3,7 +3,10 @@ package tp1.control.commands;
 import tp1.logic.GameModel;
 import tp1.view.GameView;
 import tp1.view.Messages;
-
+/**
+ * Comando para mostrar la ayuda del juego.
+ * Muestra todos los comandos disponibles y sus descripciones.
+ */
 public class HelpCommand extends NoParamsCommand {
 
     private static final String NAME = Messages.COMMAND_HELP_NAME;
@@ -17,8 +20,10 @@ public class HelpCommand extends NoParamsCommand {
 
     @Override
     public void execute(GameModel game, GameView view) {
-
-        view.showMessage(CommandGenerator.commandHelp());
+        // Obtener la ayuda de todos los comandos disponibles
+        String helpText = CommandGenerator.commandHelp();
+        // Mostrar la ayuda en la vista
+        view.showMessage(helpText);
     }
 
 }

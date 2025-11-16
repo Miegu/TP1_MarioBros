@@ -1,13 +1,12 @@
 package tp1.logic;
 
+/**
+ * Interfaz para la vista.
+ * Proporciona información de solo lectura sobre el estado del juego.
+ */
 public interface GameStatus {
 
 	public String positionToString(int col, int row);
-	void update();
-    boolean isFinished();
-    void reset();
-	void reset(int level);
-	void exit();
 	int remainingTime();
     int points(); 
     int numLives();

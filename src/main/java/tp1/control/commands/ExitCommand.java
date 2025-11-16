@@ -3,7 +3,10 @@ package tp1.control.commands;
 import tp1.logic.GameModel;
 import tp1.view.GameView;
 import tp1.view.Messages;
-
+/**
+ * Comando para salir del juego.
+ * Termina la partida de forma controlada.
+ */
 public class ExitCommand extends NoParamsCommand {
 
     // Forman parte de atributos de estado
@@ -18,9 +21,10 @@ public class ExitCommand extends NoParamsCommand {
 
     @Override
     public void execute(GameModel game, GameView view) {
-        // You should let the game know that you are leaving so that 
-        // if it needs to close something, it can close it and finish.
-        game.exit(); 	// Marca el juego como terminado
+        // Marcar el juego como terminado
+        game.exit();
+
+        //El controller se encarga de mostrar el mensaje de exitgame
     }
 
 }

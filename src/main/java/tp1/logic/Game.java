@@ -1,10 +1,13 @@
 package tp1.logic;
 
+import tp1.logic.gameobjects.Box;
 import tp1.logic.gameobjects.ExitDoor;
+import tp1.logic.gameobjects.GameItem;
 import tp1.logic.gameobjects.GameObject;
 import tp1.logic.gameobjects.Goomba;
 import tp1.logic.gameobjects.Land;
 import tp1.logic.gameobjects.Mario;
+import tp1.logic.gameobjects.Mushroom;
 
 public class Game implements GameModel, GameStatus, GameWorld{
 
@@ -35,6 +38,8 @@ public class Game implements GameModel, GameStatus, GameWorld{
         initLevel(nLevel);
     }
 
+    // METODOS DE GAME MODEL
+
     @Override
     public void update() {
         //1 Reducir el tiempo
@@ -43,13 +48,8 @@ public class Game implements GameModel, GameStatus, GameWorld{
         } else {
             remainingTime--;
         }
-        //2, Actualizar todos los objetos del juego
-        if(mario != null && mario.isAlive()) {
-            mario.update();
-        }
+        //2. Actualizar todos los objetos del juego
         gameObjects.update();
-
-        checkInteractions();
     }
 
     @Override
@@ -69,20 +69,29 @@ public class Game implements GameModel, GameStatus, GameWorld{
         this.playerLost = false;
         this.playerExit = false;
         this.nLevel = level;
+
+        //Solo resetear vidas si el nivel es -1
+        if(level == -1) {
+            this.lives = 3;
+            this.points = 0;
+        }
+
         initLevel(this.nLevel);
     }
+
     @Override
     public void addAction(Action action) {
         if (mario != null) {
             mario.addAction(action);
         }
     }
+
     @Override
     public void exit() {
         this.playerExit = true;
     }
 
-    /*GameStatus */
+    // METODOS DE GAME STATUS
     @Override
     public int points() {
         return points;
@@ -103,8 +112,16 @@ public class Game implements GameModel, GameStatus, GameWorld{
         Position position = new Position(row, col);
         return gameObjects.positionToString(position);
     }
+    
+    public boolean playerWins() {
+        return playerWon;
+    }
 
-    /*GameWorld */
+    public boolean playerLoses() {
+        return playerLost;
+    }
+
+    // METODOS DE GAME WORLD
     @Override
     public int getRows() {
         return DIM_Y;
@@ -114,6 +131,7 @@ public class Game implements GameModel, GameStatus, GameWorld{
     public int getCols() {
         return DIM_X;
     }
+
     @Override
     public boolean isInside(Position pos) {
         if(pos == null) return false;
@@ -163,57 +181,18 @@ public class Game implements GameModel, GameStatus, GameWorld{
     }
 
     @Override
-    public void resetLevel(int levelId){
-        reset(levelId);
-    }
-
-    @Override
-    public void updateAll(){
-        update();
-    }
-
-    // Metodos adicionales
-
-    /*
-	 * Mario llega a la puerta de salida
-     */
-    public void marioExited() {
+    public void marioReachedExit() {
         points += remainingTime * 10;
         remainingTime = 0;
         playerWon = true;
     }
+
     @Override
-    public void marioReachedExit() {
-        marioExited();
+    public void doInteractionsFrom(GameItem item) {
+        gameObjects.doInteraction(item);
     }
 
-    public void addPoints(int points) {
-        addScore(points);
-    }
-
-    // Mario muere :c
-    public void marioDies() {
-        loseLife();
-    }
-
-    private void checkInteractions() {
-    if (mario == null || !mario.isAlive()) return;
-    
-    for (GameObject obj : gameObjects.getObjects()) {
-        if (obj != mario && obj.isAlive()) {
-            boolean result = mario.interactWith(obj);
-        }
-    }
-}
-
-
-    public boolean playerWins() {
-        return playerWon;
-    }
-
-    public boolean playerLoses() {
-        return playerLost;
-    }
+    // Metodos adicionales
 
     @Override
     public String toString() {
@@ -222,11 +201,17 @@ public class Game implements GameModel, GameStatus, GameWorld{
 
     private void initLevel(int nLevel) {
         switch (nLevel) {
+            case -1:
+                initLevelMinus1();
+                break;
             case 0:
                 initLevel0();
                 break;
             case 1:
                 initLevel1();
+                break;
+            case 2:
+                initLevel2();
                 break;
             default:
                 initLevel0();
@@ -234,16 +219,24 @@ public class Game implements GameModel, GameStatus, GameWorld{
         }
     }
 
-    private void initMap() {
-
+    private void initLevelMinus1(){
+        this.nLevel = -1;
+        //Mapa vacío para modo creativo
+        gameObjects = new GameObjectContainer();
+        this.mario = null;
     }
 
     private void initLevel0() {
         this.nLevel = 0;
         this.remainingTime = 100;
-
-        // 1. Mapa
+        //Se crea el contenedor de objetos
         gameObjects = new GameObjectContainer();
+
+        //1. Añadir primero a Mario para que sea el primero en actualizarse
+        this.mario = new Mario(this, new Position(Game.DIM_Y - 3, 0));
+        gameObjects.add(this.mario);
+
+        // 2. Añadrir el terreno
         for (int col = 0; col < 15; col++) {
             gameObjects.add(new Land(this, new Position(13, col)));
             gameObjects.add(new Land(this, new Position(14, col)));
@@ -271,13 +264,10 @@ public class Game implements GameModel, GameStatus, GameWorld{
                 gameObjects.add(new Land(this, new Position(posIniY - fila, posIniX + col)));
             }
         }
-
+        // 3. Añadir la puerta de salida
         gameObjects.add(new ExitDoor(this, new Position(Game.DIM_Y - 3, Game.DIM_X - 1)));
 
-        // 3. Personajes
-        this.mario = new Mario(this, new Position(Game.DIM_Y - 3, 0));
-        gameObjects.add(this.mario);
-
+        // 3. Añador enemigos al final
         gameObjects.add(new Goomba(this, new Position(0, 19)));
     }
 
@@ -292,5 +282,16 @@ public class Game implements GameModel, GameStatus, GameWorld{
         gameObjects.add(new Goomba(this, new Position(12, 11)));
         gameObjects.add(new Goomba(this, new Position(12, 14)));
     }
-
+    
+    private void initLevel2() {
+        // Igual que nivel 1 pero con extras
+        initLevel1();
+        
+        //Añadir Box en (9,4) - fila 4, columna 9
+        gameObjects.add(new Box(this, new Position(9, 4)));
+        
+        // Añadir Mushrooms en (12,8) y (2,20)
+        gameObjects.add(new Mushroom(this, new Position(12, 8)));
+        gameObjects.add(new Mushroom(this, new Position(2, 20)));
+    }
 }
