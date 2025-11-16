@@ -15,6 +15,7 @@ public class Mario extends MovingObject {
     private boolean facingRight; //true si mira a la derecha, false si mira a la izquierda
     private ActionList accionesPendientes;
     private boolean hasMovedThisTurn; //para saber si ya se ha movido en un turn0
+    private boolean jumping; //true si ha usado UP en este turno
 
     
     //Constructor de Mario
@@ -25,6 +26,7 @@ public class Mario extends MovingObject {
         this.facingRight = true;
         this.accionesPendientes = new ActionList();
         this.hasMovedThisTurn = false;
+        this.jumping=false;
     }
 
     
@@ -33,6 +35,7 @@ public class Mario extends MovingObject {
         boolean playerHasActions = !accionesPendientes.isEmpty();
         isFalling = false;
         hasMovedThisTurn = false;
+        jumping=false;
         
         //1. Primero procesamos las acciones
         if (playerHasActions) {
@@ -94,6 +97,7 @@ public class Mario extends MovingObject {
                 pos = newPos;
                 hasMovedThisTurn = true;
             }
+            jumping=true;
             break;
 
         case DOWN:
@@ -244,5 +248,26 @@ public class Mario extends MovingObject {
         return true;
     }
     
+    @Override
+    public boolean receiveInteraction(Box box) {
+        //reacciona si mario está saltando y la caja está llena
+        if (!jumping) {
+            return false;
+        }
+        if (!box.isFull()) {
+        	//si la caja esta vacia no hacemos nada
+            return false;
+        }
+        //posición encima de la caja (donde aparece el Mushroom)
+        Position above = new Position(box.getPosition().getRow() - 1, box.getPosition().getCol());
+        // Comprobamos que es una posición válida y no sólida
+        if (above.isValidPosition() && !game.getGameObjects().isSolid(above)) {
+            game.getGameObjects().add(new Mushroom(game, above));
+        }
+        // Caja se vacía y damos puntos
+        box.changeBox(false);
+        game.addPoints(50);
+        return true;
+    }
 
 }
