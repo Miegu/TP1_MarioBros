@@ -1,5 +1,5 @@
 package tp1.logic;
-
+import tp1.logic.gameobjects.GameObjectNew;
 import tp1.logic.gameobjects.ExitDoor;
 import tp1.logic.gameobjects.Goomba;
 import tp1.logic.gameobjects.Land;
@@ -202,6 +202,13 @@ public class Game implements GameModel, GameStatus, GameWorld {
         return this.remainingTime == 0 || this.playerLost || this.playerWon || this.playerExited;
     }
 
+    @Override
+    public void addGameObject(GameObjectNew obj) {
+        if (obj != null) {
+            gameObjects.add(obj);  // usas el contenedor internamente
+        }
+        
+        
     public void doInteractionsFrom(GameItem item) {
         gameObjects.doInteraction(item);
     }
