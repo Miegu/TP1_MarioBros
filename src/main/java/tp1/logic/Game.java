@@ -205,10 +205,10 @@ public class Game implements GameModel, GameStatus, GameWorld {
     @Override
     public void addGameObject(GameObjectNew obj) {
         if (obj != null) {
-            gameObjects.add(obj);  // usas el contenedor internamente
+            gameObjects.add(obj);  
         }
         
-        
+    }
     public void doInteractionsFrom(GameItem item) {
         gameObjects.doInteraction(item);
     }
