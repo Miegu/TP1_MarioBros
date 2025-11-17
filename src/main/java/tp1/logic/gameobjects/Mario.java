@@ -109,16 +109,25 @@ public class Mario extends MovingObject {
                 break;
 
             case DOWN:
-                if (!isOnGround()) {
-                    applyGravity();
-                } else {
-                    direction = Action.STOP;
-                    game.doInteractionsFrom(this);
-                }
-                break;
+                if(!isOnGround()){
+                    while (!isOnGround()) {
+                        applyGravity();
+                        game.doInteractionsFrom(this);
+
+                        // Si Mario murió o salió del tablero, detener la caída
+                    if (!game.isInside(getPosition())) {
+                        break;
+                    }
+                    } 
+                }else {
+                        direction = Action.STOP;
+                        game.doInteractionsFrom(this);
+                    }
+                    break;
 
             case STOP:
                 direction = Action.STOP;
+                game.doInteractionsFrom(this);
                 break;
         }
 
@@ -203,6 +212,25 @@ public class Mario extends MovingObject {
             return true;
         }
         return false;
+    }
+    //Interactua con el mushroom
+    @Override
+    public boolean receiveInteraction(Mushroom mushroom) {
+        // Solo interactúa si están en la misma posición
+        if (!this.isInPosition(mushroom.getPosition())) {
+            return false;
+        }
+        
+        // Lógica del mushroom
+        if (!this.isBig()) {
+            this.setBig(true);  // Mario se hace grande
+        }
+        // Si ya es grande, no pasa nada
+        
+        // Mushroom desaparece
+        mushroom.dead();
+        
+        return true;
     }
 
     //Interactua con box

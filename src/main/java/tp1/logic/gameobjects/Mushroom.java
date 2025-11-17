@@ -60,20 +60,7 @@ public class Mushroom extends MovingObject {
 
     @Override
     public boolean receiveInteraction(Mario mario) {
-        // Solo interactúa si están en la misma posición
-        if (!mario.isInPosition(this.getPosition())) {
-            return false;
-        }
-        
-        // Mario recoge la seta, si es pequeño, se hace grande
-        if (!mario.isBig()) {
-            mario.setBig(true);
-        }
-        // Si Mario ya es grande, no le pasa nada
-        // Mushroom siempre desaparece
-        
-        dead();
-        return true;
+       return false;
     }
 
     //OTROS METODOS

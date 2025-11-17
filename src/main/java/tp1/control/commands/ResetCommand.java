@@ -15,11 +15,11 @@ public class ResetCommand extends AbstractCommand {
     private static final String DETAILS = Messages.COMMAND_RESET_DETAILS;
     private static final String HELP = Messages.COMMAND_RESET_HELP;
 
-    private int level;
+    private Integer level;
 
     public ResetCommand() {
         super(NAME, SHORTCUT, DETAILS, HELP);
-        this.level = -1; // Valor por defecto, resetea al nivel actual
+        this.level = null; // Valor por defecto, resetea al nivel actual
     }
 
     public ResetCommand(int level) {
@@ -52,7 +52,11 @@ public class ResetCommand extends AbstractCommand {
 
     @Override
     public void execute(GameModel game, GameView view) {
-        game.reset(level);
+        if(level == null) {
+            game.reset(); // Resetea al nivel actual
+        } else {
+            game.reset(level); // Resetea al nivel especificado
+        }
         // Mostrar el juego después del reset
         view.showGame();
     }
