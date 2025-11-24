@@ -1,5 +1,7 @@
 package tp1.logic;
 
+import tp1.exceptions.ObjectParseException;
+import tp1.exceptions.OffBoardException;
 import tp1.logic.gameobjects.Box;
 import tp1.logic.gameobjects.ExitDoor;
 import tp1.logic.gameobjects.GameItem;
@@ -8,6 +10,7 @@ import tp1.logic.gameobjects.Goomba;
 import tp1.logic.gameobjects.Land;
 import tp1.logic.gameobjects.Mario;
 import tp1.logic.gameobjects.Mushroom;
+import tp1.view.Messages;
 
 public class Game implements GameModel, GameStatus, GameWorld{
 
@@ -154,10 +157,14 @@ public class Game implements GameModel, GameStatus, GameWorld{
     }
 
     @Override
-    public boolean addObject(GameObject obj) {
+    public void addObject(GameObject obj) throws OffBoardException{
+        // Comprueba si la posición está dentro del tablero, por ejemplo:
+        if (!isInside(obj.getPosition())) {
+            throw new OffBoardException(Messages.ERROR_POSITION_OFF_LIMITS + obj.getPosition());
+        }
+        
         gameObjects.add(obj);
         obj.onAdded(this);
-        return true;
     }
 
     @Override

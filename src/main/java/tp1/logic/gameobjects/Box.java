@@ -3,6 +3,7 @@ package tp1.logic.gameobjects;
 import tp1.logic.GameWorld;
 import tp1.logic.Position;
 import tp1.view.Messages;
+import tp1.exceptions.OffBoardException;
 
 public class Box extends GameObject {
     
@@ -64,7 +65,11 @@ public class Box extends GameObject {
 
         if (game.isInside(above)) {
             Mushroom mushroom = new Mushroom(game, above);
-            game.addObject(mushroom);
+            try {
+                game.addObject(mushroom);
+            } catch (OffBoardException e) {
+            // No debería ocurrir, ya que verificamos isInside
+            }
         }
     }
     

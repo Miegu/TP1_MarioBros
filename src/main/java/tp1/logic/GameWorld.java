@@ -1,5 +1,6 @@
 package tp1.logic;
 
+import tp1.exceptions.OffBoardException;
 import tp1.logic.gameobjects.GameItem;
 import tp1.logic.gameobjects.GameObject;
 
@@ -13,7 +14,7 @@ public interface GameWorld{
     boolean isInside(Position pos);
 
     //Gestion de los objetos del juego
-    boolean addObject(GameObject object);
+    void addObject(GameObject object) throws OffBoardException;
     boolean removeObjectAt(Position pos);
     GameObject getObjectAt(Position pos);
 

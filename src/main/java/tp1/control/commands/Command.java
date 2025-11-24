@@ -1,5 +1,7 @@
 package tp1.control.commands;
 
+import tp1.exceptions.CommandExecuteException;
+import tp1.exceptions.CommandParseException;
 import tp1.logic.GameModel;
 import tp1.view.GameView;
 
@@ -14,14 +16,14 @@ public interface Command {
      * @param game Modelo del juego
      * @param view Vista del juego
      */
-    void execute(GameModel game, GameView view);
+    void execute(GameModel game, GameView view) throws CommandExecuteException;
    /**
      * Intenta parsear la entrada del usuario para crear una instancia del comando.
      * 
      * @param commandWords Array de palabras introducidas por el usuario
      * @return Una instancia del comando si coincide con la entrada, null en caso contrario
      */
-    Command parse(String[] commandWords);
+    Command parse(String[] commandWords) throws CommandParseException;
 
     /**
      * Devuelve el texto de ayuda para este comando.

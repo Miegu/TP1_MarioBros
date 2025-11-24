@@ -1,9 +1,10 @@
 package tp1.control.commands;
 
+import tp1.exceptions.CommandExecuteException;
+import tp1.exceptions.CommandParseException;
 import tp1.logic.GameModel;
 import tp1.view.GameView;
 import tp1.view.Messages;
-
 /**
  * Clase abstracta que encapsula la funcionalidad común de todos los comandos.
  * Almacena el nombre, atajo, detalles y texto de ayuda del comando.
@@ -62,8 +63,8 @@ public abstract class AbstractCommand implements Command {
 	
 	// execute() y parse() se implementan en las subclases
 	@Override
-	public abstract void execute(GameModel game, GameView view);
+	public abstract void execute(GameModel game, GameView view) throws CommandExecuteException;
 
 	@Override
-	public abstract Command parse(String[] words);
+	public abstract Command parse(String[] words) throws CommandParseException;
 }
