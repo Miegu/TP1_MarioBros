@@ -30,15 +30,19 @@ public class Controller {
 
         while (!game.isFinished()) {
             String[] words = view.getPrompt();
-            Command command = CommandGenerator.parse(words);
 
-            if (command != null) {
-                try {
-                    command.execute(game, view);
-                } catch (CommandExecuteException e) {
-                    view.showError(e.getMessage());
+            try {
+                Command command = CommandGenerator.parse(words);
+                command.execute(game, view);
+            } catch (tp1.exceptions.CommandException e) {
+                view.showError(e.getMessage());
+                Throwable cause = e.getCause();
+                while (cause != null) {
+                    view.showError(cause.getMessage());
+                    cause = cause.getCause();
                 }
-            }        }
+            }
+        }
         view.showEndMessage();
     }
 }

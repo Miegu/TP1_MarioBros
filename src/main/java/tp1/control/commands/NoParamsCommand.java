@@ -1,4 +1,5 @@
 package tp1.control.commands;
+import tp1.exceptions.CommandParseException;
 /**
  * Clase abstracta para comandos que no tienen parámetros.
  * Implementa el método parse() de forma genérica para todos los comandos sin parámetros.
@@ -16,7 +17,7 @@ public abstract class NoParamsCommand extends AbstractCommand {
      * que coincida con el nombre o atajo del comando.
      * */
     @Override
-    public Command parse(String[] commandWords) {
+    public Command parse(String[] commandWords) throws CommandParseException{
         //Comandos sin parametros: solo debe haber una palabra
         if(commandWords.length == 0){
             return null;

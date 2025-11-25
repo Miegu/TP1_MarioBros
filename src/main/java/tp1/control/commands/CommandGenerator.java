@@ -2,7 +2,7 @@ package tp1.control.commands;
 
 import java.util.Arrays;
 import java.util.List;
-
+import tp1.exceptions.CommandParseException;
 import tp1.view.Messages;
 /**
  * Generador de comandos del juego.
@@ -25,20 +25,16 @@ public class CommandGenerator {
      * @param commandWords Array de palabras introducidas por el usuario
      * @return Comando parseado o null si no se reconoce
      */
-    public static Command parse(String[] commandWords) {
-        // Si no hay entrada, devolver null
-        if (commandWords == null || commandWords.length == 0) {
-            return null;
-        }
-        //Probar cada comando disponible		
+    public static Command parse(String[] words) throws CommandParseException {
         for (Command c : AVAILABLE_COMMANDS) {
-            Command parsed = c.parse(commandWords);
+            Command parsed = c.parse(words);
             if (parsed != null) {
                 return parsed;
             }
         }
-        // Si ningún comando reconoce la entrada, devolver null
-        return null;
+        	throw new CommandParseException(
+            Messages.UNKNOWN_COMMAND.formatted(words[0])
+        );
     }
 
     /**
