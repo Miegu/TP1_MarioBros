@@ -1,5 +1,6 @@
 package tp1.control.commands;
 
+import tp1.exceptions.CommandParseException;
 import tp1.logic.GameModel;
 import tp1.view.GameView;
 import tp1.view.Messages;
@@ -28,7 +29,7 @@ public class UpdateCommand extends NoParamsCommand {
         view.showGame();
     }
     @Override
-    public Command parse(String[] commandWords) {
+    public Command parse(String[] commandWords) throws CommandParseException {
     // Aceptar entrada vacía (solo Enter)
     if (commandWords.length == 0) {
         return this;
@@ -40,10 +41,14 @@ public class UpdateCommand extends NoParamsCommand {
     }
     
     // Verificar si es "update" o "u"
-    if (matchCommandName(commandWords[0])) {
-        return this;
+    if (!matchCommandName(commandWords[0])) {
+        return null;
+    }
+    // Si coincide pero hay parámetros extra, error
+    if (commandWords.length > 1) {
+        throw new CommandParseException(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER);
     }
     
-    return null;
+    return this;
 }
 }

@@ -3,8 +3,7 @@ package tp1.control.commands;
 import java.util.Arrays;
 
 import tp1.exceptions.CommandExecuteException;
-import tp1.exceptions.GameModelException;
-import tp1.exceptions.ObjectParseException;
+import tp1.exceptions.CommandParseException;
 import tp1.exceptions.OffBoardException;
 import tp1.logic.GameModel;
 import tp1.logic.gameobjects.GameObject;
@@ -32,9 +31,10 @@ public class AddObjectCommand extends AbstractCommand {
     }
     
     @Override
-    public Command parse(String[] commandWords) {
+    public Command parse(String[] commandWords) throws CommandParseException {
+         // Comprobar que hay al menos 2 palabras (comando + descripción)
         if (commandWords.length < 2) {
-            return null;
+            throw new CommandParseException(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER);
         }
         
          // Verificar que sea "addObject" o "aO"

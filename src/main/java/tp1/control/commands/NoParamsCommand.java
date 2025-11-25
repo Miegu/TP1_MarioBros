@@ -32,11 +32,7 @@ public abstract class NoParamsCommand extends AbstractCommand {
             throw new CommandParseException(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER);
         }
         // Si es exactamente 1 palabra y coincide, devolver el comando
-        if (commandWords.length == 1 && matchCommandName(commandWords[0])) {
-            return this;
-        }
-        
-        return null; //No coincide con este comando
+        return this;
     }
     // execute() debe ser implementado por cada comando en concreto
 }

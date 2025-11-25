@@ -43,7 +43,7 @@ public class ResetCommand extends AbstractCommand {
         if(commandWords.length == 2){
             try {
                 int level = Integer.parseInt(commandWords[1]);
-                    return new ResetCommand(level);
+                return new ResetCommand(level);
             } catch (NumberFormatException nfe) {
                 // Envolver la excepción
             throw new CommandParseException(
