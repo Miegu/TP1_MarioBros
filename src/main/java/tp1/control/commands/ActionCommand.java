@@ -1,58 +1,80 @@
 package tp1.control.commands;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+
 import tp1.logic.Action;
 import tp1.logic.GameModel;
 import tp1.view.GameView;
 import tp1.view.Messages;
+/* Comando para procesar las acciones de Mario */
 
 public class ActionCommand extends AbstractCommand {
+    
+    private static final String NAME = Messages.COMMAND_ACTION_NAME;
+    private static final String SHORTCUT = Messages.COMMAND_ACTION_SHORTCUT;
+    private static final String DETAILS = Messages.COMMAND_ACTION_DETAILS;
+    private static final String HELP = Messages.COMMAND_ACTION_HELP;
 
-	//ahí guardamos todas las palabras q vienen despues de action
-    private String[] actions;
+    private List<Action> actions;
 
-    //metodo para commandgenerator 
+    /**
+     * Constructor por defecto (sin acciones).
+     */
     public ActionCommand() {
-        this(null);
+        super(NAME, SHORTCUT, DETAILS, HELP);
+        this.actions = new ArrayList<>();
     }
-
-    //constructor que usamos cuando ya sabemos que acciones ha escrito el usuario
-    //es prvate pq solo queremos q se use desde el parse
-    private ActionCommand(String[] actions) {
-        super(Messages.COMMAND_ACTION_NAME,
-              Messages.COMMAND_ACTION_SHORTCUT,
-              Messages.COMMAND_ACTION_DETAILS,
-              Messages.COMMAND_ACTION_HELP);
+     /**
+     * Constructor con lista de acciones específicas
+     */
+    private ActionCommand(List<Action> actions) {
+        super(NAME, SHORTCUT, DETAILS, HELP);
         this.actions = actions;
     }
 
+    /**
+     * Ejecuta el comando de acción.
+     * Añade todas las acciones a Mario y actualiza el juego.
+     */
     @Override
-    public Command parse(String[] words) {
-        if (words.length < 2 || !matchCommand(words[0])) {
-        	return null;
+    public void execute(GameModel game, GameView view){
+        //Añade todas las acciones a Mario
+        for(Action action : actions){
+            game.addAction(action);
         }
-        //copiamos desde la pos 1 hasta el final en actions
-        String[] args = Arrays.copyOfRange(words, 1, words.length);
-        return new ActionCommand(args);
+
+        //Actualiza el estado del juego
+        game.update();
+        //Muestra el estado actualizado
+        view.showGame();
     }
 
     @Override
-    public void execute(GameModel game, GameView view) {
-        if (actions == null || actions.length == 0) {
-            view.showError(Messages.ERROR.formatted(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER));
-            return;
+    public Command parse(String[] commandWords){
+        //Necesitamos al menos el comando y una accion
+        if (commandWords.length < 2) {
+            return null;
+        }
+        //Comprueba si la primera palabra coincide con el comando
+        if (!matchCommandName(commandWords[0])) {
+            return null;
         }
 
-        for (String a : actions) {
-            Action action = Action.parse(a);
-            if (action == null) {
-                view.showError(Messages.ERROR.formatted(Messages.UNKNOWN_ACTION.formatted(a)));
-            } else {
-                game.addAction(action);
+        //Parsea las acciones
+        List<Action> parsedActions = new ArrayList<>();
+
+        for(int i = 1; i < commandWords.length; i++){
+            Action action = Action.parse(commandWords[i]);
+            if(action == null){
+                // Si alguna dirección no es válida, devolver null
+                System.out.println(Messages.ERROR.formatted(Messages.UNKNOWN_ACTION.formatted(commandWords[i])));
+                return null;
             }
+            parsedActions.add(action);
         }
 
-        game.update();
-        view.showGame();
+        //Devuelve un nuevo comando con las acciones parseadas
+        return new ActionCommand(parsedActions);
     }
 }

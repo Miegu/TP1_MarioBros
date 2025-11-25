@@ -1,38 +1,70 @@
 package tp1.control.commands;
-import tp1.logic.*;
-import tp1.view.*;
+import tp1.exceptions.CommandExecuteException;
+import tp1.logic.GameModel;
+import tp1.view.GameView;
+import tp1.view.Messages;
 
-public abstract class AbstractCommand implements Command{
-	//Clase común para TODOS los comandos
+/**
+ * Clase abstracta que encapsula la funcionalidad común de todos los comandos.
+ * Almacena el nombre, atajo, detalles y texto de ayuda del comando.
+ */
+public abstract class AbstractCommand implements Command {
+
+	// Forman parte de atributos de estado
+	private final String name;
+	private final String shortcut;
+	private final String details;
+	private final String help;
 	
-	protected String name;
-	protected String shortcut;
-	protected String details;
-	protected String help;
-	
-	
-	//Construxtor:
-	protected AbstractCommand(String name, String shortcut, String details, String help) {
+	/**
+     * Constructor para inicializar un comando con su información.
+     * 
+     * @param name Nombre completo del comando
+     * @param shortcut Atajo del comando (versión corta)
+     * @param details Descripción breve del comando
+     * @param help Texto de ayuda completo
+     */
+	public AbstractCommand(String name, String shortcut, String details, String help) {
 		this.name = name;
 		this.shortcut = shortcut;
 		this.details = details;
 		this.help = help;
 	}
 
+	/**
+     * Verifica si la entrada del usuario coincide con este comando.
+     * Compara con el nombre completo o el atajo.
+     * 
+     * @param commandName Nombre introducido por el usuario
+     * @return true si coincide con el nombre o atajo, false en caso contrario
+     */
+    protected boolean matchCommandName(String commandName) {
+        return commandName.equalsIgnoreCase(name) || 
+               commandName.equalsIgnoreCase(shortcut);
+    }
+
 	
-	//Comparamos un string con los atributos reales de nuestro comand
-	public boolean matchCommand(String word) {
-		return word != null && (word.equalsIgnoreCase(name) || word.equalsIgnoreCase(shortcut));
-		//ignoreCase para que no tenga en cuenta si son mayusculas o minusculas
-	}
-	
-	
+	protected String getName() { return name; }
+	protected String getShortcut() { return shortcut; }
+	protected String getDetails() { return details; }
+	protected String getHelp() { return help; }
+
+	/**
+     * Devuelve el texto de ayuda formateado para este comando.
+     * Formato: "[SHORTCUT, NAME]: DETAILS"
+     * 
+     * @return String con la ayuda del comando
+     */
+	@Override
 	public String helpText(){
-		return this.help;
+		return Messages.COMMAND_HELP_TEXT.formatted(getDetails(), getHelp());
 	}
 	
-	//No implementa execute ni parse porque eso depende del comando concreto o de NoParamsCommand.
+	// execute() y parse() se implementan en las subclases
+	@Override
+    public abstract void execute(GameModel game, GameView view)
+            throws CommandExecuteException;
 
-
-	
+	@Override
+	public abstract Command parse(String[] words);
 }

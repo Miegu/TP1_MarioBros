@@ -1,76 +1,110 @@
 package tp1.logic.gameobjects;
+
 import tp1.logic.Action;
 import tp1.logic.GameWorld;
 import tp1.logic.Position;
 
-public abstract class MovingObject extends GameObjectNew {
+/**
+ * Clase abstracta que representa objetos móviles en el juego.
+ * Contiene la lógica común de movimiento y gravedad para Mario y Goomba.
+ */
+public abstract class MovingObject extends GameObject {
 
-	protected  int dir;
-	protected boolean isFalling;
-	
-	
-	public MovingObject (GameWorld game, Position pos, int dir) {
-		super (game,pos);
-		this.dir=dir;
-		this.isFalling=false;
-	}
-	
-	public void setDirection(int dir) {
-        this.dir = dir;
+    protected Action direction;
+    protected boolean isFalling;
+
+    /**
+     * Constructor para objetos móviles
+     */
+    public MovingObject (GameWorld game, Position pos){
+        super(game, pos);
+        this.isFalling = false;
+        this.direction = Action.RIGHT;
     }
-	
-	
-	//Método q nos dice si los objetos se pueden mover a una pos(pq es valida y no es solida)
-	protected boolean canMoveTo(Position pos) {
-        return pos.isValidPosition() && !game.getGameObjects().isSolid(pos);
+     /**
+     * Constructor protegido sin parámetros, para factory
+     */
+    protected MovingObject() {
+        super();
+        this.isFalling = false;
+        this.direction = Action.RIGHT;
     }
-	
-	//metodo q nos dice si hay suelo debajo de nuestros objetos
-	protected boolean isOnGround() {
-        Position debajo = pos.move(Action.DOWN.getY(), Action.DOWN.getX());
-        return !debajo.isValidPosition() || game.getGameObjects().isSolid(debajo);
+    /**
+     * Aplica la gravedad al objeto móvil.
+     * El objeto cae si no hay superficie sólida debajo.
+     */
+
+     protected void applyGravity(){
+        Position currentPos = getPosition();
+        Position below = currentPos.down();
+
+        //Si está fuera del tablero, manejar según el tipo de objeto
+        if(!game.isInside(currentPos)){
+            handleOutOfBounds();
+            return;
+        }
+
+        //Si la posicion inferior está fuera, el objeto debe caer/morir
+        if(!game.isInside(below)){
+            setPosition(below);
+            isFalling = true;
+            handleOutOfBounds();
+            return;
+        }
+
+        //Si no hay nada sólido debajo, cae
+        if(!game.isSolid(below)){
+            setPosition(below);
+            isFalling = true;
+        }else{
+            isFalling = false; //Deja de caer cuando toca suelo
+        }
+     }
+     /*
+      * Verifica si el objeto está en el suelo( superficie solida debajo)
+      * Para centralizar y no duplicar en goomba y Mario
+      */
+      protected boolean isOnGround(){
+        Position currentPos = getPosition();
+        //Si está fuera del tablero, no esta en el suelo
+        if(!game.isInside(currentPos)){
+            return false;
+        }
+
+        Position below = currentPos.down();
+
+        //Si ebelow está fuera, pues lo mismo
+        if(!game.isInside(below)){
+            return false;
+        }
+
+        //Solo está en el suelo si below es sólido
+        return game.isSolid(below);
+      }
+    /**
+     * Verifica si el objeto puede moverse a una posición dada
+     */
+    protected boolean canMoveTo(Position position) {
+        return game.isInside(position) && !game.isSolid(position);
+    }
+    /**
+     * Método abstracto para manejar cuando el objeto sale del tablero.
+     * Cada sobjeto tiene su propio comportamiento (Mario pierde vida, Goomba muere)
+     */
+    protected abstract void handleOutOfBounds();
+
+    // Getter para saber si está cayendo
+    public boolean isFalling() {
+        return isFalling;
     }
 
-	
-	//Método que aplica gravedad en los objetos móviles
-	 protected void applyGravity() {
-		 Position debajo = pos.move(Action.DOWN.getY(), Action.DOWN.getX());
-	
-	    // Si se sale del tablero-->objeto muere
-	    if (!pos.isValidPosition()) {
-	        this.kill();
-	        return;
-	    }
-	
-	    // Si no hay suelo cae
-	    if (debajo.isValidPosition() && !game.getGameObjects().isSolid(debajo)) {
-	        pos = debajo;
-	        isFalling = true;
-	    } 
-	    else {
-	        isFalling = false;
-	    }
-	 }
-	
-	
-	 //Método que controla el movimiento continuo de los objetos
-	 protected void moveHorizontal() {
-	    if (this.dir == 0) return; // STOP
-	    Position newPos = pos.move(0, this.dir);
-	
-	    if (canMoveTo(newPos)) {
-	        pos = newPos;
-	    } 
-	    else {
-	        //Si choca cambia de dirección
-	        this.dir = -this.dir;
-	    }
-	 }
+    // Getter para la dirección
+    public Action getDirection() {
+        return direction;
+    }
 
-	 //Método que sobrescribirá goomba y mario
-	@Override
-	public abstract void update();
-	
+    // Setter para la dirección
+    protected void setDirection(Action direction) {
+        this.direction = direction;
+    }
 }
-
-

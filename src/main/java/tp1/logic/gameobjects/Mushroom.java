@@ -1,67 +1,112 @@
 package tp1.logic.gameobjects;
 
+import tp1.logic.Action;
 import tp1.logic.GameWorld;
-import tp1.logic.GameItem;
 import tp1.logic.Position;
 import tp1.view.Messages;
 
 public class Mushroom extends MovingObject {
-
-    // Constructor
-    public Mushroom(GameWorld game, Position pos) {
-        // dir = 1 pq empieza moviéndose a la derecha
-        super(game, pos, 1);
+    
+    protected Mushroom() {
+        super();
+        this.direction = Action.RIGHT;
     }
+    
+    public Mushroom(GameWorld game, Position pos) {
+        super(game, pos);
+        this.direction = Action.RIGHT;
+    }
+
+    @Override
+    protected void handleOutOfBounds() {
+        // Cuando el Mushroom sale del tablero, muere
+        dead();
+    }
+
+    @Override
+    public void update() {
+        if (!isAlive()){
+            return;
+        }
+
+        // 1. Gravedad
+        applyGravity();
+        
+        // 2. Movimiento horizontal (si no está cayendo)
+        if (!isFalling) {
+            Position currentPos = getPosition();
+            Position newPos;
+
+            if (direction == Action.LEFT) {
+                newPos = currentPos.left();
+            } else {
+                newPos = currentPos.right();
+            }
+
+            if (canMoveTo(newPos)) {
+                setPosition(newPos);
+            } else {
+                // Cambiar dirección si choca con algo
+                direction = (direction == Action.LEFT) ? Action.RIGHT : Action.LEFT;
+            }
+        }
+    }
+
+    //METODOS DE INTERACCION
+    @Override
+    public boolean interactWith(GameItem other) {
+        return other.receiveInteraction(this);
+    }
+
+    @Override
+    public boolean receiveInteraction(Mario mario) {
+       return false;
+    }
+
+    //OTROS METODOS
 
     @Override
     public String getIcon() {
         return Messages.MUSHROOM;
     }
-
-    @Override
-    public void update() {
-        if (!isAlive()) return;
-        applyGravity();
-        if (!isFalling) {
-            moveHorizontal();
-        }
-    }
-
+    
     @Override
     public boolean isSolid() {
         return false;
     }
-
     
-    //Metodos que controlan las interacciones
-    @Override
-    public boolean interactWith(GameItem other) {
-        //igual que Goomba
-        boolean canInteract = other.isInPosition(this.pos);
-        if (!canInteract) {
-        	return false;
-        }
-        return other.receiveInteraction(this);
+     @Override
+    public String toString() {
+        return "Mushroom at " + getPosition().toString();
     }
 
-    
-    // Interacción con mario
     @Override
-    public boolean receiveInteraction(Mario mario) {
-        if (!isAlive()) {
-        	return false;
+    public GameObject parse(String[] objWords, GameWorld game) {
+        // Formato: (fila,col) MUSHROOM o MU
+        if (objWords.length < 2) return null;
+        
+        String type = objWords[1].toUpperCase();
+        if (!type.equals("MUSHROOM") && !type.equals("MU")) {
+            return null;
         }
-
-        if (mario.isBig()) {
-            this.kill();
-        } 
-        else {
-            //si mario pequeño-> se hace grande
-            mario.setBig(true);
-            this.kill();
-        }
-        return true;
+        
+        Position pos = parsePosition(objWords[0]);
+        if (pos == null) return null;
+        
+        return new Mushroom(game, pos);
     }
-
+    
+    private Position parsePosition(String posStr) {
+        try {
+            posStr = posStr.replace("(", "").replace(")", "");
+            String[] parts = posStr.split(",");
+            int row = Integer.parseInt(parts[0]);
+            int col = Integer.parseInt(parts[1]);
+            return new Position(row, col);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
    
 }

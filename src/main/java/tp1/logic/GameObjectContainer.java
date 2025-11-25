@@ -1,62 +1,94 @@
 package tp1.logic;
+
 import java.util.ArrayList;
 import java.util.List;
-import tp1.logic.gameobjects.GameObjectNew;
+
+import tp1.logic.gameobjects.GameItem;
+import tp1.logic.gameobjects.GameObject;
 import tp1.view.Messages;
 
 public class GameObjectContainer {
-   
 
-    private List<GameObjectNew> gameObjects;
+    private List<GameObject> objects;
 
     public GameObjectContainer() {
-        gameObjects = new ArrayList<>();
+        this.objects = new ArrayList<>();
     }
 
-    //Método para añadir un objeto
-    public void add(GameObjectNew o) {
-    	gameObjects.add(o);
-    }
-    
-
-    public void update() {
-    	for (GameObjectNew o : gameObjects) {
-        	   o.update();  
-           }
-   
-    	//Eliminamos los muertos
-        gameObjects.removeIf(o -> !o.isAlive());
+    // Métodos para añadir objetos al contenedor
+    // Si se añade antes se actualiza antes
+    public void add(GameObject obj) {
+        objects.add(obj);
     }
 
-    
-    //Devolvemos el icono de un det objeto en una pos
-    public String getIconAt(Position pos) {
-        for (GameObjectNew o : gameObjects) {
-            if (o.isInPosition(pos)) {
-                return o.getIcon();
+    // Borrar objeto en la posicion
+    public boolean removeObjectAt(Position pos) {
+        return objects.removeIf(obj -> obj.isInPosition(pos));
+    }
+    //Obtenes objeto en la posicion dada
+    public GameObject getObjectAt(Position pos) {
+        for (GameObject obj : objects) {
+            if (obj.isInPosition(pos)) {
+                return obj;
             }
         }
-        return Messages.EMPTY;
+        return null;
     }
-    
-    
-    //Miramos si hay un objeto solido en una pos
-    public boolean isSolid(Position pos) {
-        for (GameObjectNew o : gameObjects) {
-            if (o.isInPosition(pos) && o.isSolid()) {
+    // Actualizar todos los objetos vivos en orden de inserción
+    public void update() {
+        //Actualizar
+        for (GameObject obj : new ArrayList<>(objects)) {
+            if (obj.isAlive()) {
+                obj.update();
+            }
+        }
+        //Limpiar objetos muertos que puedan ser removidos
+        objects.removeIf(obj -> !obj.isAlive());
+    }
+
+    public void doInteraction(GameItem item){
+        // Solo procesar si ambos están vivos y no son el mismo objeto
+        for(GameObject obj : new ArrayList<>(objects)){
+        if(obj.isAlive() && item.isAlive() && obj != item){
+            // Primera llamada
+            boolean interacted1 = item.interactWith(obj);
+
+            // Si hubo interacción exitosa, salir del bucle
+            if(interacted1){
+                break;
+            }
+            if(obj.isAlive() && item.isAlive()){
+                boolean interacted2 = obj.interactWith(item);
+                
+                // Si hubo interacción exitosa, salir del bucle
+                if(interacted2){
+                    break;
+                }
+            }
+        }
+    }
+}
+
+    public boolean isSolid(Position position) {
+        for (GameObject obj : objects) {
+            if (obj.isAlive() && obj.isSolid() && obj.isInPosition(position)) {
                 return true;
             }
         }
         return false;
     }
 
-
-    //Manejamos las interacciones
-    public void doInteraction(GameItem other) {
-        for (GameObjectNew o : gameObjects) {
-            if (o== other) continue; //no interactuar consigo mismo
-            other.interactWith(o);
-            o.interactWith(other);
+    public String positionToString(Position position) {
+        StringBuilder sb = new StringBuilder();
+        for (GameObject obj : objects) {
+            if (obj.isAlive() && obj.isInPosition(position)) {
+                sb.append(obj.getIcon());
+            }
         }
+        return sb.length() == 0 ? Messages.EMPTY : sb.toString();
+    }
+    //Acceso seguro a la lista
+    public List<GameObject> getObjects() {
+        return new ArrayList<>(objects);
     }
 }

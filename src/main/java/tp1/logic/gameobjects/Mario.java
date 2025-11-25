@@ -3,271 +3,378 @@ package tp1.logic.gameobjects;
 import tp1.logic.Action;
 import tp1.logic.ActionList;
 import tp1.logic.GameWorld;
-import tp1.logic.GameItem;
-import tp1.logic.GameObjectContainer;
 import tp1.logic.Position;
 import tp1.view.Messages;
 
+//Mario class extiende de GameObject, es su hijo
 public class Mario extends MovingObject {
 
-   
     private boolean big;
-    private boolean facingRight; //true si mira a la derecha, false si mira a la izquierda
     private ActionList accionesPendientes;
-    private boolean hasMovedThisTurn; //para saber si ya se ha movido en un turn0
-    private boolean jumping; //true si ha usado UP en este turno
+    private boolean hasMovedThisTurn; //Para saber si ya se ha movido en el turno actual
 
-    
-    //Constructor de Mario
-    public Mario(GameWorld game, Position position) {
-    	// dir = 1 ---> empieza mirando a la derecha
-        super(game, position, 1);
-        this.big = true;// por defecto mario grande
-        this.facingRight = true;
-        this.accionesPendientes = new ActionList();
-        this.hasMovedThisTurn = false;
-        this.jumping=false;
+    protected Mario() {
+        super();
     }
 
-    
+    //Constructor de Mario
+    public Mario(GameWorld game, Position position) {
+        super(game, position);
+        this.direction = Action.RIGHT; //Por defecto mira a la derecha
+        this.big = true; //Por defecto es grande
+        this.accionesPendientes = new ActionList();
+        this.hasMovedThisTurn = false;
+    }
+
+    @Override
+    protected void handleOutOfBounds() {
+        // Cuando Mario sale del tablero, pierde una vida
+        game.loseLife();
+    }
+    // Actualiza el estado de Mario
     @Override
     public void update() {
+
+        // Chequea si Mario se sale por arriba si es grande
+        if (isBig() && !game.isInside(getPosition().up())) {
+            game.loseLife();
+            return;
+        }
+
         boolean playerHasActions = !accionesPendientes.isEmpty();
         isFalling = false;
         hasMovedThisTurn = false;
-        jumping=false;
+
+        game.doInteractionsFrom(this);
         
         //1. Primero procesamos las acciones
         if (playerHasActions) {
             processPlayerActions();
         }
 
-        //2. Si no se ha movido con acciones--> mov automatico
+        //2. Si no se ha movido, movimiento automatico
         if (!hasMovedThisTurn) {
             performAutomaticMovement();
+            game.doInteractionsFrom(this);
         }
 
-        //3.Comprueba si interactua con algo
-        game.doInteractionsFrom(this);
-
+        //4. Verificar si está fuera despues del movimiento
+        if (!game.isInside(getPosition())) {
+            game.loseLife();
+        }
     }
 
-  
-    // Procedamos las acciones del jugador (las q estan en lista accionespendientes)
+    //Procesa las acciones del jugador
     private void processPlayerActions() {
-        if (accionesPendientes.isEmpty()) {
-            return;
-        }
         for (Action action : accionesPendientes.getActions()) {
             executeAction(action);
         }
+
         accionesPendientes.clear();
     }
-    
-    
-    // Ejecuta una acción det
+
+    //Ejecuta una accion
     private void executeAction(Action action) {
+        Position pos = getPosition();
         Position newPos;
+
         switch (action) {
-        
-        
-        case LEFT:
-            newPos = pos.move(action.getY(), action.getX());
-            if (canMoveTo(newPos)) { 
-                pos = newPos;
-                hasMovedThisTurn = true;
-            }
-            dir = -1;         
-            facingRight = false;
-            break;
-
-        case RIGHT:
-            newPos = pos.move(action.getY(), action.getX());
-            if (canMoveTo(newPos)) {
-                pos = newPos;
-                hasMovedThisTurn = true;
-            }
-            dir = 1;
-            facingRight = true;
-            break;
-
-        case UP:
-            newPos = pos.move(action.getY(), action.getX());
-            if (canMoveTo(newPos)) {
-                pos = newPos;
-                hasMovedThisTurn = true;
-            }
-            jumping=true;
-            break;
-
-        case DOWN:
-            if (isOnGround()) {
-                dir = 0;    
-            } else {
-                while (!isOnGround()) {
-                    applyGravity();  
+            case LEFT:
+                newPos = pos.left();
+                if (canMoveTo(newPos)) {
+                    setPosition(newPos);
+                    hasMovedThisTurn = true;
+                    game.doInteractionsFrom(this);
                 }
-            }
-            break;
+                direction = Action.LEFT;
+                break;
 
-        case STOP:
-            dir = 0;
-            break;
+            case RIGHT:
+                newPos = pos.right();
+                if (canMoveTo(newPos)) {
+                    setPosition(newPos);
+                    hasMovedThisTurn = true;
+                    game.doInteractionsFrom(this);
+                }
+                direction = Action.RIGHT;
+                break;
+
+            case UP:
+                newPos = pos.up();
+                if (canMoveTo(newPos)) {
+                    setPosition(newPos);
+                    hasMovedThisTurn = true;
+                    game.doInteractionsFrom(this);
+                }
+                break;
+
+            case DOWN:
+                if(!isOnGround()){
+                    while (!isOnGround()) {
+                        applyGravity();
+                        game.doInteractionsFrom(this);
+
+                        // Si Mario murió o salió del tablero, detener la caída
+                    if (!game.isInside(getPosition())) {
+                        break;
+                    }
+                    } 
+                }else {
+                        direction = Action.STOP;
+                        game.doInteractionsFrom(this);
+                    }
+                    break;
+
+            case STOP:
+                direction = Action.STOP;
+                game.doInteractionsFrom(this);
+                break;
         }
+
     }
 
-    
-    // Movimiento automático
+    // Movimiento automatico version nueva y renovada
     private void performAutomaticMovement() {
-        if (dir == 0) {
-            return; // STOP
-        }
-
-        if (!isOnGround() && !hasMovedThisTurn) {
+        if (!isOnGround()) {
             applyGravity();
-            return;
+            game.doInteractionsFrom(this);
+        }
+        if (direction != Action.STOP && !isFalling) {
+            Position newPos = (direction == Action.RIGHT) ? getPosition().right() : getPosition().left();
+            if (canMoveTo(newPos)) {
+                setPosition(newPos);
+                hasMovedThisTurn = true;
+                game.doInteractionsFrom(this);
+                if (!game.isInside(getPosition())) {
+                    game.loseLife();
+                }
+            } else {
+                direction = (direction == Action.RIGHT) ? Action.LEFT : Action.RIGHT;
+            }
+        }
+    }
+    @Override
+    protected boolean canMoveTo(Position position) {
+        //Comprueba si la posicion es valida y no hay ningun Land en esa posicion
+        // Verifica la posición principal
+       if (!game.isInside(position) || game.isSolid(position)) {
+            return false;
         }
 
-        Position newPos = pos.move(0, dir);
+        if (big) {
+            Position above = position.up();
+            if (!game.isInside(above) || game.isSolid(above)) {
+                return false;
+            }
+        }
 
-        if (canMoveTo(newPos)) {
-            pos = newPos;
-        } else {
-            dir = -dir; // Cambia de dirección si se choca
-            facingRight = (dir == 1); // Actualiza hacia dónde mira
+        return true;
+    }
+
+    // Metodos para interactuar con otros objetos
+    @Override
+    public boolean interactWith(GameItem other) {
+        return other.receiveInteraction(this);
+    }
+
+    private void defeatEnemy(GameObject enemy, int points) {
+        // El enemigo muere
+        enemy.dead();
+        
+        // Mario gana puntos
+        game.addScore(points);
+        
+        // Mario recibe daño SOLO si NO está cayendo
+        // (Si está cayendo, es porque saltó sobre el enemigo)
+        if (!this.isFalling()) {
+            this.receiveDamage();
         }
     }
 
-  
-    //Añadimos una acción a la lista de acciones pendientes
+    @Override
+    public boolean receiveInteraction(Goomba goomba) {
+        // Solo interactúa si están en la misma posición
+        if (!this.isInPosition(goomba.getPosition())) {
+            return false;
+        }
+        // Lógica de derrota del Goomba
+        defeatEnemy(goomba, 100);
+        return true;
+    }
+
+    //INteractua con la puerta de salida
+
+    @Override
+    public boolean receiveInteraction(ExitDoor door) {
+        // Solo gana si está en la misma posición
+        if (isInPosition(door.getPosition())) {
+            game.marioReachedExit();
+            return true;
+        }
+        return false;
+    }
+    //Interactua con el mushroom
+    @Override
+    public boolean receiveInteraction(Mushroom mushroom) {
+        // Solo interactúa si están en la misma posición
+        if (!this.isInPosition(mushroom.getPosition())) {
+            return false;
+        }
+        
+        // Lógica del mushroom
+        if (!this.isBig()) {
+            this.setBig(true);  // Mario se hace grande
+        }
+        // Si ya es grande, no pasa nada
+        
+        // Mushroom desaparece
+        mushroom.dead();
+        
+        return true;
+    }
+
+    //Interactua con box
+    @Override
+    public boolean receiveInteraction(Box box) {
+        // Box maneja toda la lógica
+        return false;
+    }
+
+    // OTROS METODOS
     public void addAction(Action action) {
         accionesPendientes.addAction(action);
     }
-    
-    
-    // Acceso a los objetos del juego
-    public GameObjectContainer getGameObjects() {
-        return game.getGameObjects();
+
+    @Override
+    public String getIcon() {
+        switch (direction) {
+            case LEFT:
+                return Messages.MARIO_LEFT;
+            case RIGHT:
+                return Messages.MARIO_RIGHT;
+            case STOP:
+                return Messages.MARIO_STOP;
+            default:
+                return Messages.MARIO_RIGHT;
+        }
     }
 
-    
+    @Override
+    public boolean isSolid() {
+        return false;
+    }
+
     public boolean isBig() {
         return big;
     }
 
-    
     public void setBig(boolean big) {
         this.big = big;
     }
-    
-    
-    //Métodos sobreescritos:
-    
-    //Aplicamos gravedad (usamos hasmovedThisturn asi q tiene q estar sobreescrita)
-    @Override
-    protected void applyGravity() {
-        Position debajo = pos.move(Action.DOWN.getY(), Action.DOWN.getX());
-        if (!pos.isValidPosition()) {
-            game.marioDies();
-            return;
-        }
-        if (debajo.isValidPosition() && !game.getGameObjects().isSolid(debajo)) {
-            pos = debajo;
-            isFalling = true;
-            hasMovedThisTurn = true;
-        }
-    }
-    
-    
-    //Icono de Mario según dirección y si es grande o no
-    @Override
-    public String getIcon() {
-        if (dir == 0) {
-            return Messages.MARIO_STOP;
-        } else if (facingRight) {
-            return Messages.MARIO_RIGHT;
+
+    public void receiveDamage() {
+        if (isBig()) {
+            setBig(false);
         } else {
-            return Messages.MARIO_LEFT;
+            game.loseLife();
         }
     }
 
-    
-    //Va a ser distinta tb pq tenemos q tener en cuenta si mario es grande o no
     @Override
     public boolean isInPosition(Position position) {
-    	if (pos.equals(position)) {
+        Position currentPos = getPosition();
+        if (currentPos.equals(position)) {
             return true;
         }
-        // Si Mario es grande tb ocupa la posición de arriba
-        if (big && pos.getRow() > 0) {
-            Position above = new Position(pos.getRow() - 1, pos.getCol());
+
+        if (big) {
+            Position above = currentPos.up();
             return above.equals(position);
         }
-        
         return false;
     }
-    
-    
-    //Metodos para controlar las interaciion con otros objetos
+
     @Override
-    public boolean interactWith(GameItem other) {
-        boolean canInteract = other.isInPosition(this.pos);
-        if (!canInteract) {
-        	return false;
-        }
-        return other.receiveInteraction(this);
-    }
-    
-    
-    @Override
-    public boolean receiveInteraction(Goomba goomba) {
-    	//si esta cayendo sobre el goomba el goomba muere
-        if (isFalling) {
-            goomba.kill();
-            game.addPoints(100);
-            return true;
-        }
-        if (big) {
-            //si mario era grande se hace pequeño y goomba muere
-            big = false;
-            goomba.kill();
-            game.addPoints(100);
-        } 
-        else {
-            // si mario era peque muere
-            goomba.kill();
-            game.marioDies();
-        }
-        return true;
+    public boolean canBeRemoved() {
+        return false;  // Mario nunca se elimina
     }
 
-    
     @Override
-    public boolean receiveInteraction(ExitDoor door) {
-        game.marioExited();
-        return true;
-    }
-    
-    @Override
-    public boolean receiveInteraction(Box box) {
-        //reacciona si mario está saltando y la caja está llena
-        if (!jumping) {
-            return false;
-        }
-        if (!box.isFull()) {
-        	//si la caja esta vacia no hacemos nada
-            return false;
-        }
-        //posición encima de la caja (donde aparece el Mushroom)
-        Position above = new Position(box.getPosition().getRow() - 1, box.getPosition().getCol());
-        //comprobamos que es una posición válida y no sólida
-        if (above.isValidPosition() && !game.getGameObjects().isSolid(above)) {
-            game.getGameObjects().add(new Mushroom(game, above));
-        }
-        //caja se vacía y damos puntos
-        box.changeBox(false);
-        game.addPoints(50);
-        return true;
+    public void onAdded(GameWorld game) {
+        // Cuando un Mario es añadido al juego, se registra como el Mario jugable
+        game.registerAsMain(this);
     }
 
+    @Override
+    public String toString() {
+        return "Mario at " + getPosition().toString();
+    }
+
+    @Override
+    public GameObject parse(String[] objWords, GameWorld game) {
+       // Formato: (fila,col) MARIO [LEFT|RIGHT|STOP|L|R|S] [BIG|SMALL|B|S]
+    if (objWords.length < 2) return null;
+    
+    String type = objWords[1].toUpperCase();
+    if (!type.equals("MARIO") && !type.equals("M")) {
+        return null;
+    }
+    
+    // Parsear posición
+    Position pos = parsePosition(objWords[0]);
+    if (pos == null) return null;
+    
+    // Crear Mario con valores por defecto
+    Mario mario = new Mario(game, pos);
+    
+    // Parsear dirección (si existe)
+    if (objWords.length > 2) {
+        String dirStr = objWords[2].toUpperCase();
+        switch (dirStr) {
+            case "LEFT":
+            case "L":
+                mario.direction = Action.LEFT;
+                break;
+            case "RIGHT":
+            case "R":
+                mario.direction = Action.RIGHT;
+                break;
+            case "STOP":
+            case "S":
+                mario.direction = Action.STOP;
+                break;
+        }
+    }
+    
+    // Parsear tamaño (si existe)
+    if (objWords.length > 3) {
+        String sizeStr = objWords[3].toUpperCase();
+        switch (sizeStr) {
+            case "BIG":
+            case "B":
+                mario.setBig(true);
+                break;
+            case "SMALL":
+            case "S":
+                mario.setBig(false);
+                break;
+        }
+    }
+    
+    return mario;
+}
+
+    // Método auxiliar para parsear posición
+    private Position parsePosition(String posStr) {
+        try {
+            // Formato: (fila,columna)
+            posStr = posStr.replace("(", "").replace(")", "");
+            String[] parts = posStr.split(",");
+            int row = Integer.parseInt(parts[0]);
+            int col = Integer.parseInt(parts[1]);
+            return new Position(row, col);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

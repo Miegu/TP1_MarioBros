@@ -1,25 +1,33 @@
 package tp1.control.commands;
-
-//Clase abstracta que hereda de AbstractCommand y que sirve de base para todos los comandos que no tienen parámetros
-//Tiene que ser abstracta porque no se puede instanciar directamente, y no pasa nada si no implemento todos los métodos abstractos, porque las subclases lo harán.
-public abstract class  NoParamsCommand extends AbstractCommand {
-	
-	
-	//Cosntrcutor--> que llama al constructor de la clase abstarct comman (clase padre)
-	//protected porque solo pueden usarlo las clases hijas
-	protected NoParamsCommand(String name, String shortcut, String details, String help) {
+/**
+ * Clase abstracta para comandos que no tienen parámetros.
+ * Implementa el método parse() de forma genérica para todos los comandos sin parámetros.
+ */
+public abstract class NoParamsCommand extends AbstractCommand {
+     /**
+     * Constructor para comandos sin parámetros.
+     * */
+    public NoParamsCommand(String name, String shortcut, String details, String help) {
         super(name, shortcut, details, help);
     }
-	
-	//Devuelve el tipo de command si coincide
-		 @Override
-    public Command parse(String[] words) {
-        // tiene que haber exactamente UNA palabra, y que sea mi nombre
-        if (words != null && words.length == 1 && matchCommand(words[0])) {
-            return this;
+    /**
+     * Parsea la entrada del usuario para comandos sin parámetros.
+     * Solo verifica que el usuario haya introducido una única palabra
+     * que coincida con el nombre o atajo del comando.
+     * */
+    @Override
+    public Command parse(String[] commandWords) {
+        //Comandos sin parametros: solo debe haber una palabra
+        if(commandWords.length == 0){
+            return null;
         }
-        return null;
+        if (commandWords.length == 1) {
+            // Usa el metodo heredado para verificar si coincide
+            if (matchCommandName(commandWords[0])) {
+                return this; // devuelve el mismo comando
+            }
+        }
+        return null; //No coincide con este comando
     }
-
-	
+    // execute() debe ser implementado por cada comando en concreto
 }

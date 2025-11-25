@@ -1,43 +1,44 @@
 package tp1.control;
-import java.util.Scanner;
-
-import tp1.logic.Action;
+import tp1.exceptions.CommandExecuteException;
+import tp1.control.commands.Command;
+import tp1.control.commands.CommandGenerator;
 import tp1.logic.GameModel;
-import tp1.control.commands.*;
 import tp1.view.GameView;
 import tp1.view.Messages;
 
+/**
+ * Acept
+ */
 public class Controller {
 
-	private GameModel game;
-	private GameView view;
+    private GameModel game;
+    private GameView view;
 
-	public Controller(GameModel game, GameView view) {
-		this.game = game;
-		this.view = view;
-	}
+    public Controller(GameModel game, GameView view) {
+        this.game = game;
+        this.view = view;
+    }
 
+    /**
+     * Runs the game logic, coordinate Model(game) and View(view)
+     *
+     */
+    public void run() {
+        view.showWelcome();
+        view.showGame();
+        boolean exit = false;
 
-	public void run() {
-		view.showWelcome();
-		view.showGame();
-		
-		while (!game.isFinished()) {
+        while (!game.isFinished()) {
+            String[] words = view.getPrompt();
+            Command command = CommandGenerator.parse(words);
 
-		    String[] userWords = view.getPrompt(); //pedimos a la vista q lea lo q ha escrito el usuario
-		    Command command = CommandGenerator.parse(userWords);
-
-		    if (command != null) 
-				command.execute(game, view);
-		    else 
-		        view.showError(Messages.UNKNOWN_COMMAND.formatted(String.join(" ", userWords)));
-		}   
-	}
-	
-	}
-	
-	
-	
-	
-	
-	
+            if (command != null) {
+                try {
+                    command.execute(game, view);
+                } catch (CommandExecuteException e) {
+                    view.showError(e.getMessage());
+                }
+            }        }
+        view.showEndMessage();
+    }
+}

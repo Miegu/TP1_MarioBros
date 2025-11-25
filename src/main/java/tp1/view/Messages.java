@@ -1,6 +1,5 @@
 package tp1.view;
-//hola
-//holw
+
 import tp1.util.MyStringUtils;
 
 public class Messages {
@@ -36,6 +35,7 @@ public class Messages {
 	public static final String MARIO_WINS = "Thanks, Mario! Your mission is complete.";
 	// Position format
 	public static final String POSITION = "(%s,%s)";
+	public static final String ERROR_POSITION_OFF_LIMITS = "Position outside of the board limits";
 
 	// Other
 	public static final String SPACE = " ";
@@ -57,6 +57,7 @@ public class Messages {
 	public static final String INVALID_COMMAND = "Invalid command: %s";
 	public static final String INVALID_COMMAND_PARAMETERS = "Invalid command parameters";
 	public static final String ERROR_COMMAND_EXECUTE = "Command execute problem";
+	public static final String ERROR_ADD_OBJECT = "Error while adding object to the game: %s";
 
 	
 	public static final String HELP_AVAILABLE_COMMANDS = "Available commands:";
@@ -72,7 +73,7 @@ public class Messages {
 	/* @formatter:on */
 	@Deprecated
 	public static final String HELP = String.join(LINE_SEPARATOR+"   ", HELP_LINES) + LINE_SEPARATOR;
-	public static final String COMMAND_HELP_TEXT = "%s: %s";
+	public static final String COMMAND_HELP_TEXT = "   %s: %s";
 	
 	// UPDATE
 	public static final String COMMAND_UPDATE_NAME = "update";
@@ -92,25 +93,23 @@ public class Messages {
 	public static final String COMMAND_HELP_DETAILS = "[h]elp";
 	public static final String COMMAND_HELP_HELP = "print this help message";
 
-	// AddObjectCommand
-
-	public static final String COMMAND_ADD_OBJECT_NAME     = "addObject";
-	public static final String COMMAND_ADD_OBJECT_SHORTCUT = "aO";
-	public static final String COMMAND_ADD_OBJECT_DETAILS  = "[a]dd[O]bject <object_description>";
-	public static final String COMMAND_ADD_OBJECT_HELP     = "adds to the board the object given"
-			+ " by object_description";
-	
-	//ResetCommand
-	public static final String COMMAND_RESET_NAME     = "reset";
+	// RESET
+	public static final String COMMAND_RESET_NAME = "reset";
 	public static final String COMMAND_RESET_SHORTCUT = "r";
-	public static final String COMMAND_RESET_DETAILS  = "[r]eset <level>";
-	public static final String COMMAND_RESET_HELP     = "starts a new game or resets the current one";
+	public static final String COMMAND_RESET_DETAILS = "[r]eset [numLevel]";
+	public static final String COMMAND_RESET_HELP = "reset the game to initial configuration if not numLevel else load the numLevel map";
 
-	//ActionCommand
-	public static final String COMMAND_ACTION_NAME     = "action";
+	// ACTION
+	public static final String COMMAND_ACTION_NAME = "action";
 	public static final String COMMAND_ACTION_SHORTCUT = "a";
-	public static final String COMMAND_ACTION_DETAILS  = "[a]ction <action1> <action2> ... <actionN>";
-	public static final String COMMAND_ACTION_HELP     = "executes a list of actions";
+	public static final String COMMAND_ACTION_DETAILS = "[a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]+";
+	public static final String COMMAND_ACTION_HELP = "user performs actions";
+
+	// ADDOBJECT COMMAND
+	public static final String COMMAND_ADDOBJECT_NAME = "addObject";
+	public static final String COMMAND_ADDOBJECT_SHORTCUT = "aO";
+	public static final String COMMAND_ADDOBJECT_DETAILS = "[a]dd[O]bject <object_description>";
+	public static final String COMMAND_ADDOBJECT_HELP = "adds to the board the object given by object_description.\n      <object_description> = (col,row) objName [dir [BIG|SMALL]]. Ej. (12,3) Mario LEFT SMALL";
 
 
 //Symbols

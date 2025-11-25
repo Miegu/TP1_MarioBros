@@ -1,12 +1,15 @@
 package tp1.logic;
-import tp1.logic.gameobjects.GameObjectNew;
-public interface GameModel {
+/*La interface que define el contrato para las operaciones de game model
+ * Usado por el controlador para interactuar con la logica del juego
+ */
+public interface GameModel extends GameWorld{
     boolean isFinished();
+    /*Para actualizar las estadisticas del juego */
     void update();
     void reset();
+    //Reseteo con nivel especifico
     void reset(int level);
-    void addAction(Action action);
     void exit();
-    //para que addcommand pueda pedir al juego que añada un objeto sin romper encapsulacion
-    void addGameObject(GameObjectNew obj);
-    }
+    /*Añadir una accion para Mario */
+    void addAction(Action action);
+}

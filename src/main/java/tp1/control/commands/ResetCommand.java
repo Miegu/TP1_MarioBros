@@ -3,59 +3,61 @@ package tp1.control.commands;
 import tp1.logic.GameModel;
 import tp1.view.GameView;
 import tp1.view.Messages;
-
+/**
+ * Comando para reiniciar el juego.
+ * Puede reiniciar el nivel actual o un nivel específico.
+ * Uso: "reset" o "reset <nivel>"
+ */
 public class ResetCommand extends AbstractCommand {
 
-    private static final String NAME     = Messages.COMMAND_RESET_NAME;
+    private static final String NAME = Messages.COMMAND_RESET_NAME;
     private static final String SHORTCUT = Messages.COMMAND_RESET_SHORTCUT;
-    private static final String DETAILS  = Messages.COMMAND_RESET_DETAILS;
-    private static final String HELP     = Messages.COMMAND_RESET_HELP;
+    private static final String DETAILS = Messages.COMMAND_RESET_DETAILS;
+    private static final String HELP = Messages.COMMAND_RESET_HELP;
 
-    private Integer level;  // null -> sin parámetro, número -> con parámetro
+    private Integer level;
 
-    // Constructor sin nivel (reset normalillo)
     public ResetCommand() {
-        this(null);
+        super(NAME, SHORTCUT, DETAILS, HELP);
+        this.level = null; // Valor por defecto, resetea al nivel actual
     }
 
-    // Constructor con bivel
-    private ResetCommand(Integer level) {
+    public ResetCommand(int level) {
         super(NAME, SHORTCUT, DETAILS, HELP);
         this.level = level;
     }
 
     @Override
-    public Command parse(String[] words) {
-        // No coincide el comando
-        if (!matchCommand(words[0])) return null;
-
-        // reset sin parametros
-        if (words.length == 1) {
+    public Command parse(String[] commandWords) {
+        
+        if (commandWords.length < 1 || commandWords.length > 2) {
+            return null;
+        }
+        // IMPORTANTE: Verificar que la primera palabra sea "reset" o "r"
+        if (!matchCommandName(commandWords[0])) {
+            return null;
+        }
+         // Si solo es "reset", devolver instancia sin nivel
+        if (commandWords.length == 1) {
             return new ResetCommand();
         }
-
-        // reset con parámetro
-        if (words.length == 2) {
-            try {
-                int lvl = Integer.parseInt(words[1]);
-                return new ResetCommand(lvl);
-            } catch (NumberFormatException e) {
-                return null; // parámetro no válido
-            }
+        // Si tiene 2 palabras, parsear el nivel
+        try {
+            int level = Integer.parseInt(commandWords[1]);
+                return new ResetCommand(level);
+        } catch (NumberFormatException e) {
+            return null; // Parámetro inválido
         }
-
-        // + de 2 --> no es para este comando
-        return null;
     }
 
     @Override
     public void execute(GameModel game, GameView view) {
-        if (level == null) {
-            game.reset();//reset nivel actual
+        if(level == null) {
+            game.reset(); // Resetea al nivel actual
         } else {
-            game.reset(level); //reset nivel que el usuario haya indicado
+            game.reset(level); // Resetea al nivel especificado
         }
-
-        view.showGame();//tenemos que mostrar el tablero despues del reset
+        // Mostrar el juego después del reset
+        view.showGame();
     }
 }
