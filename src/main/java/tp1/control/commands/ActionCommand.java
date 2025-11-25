@@ -3,6 +3,8 @@ package tp1.control.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import tp1.exceptions.ActionParseException;
+import tp1.exceptions.CommandParseException;
 import tp1.logic.Action;
 import tp1.logic.GameModel;
 import tp1.view.GameView;
@@ -51,27 +53,31 @@ public class ActionCommand extends AbstractCommand {
     }
 
     @Override
-    public Command parse(String[] commandWords){
+    public Command parse(String[] commandWords) throws CommandParseException {
+        
         //Necesitamos al menos el comando y una accion
         if (commandWords.length < 2) {
-            return null;
+            throw new CommandParseException(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER);
         }
         //Comprueba si la primera palabra coincide con el comando
         if (!matchCommandName(commandWords[0])) {
             return null;
         }
 
-        //Parsea las acciones
+        // Parsea las acciones
         List<Action> parsedActions = new ArrayList<>();
 
-        for(int i = 1; i < commandWords.length; i++){
-            Action action = Action.parse(commandWords[i]);
-            if(action == null){
-                // Si alguna dirección no es válida, devolver null
-                System.out.println(Messages.ERROR.formatted(Messages.UNKNOWN_ACTION.formatted(commandWords[i])));
-                return null;
+        for (int i = 1; i < commandWords.length; i++) {
+            try {
+                Action action = Action.parse(commandWords[i]);
+                parsedActions.add(action);
+            } catch (ActionParseException ape) {
+                // Envolver la excepción del parseo de Action
+                throw new CommandParseException(
+                    Messages.UNKNOWN_ACTION.formatted(commandWords[i]), 
+                    ape
+                );
             }
-            parsedActions.add(action);
         }
 
         //Devuelve un nuevo comando con las acciones parseadas

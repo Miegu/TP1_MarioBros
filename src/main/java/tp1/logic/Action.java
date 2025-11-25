@@ -1,5 +1,7 @@
 package tp1.logic;
 
+import tp1.exceptions.ActionParseException;
+import tp1.view.Messages;
 /**
  * Represents the allowed actions in the game
  *
@@ -23,14 +25,13 @@ public enum Action {
         return y;
     }
 
-    //TODO fill your code
-    public static Action parse(String text) {
+    public static Action parse(String text) throws ActionParseException{
         if (text == null || text.trim().isEmpty()) {
-            return null;
+            throw new ActionParseException(Messages.ERROR_ACTION_NULL_OR_EMPTY);
         }
-
+        
         String upperText = text.trim().toUpperCase();
-
+        
         return switch (upperText) {
             case "LEFT", "L" ->
                 LEFT;
@@ -42,8 +43,8 @@ public enum Action {
                 DOWN;
             case "STOP", "S" ->
                 STOP;
-            default ->
-                null;
+            default -> throw new ActionParseException(
+                Messages.ERROR_UNKNOWN_ACTION.formatted(text));
         };
     }
 

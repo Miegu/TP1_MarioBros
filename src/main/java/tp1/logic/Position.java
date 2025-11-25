@@ -1,5 +1,7 @@
 package tp1.logic;
 
+import tp1.exceptions.PositionParseException;
+import tp1.view.Messages;
 /**
  * Clase inmutable para manejar la posicion y mantener la encapsulación
  *
@@ -99,18 +101,18 @@ public class Position {
         return "(" + col + "," + row + ")";
     }
 
-    public static Position parsePosition(String posStr) {
+    public static Position parsePosition(String posStr) throws PositionParseException {
         try {
             // Formato: (fila,columna)
             posStr = posStr.replace("(", "").replace(")", "").trim();
             String[] parts = posStr.split(",");
-            if (parts.length != 2) return null;
+            if (parts.length != 2) {throw new PositionParseException(Messages.ERROR_INVALID_POSITION_FORMAT.formatted(posStr));}
             
             int row = Integer.parseInt(parts[0].trim());
             int col = Integer.parseInt(parts[1].trim());
             return new Position(row, col);
-        } catch (Exception e) {
-            return null;
+        } catch (NumberFormatException e) {
+            throw new PositionParseException(Messages.ERROR_INVALID_POSITION_NUMBERS.formatted(posStr), e);
         }
     }
 }

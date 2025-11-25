@@ -59,6 +59,15 @@ public class Messages {
 	public static final String ERROR_COMMAND_EXECUTE = "Command execute problem";
 	public static final String ERROR_ADD_OBJECT = "Error while adding object to the game: %s";
 
+	// Errores de parseo del modelo
+	public static final String ERROR_INVALID_ACTION = "Invalid action";
+	public static final String ERROR_ACTION_NULL_OR_EMPTY = "Action cannot be null or empty";
+	public static final String ERROR_UNKNOWN_ACTION = "Unknown action: %s";
+
+	public static final String ERROR_INVALID_POSITION = "Invalid position format";
+	public static final String ERROR_INVALID_POSITION_FORMAT = "Invalid position format: %s";
+	public static final String ERROR_INVALID_POSITION_NUMBERS = "Invalid position numbers: %s";
+
 	
 	public static final String HELP_AVAILABLE_COMMANDS = "Available commands:";
 	@Deprecated

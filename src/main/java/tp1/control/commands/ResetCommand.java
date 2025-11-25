@@ -1,5 +1,6 @@
 package tp1.control.commands;
 
+import tp1.exceptions.CommandParseException;
 import tp1.logic.GameModel;
 import tp1.view.GameView;
 import tp1.view.Messages;
@@ -28,11 +29,8 @@ public class ResetCommand extends AbstractCommand {
     }
 
     @Override
-    public Command parse(String[] commandWords) {
+    public Command parse(String[] commandWords) throws CommandParseException {
         
-        if (commandWords.length < 1 || commandWords.length > 2) {
-            return null;
-        }
         // IMPORTANTE: Verificar que la primera palabra sea "reset" o "r"
         if (!matchCommandName(commandWords[0])) {
             return null;
@@ -42,13 +40,21 @@ public class ResetCommand extends AbstractCommand {
             return new ResetCommand();
         }
         // Si tiene 2 palabras, parsear el nivel
-        try {
-            int level = Integer.parseInt(commandWords[1]);
-                return new ResetCommand(level);
-        } catch (NumberFormatException e) {
-            return null; // Parámetro inválido
+        if(commandWords.length == 2){
+            try {
+                int level = Integer.parseInt(commandWords[1]);
+                    return new ResetCommand(level);
+            } catch (NumberFormatException nfe) {
+                // Envolver la excepción
+            throw new CommandParseException(
+                Messages.LEVEL_NOT_A_NUMBER_ERROR.formatted(commandWords[1]), 
+                nfe
+            );
         }
     }
+    // Si tiene más de 2 parámetros, error
+    throw new CommandParseException(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER);
+}
 
     @Override
     public void execute(GameModel game, GameView view) {

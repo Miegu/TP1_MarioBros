@@ -27,10 +27,11 @@ public class CommandGenerator {
      * @return Comando parseado o null si no se reconoce
      */
     public static Command parse(String[] commandWords) throws CommandParseException {
-        // Si no hay entrada, devolver null
+        // Si no hay entrada, devolver excepcion
         if (commandWords == null || commandWords.length == 0) {
-            return null;
+            throw new CommandParseException(Messages.UNKNOWN_COMMAND.formatted(""));
         }
+        
         //Probar cada comando disponible		
         for (Command c : AVAILABLE_COMMANDS) {
             Command parsed = c.parse(commandWords);
