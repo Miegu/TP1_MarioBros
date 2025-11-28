@@ -67,6 +67,4 @@ public abstract class AbstractCommand implements Command {
 	@Override
     public abstract void execute(GameModel game, GameView view) throws CommandExecuteException;
 
-	@Override
-	public abstract Command parse(String[] words);
 }
