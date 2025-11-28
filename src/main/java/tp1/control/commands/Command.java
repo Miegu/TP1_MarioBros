@@ -15,6 +15,10 @@ public interface Command {
      * @param game Modelo del juego
      * @param view Vista del juego
      */
+	
+	//los metodos de los comandos execute y parse tienen que poder lanzar excepciones
+	//parse->cuando el usuario escribe mal parametros de comando
+	//execute-> si al ejecutar el comando ocurre un error en el juego
     void execute(GameModel game, GameView view) throws CommandExecuteException;
    /**
      * Intenta parsear la entrada del usuario para crear una instancia del comando.

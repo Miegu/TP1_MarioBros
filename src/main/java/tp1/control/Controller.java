@@ -11,6 +11,7 @@ import tp1.view.Messages;
  */
 public class Controller {
 
+	//unica clase q puede hablar con el usuario-->le tienen que llegar todos las exceptions
     private GameModel game;
     private GameView view;
 
@@ -19,10 +20,7 @@ public class Controller {
         this.view = view;
     }
 
-    /**
-     * Runs the game logic, coordinate Model(game) and View(view)
-     *
-     */
+    
     public void run() {
         view.showWelcome();
         view.showGame();
@@ -34,7 +32,10 @@ public class Controller {
             try {
                 Command command = CommandGenerator.parse(words);
                 command.execute(game, view);
-            } catch (tp1.exceptions.CommandException e) {
+            } 
+            //si falla algo intentando parsear o ejecutar->le llega a esta funcion
+            catch (tp1.exceptions.CommandException e) {
+            	//muestra el mensaje de error y TODAS Las causas internas
                 view.showError(e.getMessage());
                 Throwable cause = e.getCause();
                 while (cause != null) {

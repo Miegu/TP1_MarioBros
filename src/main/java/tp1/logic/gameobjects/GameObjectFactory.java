@@ -1,7 +1,10 @@
 package tp1.logic.gameobjects;
 
+import tp1.exceptions.ObjectParseException;
 import java.util.Arrays;
 import java.util.List;
+import tp1.view.Messages;
+
 
 import tp1.logic.GameWorld;
 /**
@@ -19,25 +22,23 @@ public class GameObjectFactory {
         new Mushroom(),
         new Box()
     );
-    /**
-     * Parsea una descripción de objeto y devuelve la instancia correspondiente.
-     * 
-     * @param objWords Array de palabras que describen el objeto
-     * @param game Referencia al mundo del juego
-     * @return GameObject parseado o null si no se reconoce
-     */
-    public static GameObject parse(String[] objWords, GameWorld game) {
+   
+    public static GameObject parse(String[] objWords, GameWorld game)throws ObjectParseException { {
         if (objWords == null || objWords.length == 0) {
-            return null;
-        }
+            throw new ObjectParseException(Messages.INVALID_GAME_OBJECT);
+            }
         // Intentar parsear con cada prototipo de objeto
+        //si el tipo no existe en vez de lanzar null lanza objectparse exception
+        //si la pos esta fuera en vez de devolver null lnza offboardexception
         for (GameObject prototype : availableObjects) {
             GameObject obj = prototype.parse(objWords, game);
             if (obj != null) {
                 return obj;
             }
         }
-        // Si ningún prototipo reconoce la descripción
-        return null;
+        // Si ningún tipo reconoce la descripcion-->lanzar excepcion
+        String objString = String.join(" ", objWords);
+        throw new ObjectParseException(Messages.INVALID_GAME_OBJECT.formatted(objString));
     }
+}
 }

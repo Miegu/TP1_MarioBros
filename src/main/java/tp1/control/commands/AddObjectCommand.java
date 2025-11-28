@@ -3,7 +3,6 @@ package tp1.control.commands;
 import java.util.Arrays;
 
 import tp1.exceptions.CommandExecuteException;
-import tp1.exceptions.GameModelException;
 import tp1.exceptions.ObjectParseException;
 import tp1.exceptions.OffBoardException;
 import tp1.logic.GameModel;
@@ -48,25 +47,21 @@ public class AddObjectCommand extends AbstractCommand {
     }
     
     @Override
-    public void execute(GameModel game, GameView view) throws CommandExecuteException{
-        // 1. Intenta parsear el objeto usando GameObjectFactory
-        GameObject obj = GameObjectFactory.parse(objectDescription, game);
-        
-        if (obj == null) {
-            // Error: objeto no válido
-            //Construye mensaje de error
-            String objString = String.join(" ", objectDescription);
-            throw new CommandExecuteException(String.format(Messages.INVALID_GAME_OBJECT, objString));
-        }
-        
-        //2. Añadir el objeto al juego
-        try {
-            game.addObject(obj);
-        } catch (OffBoardException e) {
-            //Se envuelve para no perder informacion
-            throw new CommandExecuteException(Messages.ERROR_ADD_OBJECT, e);
-        }
+    public void execute(GameModel game, GameView view) throws CommandExecuteException {
 
-        view.showGame();
+        try {
+        	//tanto metodo parse como add pueden lanzar excepciones
+        	//se las mansa a command executeexceocion y estas a command exception y esta la captura coontroler
+            GameObject obj = GameObjectFactory.parse(objectDescription, game);
+            game.addObject(obj);
+            view.showGame();
+
+        } catch (OffBoardException e) {
+            throw new CommandExecuteException(Messages.ERROR_COMMAND_EXECUTE, e);
+
+        } catch (ObjectParseException e) {
+            throw new CommandExecuteException(Messages.ERROR_COMMAND_EXECUTE, e);
+        }
     }
+
 }

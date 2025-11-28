@@ -158,7 +158,7 @@ public class Game implements GameModel, GameStatus, GameWorld{
 
     @Override
     public void addObject(GameObject obj) throws OffBoardException{
-        // Comprueba si la posición está dentro del tablero, por ejemplo:
+        //si la pos no esta dentro del tablero lanza la excepcion offboardexception
         if (!isInside(obj.getPosition())) {
             throw new OffBoardException(Messages.ERROR_POSITION_OFF_LIMITS + obj.getPosition());
         }
