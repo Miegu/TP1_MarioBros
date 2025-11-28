@@ -111,6 +111,10 @@ public class Messages {
 	public static final String COMMAND_ADDOBJECT_DETAILS = "[a]dd[O]bject <object_description>";
 	public static final String COMMAND_ADDOBJECT_HELP = "adds to the board the object given by object_description.\n      <object_description> = (col,row) objName [dir [BIG|SMALL]]. Ej. (12,3) Mario LEFT SMALL";
 
+	public static final String COMMAND_SAVE_NAME = "save";
+    public static final String COMMAND_SAVE_SHORTCUT = "s";
+    public static final String COMMAND_SAVE_DETAILS = "[s]ave <fileName>";
+    public static final String COMMAND_SAVE_HELP = "save the actual configuration in text file <fileName>";
 
 //Symbols
 	public static final String EMPTY = "";

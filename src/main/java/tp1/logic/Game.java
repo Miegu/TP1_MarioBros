@@ -339,7 +339,7 @@ public class Game implements GameModel, GameStatus, GameWorld{
             fw.write(this.toString());
 
         } catch (IOException e) {
-            //Cualquier problema de escritura → GameModelException
+            //Cualquier problema de escritura lo convertimos en GameModelException
             throw new GameModelException("Unable to save game to file: " + fileName, e);
 
         } finally {
