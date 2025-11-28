@@ -117,6 +117,26 @@ public class Goomba extends MovingObject {
     } catch (Exception e) {
         return null;
     }
+        
+    }
+    //serialize tiene q escribir (fila, col) goomba direccion
+    @Override
+    public String serialize() {
+    	int row = getPosition().getRow();
+        int col = getPosition().getCol();
+
+        //Convertimos dir a texto
+        String dirStr;
+        if (direction == Action.LEFT) {
+            dirStr = "LEFT";
+        }
+        else if (direction == Action.RIGHT) {
+            dirStr = "RIGHT";
+        }
+        else {
+            dirStr = "STOP";   //por si acaso
+        }
+        return "(" + row + "," + col + ") Goomba " + dirStr;
     }
 
 }

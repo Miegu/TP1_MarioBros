@@ -120,5 +120,6 @@ public abstract class GameObject implements GameItem {
     public boolean receiveInteraction(Box box) { 
         return false; 
     }
+    public abstract String serialize();
 
 }

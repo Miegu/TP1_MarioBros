@@ -123,4 +123,22 @@ public class Box extends GameObject {
     public String toString() {
         return "Box at " + getPosition().toString() + (isEmpty ? " (empty)" : " (full)");
     }
+    
+    //serialize--> (fila,col) box estado (full o empty)
+    @Override
+    public String serialize() {
+    	int row = getPosition().getRow();
+        int col = getPosition().getCol();
+
+        String state;
+        if (isEmpty) {
+            state = "EMPTY";
+        }
+        else {
+            state = "FULL";
+        }
+
+        return "(" + row + "," + col + ") Box " + state;
+    }	
+    
 }

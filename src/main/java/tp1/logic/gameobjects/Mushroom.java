@@ -109,4 +109,12 @@ public class Mushroom extends MovingObject {
     }
     
    
+    //serialize-> (fila,col) mushroom
+    @Override
+    public String serialize() {
+        int row = getPosition().getRow();
+        int col = getPosition().getCol();
+        return "(" + row + "," + col + ") Mushroom";
+    }
+
 }

@@ -2,6 +2,7 @@ package tp1.logic;
 
 import tp1.exceptions.ObjectParseException;
 import tp1.exceptions.OffBoardException;
+import tp1.exceptions.GameModelException;
 import tp1.logic.gameobjects.Box;
 import tp1.logic.gameobjects.ExitDoor;
 import tp1.logic.gameobjects.GameItem;
@@ -11,6 +12,8 @@ import tp1.logic.gameobjects.Land;
 import tp1.logic.gameobjects.Mario;
 import tp1.logic.gameobjects.Mushroom;
 import tp1.view.Messages;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Game implements GameModel, GameStatus, GameWorld{
 
@@ -208,12 +211,7 @@ public class Game implements GameModel, GameStatus, GameWorld{
         gameObjects.doInteraction(item);
     }
 
-    // Metodos adicionales
-
-    @Override
-    public String toString() {
-        return "Vidas: " + lives + "\nTiempo: " + remainingTime + "\nPuntos: " + points;
-    }
+    // Metodos adicionales    
 
     private void initLevel(int nLevel) {
         switch (nLevel) {
@@ -311,4 +309,47 @@ public class Game implements GameModel, GameStatus, GameWorld{
         gameObjects.add(new Mushroom(this, new Position(12, 8)));
         gameObjects.add(new Mushroom(this, new Position(2, 20)));
     }
+    
+    
+    //Metodo para crear archivo de texto con toda la info:
+    @Override
+    public String toString() {
+        //En la primera linea ponemos tiempo, puntos y vidas
+        String result = remainingTime + " " + points + " " + lives + "\n";
+
+        //Ponemos una linea por cada objeto
+        for (GameObject obj : gameObjects.getObjects()) {
+            result = result + obj.serialize() + "\n";
+        }
+
+       
+        return result;
+    }
+
+    
+    @Override
+    public void save(String fileName) throws GameModelException {
+        FileWriter fw = null;
+
+        try {
+            //Abrimos el fichero
+            fw = new FileWriter(fileName);
+
+            //Escribimos la info del juego
+            fw.write(this.toString());
+
+        } catch (IOException e) {
+            //Cualquier problema de escritura → GameModelException
+            throw new GameModelException("Unable to save game to file: " + fileName, e);
+
+        } finally {
+            //Cerrar el fichero si estaba abierto
+            if (fw != null) {
+                try {
+                    fw.close();
+                } catch (IOException ignore) {} //ignoramos error
+            }
+        }
+    }
+
 }
