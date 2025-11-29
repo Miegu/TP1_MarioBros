@@ -1,6 +1,6 @@
 package tp1.logic;
 
-import tp1.exceptions.ObjectParseException;
+import tp1.exceptions.GameLoadException;
 import tp1.exceptions.OffBoardException;
 import tp1.exceptions.GameModelException;
 import tp1.logic.gameobjects.Box;
@@ -30,7 +30,7 @@ public class Game implements GameModel, GameStatus, GameWorld{
 
     private GameObjectContainer gameObjects;
     private Mario mario;
-
+    private GameConfiguration fileLoader; 
     // Atributos del juego
     public Game(int nLevel) {
         this.nLevel = nLevel;
@@ -45,7 +45,6 @@ public class Game implements GameModel, GameStatus, GameWorld{
     }
 
     // METODOS DE GAME MODEL
-
     @Override
     public void update() {
         //1 Reducir el tiempo
@@ -351,5 +350,38 @@ public class Game implements GameModel, GameStatus, GameWorld{
             }
         }
     }
+    
+    
+    @Override
+    public void load(String fileName) throws GameLoadException {
+        GameConfiguration cfg = new FileGameConfiguration(fileName, this);
+
+        //ponemos todo los estados iniciales a false
+        this.playerWon = false;
+        this.playerLost = false;
+        this.playerExit = false;
+
+        //le damos los valores del fichero
+        this.remainingTime = cfg.getRemainingTime();
+        this.points        = cfg.getPoints();
+        this.lives         = cfg.getNumLives();
+
+   
+        this.gameObjects = new GameObjectContainer();
+
+        //añadimos a mario (guardamos referencia de filegame)
+        this.mario = cfg.getMario();
+        if (this.mario != null) {
+            this.gameObjects.add(this.mario);
+        }
+
+        //añadimos el resto
+        for (GameObject obj : cfg.getNPCObjects()) {
+            this.gameObjects.add(obj);
+        }
+
+        this.fileLoader = cfg;
+    }
+ 
 
 }

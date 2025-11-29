@@ -1,5 +1,7 @@
 package tp1.logic;
 import tp1.exceptions.GameModelException;
+import tp1.exceptions.GameLoadException;
+
 /*La interface que define el contrato para las operaciones de game model
  * Usado por el controlador para interactuar con la logica del juego
  */
@@ -14,5 +16,6 @@ public interface GameModel extends GameWorld{
     /*Añadir una accion para Mario */
     void addAction(Action action);
     void save(String fileName) throws GameModelException;
+    void load(String fileName) throws GameLoadException;
 
 }
