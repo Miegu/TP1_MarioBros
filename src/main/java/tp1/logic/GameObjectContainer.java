@@ -66,6 +66,9 @@ public class GameObjectContainer {
                 }
             }
         }
+        doInteractionsFrom(mario);
+        // 3. Eliminar Goombas muertos
+        cleanupDeadGoombas();
     }
 }
 
@@ -78,14 +81,59 @@ public class GameObjectContainer {
         return false;
     }
 
+    public void checkMarioInExit() {
+        if (mario != null && exitDoor != null && mario.isInPosition(exitDoor.getPosition())) {
+            //Mario ha llegado a la puerta de salida
+            mario.interactWith(exitDoor);
+        }
+    }
+    private void cleanupDeadGoombas() {
+        goombas.removeIf(goomba -> !goomba.estaVivo());
+    }
+
+    public void doInteractionsFrom(Mario mario) {
+    if (mario == null) {
+        return;
+    }
+    
+    for (Goomba goomba : goombas) {
+        if (mario.interactWith(goomba)) {
+            break;
+        }
+        
+    }
+    }
+
+
     public String positionToString(Position position) {
         StringBuilder sb = new StringBuilder();
-        for (GameObject obj : objects) {
-            if (obj.isAlive() && obj.isInPosition(position)) {
-                sb.append(obj.getIcon());
+        //Comprueba si la posicion es la de Mario
+        if (mario != null && mario.isInPosition(position)) {
+            sb.append(mario.getIcon());
+        }
+        //Comprueba si la posicion es la de la puerta de salida
+        if (exitDoor != null && exitDoor.isInPosition(position)) {
+            sb.append(exitDoor.getIcon());
+        }
+        //Comprueba si la posicion es la de algun Goomba
+        for (Goomba goomba : goombas) {
+            if (goomba.isInPosition(position)) {
+                sb.append(goomba.getIcon());
             }
         }
-        return sb.length() == 0 ? Messages.EMPTY : sb.toString();
+
+        //Comprueba si la posicion es la de alguna tierra
+        for (Land land : lands) {
+            if (land.isInPosition(position)) {
+                sb.append(land.getIcon());
+            }
+        }
+
+        if (sb.length() == 0) {
+         return Messages.EMPTY; //Si no hay nada en esa posicion, devuelve un espacio en blanco
+        } 
+        // Devolver todos los iconos concatenados
+        return sb.toString();
     }
     //Acceso seguro a la lista
     public List<GameObject> getObjects() {

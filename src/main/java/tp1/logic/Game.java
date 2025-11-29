@@ -68,13 +68,14 @@ public class Game implements GameModel, GameStatus, GameWorld{
         reset(this.nLevel); // Mantiene el nivel actual
     }
 
-    @Override
-    public void reset(int level) {
-        //Resetea estado de juego
-        this.remainingTime = 100;
-        this.playerWon = false;
-        this.playerLost = false;
-        this.playerExit = false;
+    /*
+	 * Mario llega ala puerta de salida
+     */
+    public void marioExited() {
+        points += remainingTime * 10;
+        remainingTime = 0;
+        playerWon = true;
+    }
 
         this.nLevel = level;
 

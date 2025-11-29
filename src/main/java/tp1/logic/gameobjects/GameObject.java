@@ -6,9 +6,7 @@ import tp1.logic.Position;
 
 public abstract class GameObject implements GameItem {
 
-    private Position pos; // If you can, make it private.
-    private boolean isAlive;
-    protected GameWorld game;
+    private Position pos;
 
     //Constructor con GameWorld y Position
     public GameObject(GameWorld game, Position pos) {

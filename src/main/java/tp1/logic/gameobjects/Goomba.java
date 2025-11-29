@@ -21,22 +21,25 @@ public class Goomba extends MovingObject {
         // Cuando el Goomba sale del tablero, muere
         dead();
     }
+    public boolean isFalling() {
+        return isFalling;
+    }
 
     @Override
     public void update() {
-        if (!isAlive()) {
-            return;
-        }
-        // 1: Apply gravity
+        if (!vivo) {
+            return; //Si no esta vivo no hace nada duh
+        }        
+        //1: Aplicar gravedad
         applyGravity();
         game.doInteractionsFrom(this);
 
         // 2: Horizontal movement if not falling
         if (!isFalling) {
-            Position currentPos = getPosition();
-            Position newPos;
-            if (direction == Action.LEFT) {
-                newPos = currentPos.left();
+            Position pos = getPosition();
+            Position newPos = pos.move(0, direccion);
+            if (canMoveTo(newPos)) {
+                setPosition(newPos);
             } else {
                 newPos = currentPos.right();
             }
@@ -57,16 +60,19 @@ public class Goomba extends MovingObject {
         return other.receiveInteraction(this);
     }
 
-    @Override
-    public boolean receiveInteraction(Mario mario) {
-        //Mario maneja toda la lógica de la interacción
-        return false;
-    }
-    // OTROS METODOS
-    @Override
-    public String toString() {
-        return "Goomba at " + getPosition().toString();
-    }
+    private void applyGravity() {
+        Position pos = getPosition();
+        Position debajo = pos.move(Action.DOWN.getY(), Action.DOWN.getX());
+        //Si se sale del tablero muere
+        if (!pos.isValidPosition()) {
+            die();
+        }
+        if (!game.getGameObjects().isSolid(debajo)) {
+            isFalling = true;
+            setPosition(debajo);
+        } else {
+            isFalling = false;
+        }
 
     @Override
     public String getIcon() {
@@ -78,32 +84,10 @@ public class Goomba extends MovingObject {
         return false;
     }
 
-    @Override
-    public GameObject parse(String[] objWords, GameWorld game) {
-        // Formato: (fila,col) GOOMBA [LEFT|RIGHT|L|R]
-        if (objWords.length < 2) return null;
-        
-        String type = objWords[1].toUpperCase();
-        if (!type.equals("GOOMBA") && !type.equals("G")) {
-            return null;
-        }
-        
-        Position pos = parsePosition(objWords[0]);
-        if (pos == null) return null;
-        
-        Goomba goomba = new Goomba(game, pos);
-        
-        // Dirección opcional (por defecto LEFT)
-        if (objWords.length >= 3) {
-            String dir = objWords[2].toUpperCase();
-            if (dir.equals("RIGHT") || dir.equals("R")) {
-                goomba.direction = Action.RIGHT; // Derecha
-            } else if (dir.equals("LEFT") || dir.equals("L")) {
-                goomba.direction = Action.LEFT; // Izquierda
-            }
-        }
-        
-        return goomba;
+
+    private boolean canMoveTo(Position position) {
+        //Comprueba si la posicion es valida y no hay ningun Land en esa posicion
+        return position.isValidPosition() && !game.getGameObjects().isSolid(position);
     }
 
     private Position parsePosition(String posStr) {
@@ -125,18 +109,9 @@ public class Goomba extends MovingObject {
     	int row = getPosition().getRow();
         int col = getPosition().getCol();
 
-        //Convertimos dir a texto
-        String dirStr;
-        if (direction == Action.LEFT) {
-            dirStr = "LEFT";
-        }
-        else if (direction == Action.RIGHT) {
-            dirStr = "RIGHT";
-        }
-        else {
-            dirStr = "STOP";   //por si acaso
-        }
-        return "(" + row + "," + col + ") Goomba " + dirStr;
+    @Override
+    public boolean estaVivo() {
+        return vivo;
     }
 
 }
