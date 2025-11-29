@@ -1,17 +1,14 @@
 package tp1.logic;
 
 /**
- *
- * TODO: Immutable class to encapsulate and manipulate positions in the game
- * board
+ * Clase inmutable para manejar la posicion y mantener la encapsulación
  *
  */
 public class Position {
 
-    private int col;
-    private int row;
+    private final int col;
+    private final int row;
 
-    //TODO fill your code
     //Constructor
     public Position(int row, int col) {
         this.row = row;
@@ -29,9 +26,46 @@ public class Position {
         return row;
     }
 
+    public Position right() {
+        return new Position(this.row, this.col + 1);
+    }
+
+    public Position left() {
+        return new Position(this.row, this.col - 1);
+    }
+
+    public Position up() {
+        return new Position(this.row - 1, this.col);
+    }
+
+    public Position down() {
+        return new Position(this.row + 1, this.col);
+    }
+
     //Metodo para moverse: devuelve una nueva posicion, Posicion actual + desplazamiento
     public Position move(int deltaRow, int deltaCol) {
         return new Position(row + deltaRow, col + deltaCol);
+    }
+
+    public Position move(Action action) {
+        if (action == null) {
+            return this;
+        }
+
+        switch (action) {
+            case LEFT:
+                return left();
+            case RIGHT:
+                return right();
+            case UP:
+                return up();
+            case DOWN:
+                return down();
+            case STOP:
+                return this;  // No se mueve
+            default:
+                return this;
+        }
     }
 
     //Comprobar si la posicion es valida
@@ -41,12 +75,42 @@ public class Position {
     }
 
     //Comparar Posiciones
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Position position = (Position) obj;
+        return col == position.col && row == position.row;
+    }
+
     public boolean equals(Position other) {
+        if (other == null) {
+            return false;
+        }
         return this.col == other.col && this.row == other.row;
     }
 
     @Override
     public String toString() {
         return "(" + col + "," + row + ")";
+    }
+
+    public static Position parsePosition(String posStr) {
+        try {
+            // Formato: (fila,columna)
+            posStr = posStr.replace("(", "").replace(")", "").trim();
+            String[] parts = posStr.split(",");
+            if (parts.length != 2) return null;
+            
+            int row = Integer.parseInt(parts[0].trim());
+            int col = Integer.parseInt(parts[1].trim());
+            return new Position(row, col);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

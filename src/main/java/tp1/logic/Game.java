@@ -1,11 +1,21 @@
 package tp1.logic;
 
+import tp1.exceptions.GameLoadException;
+import tp1.exceptions.OffBoardException;
+import tp1.exceptions.GameModelException;
+import tp1.logic.gameobjects.Box;
 import tp1.logic.gameobjects.ExitDoor;
+import tp1.logic.gameobjects.GameItem;
+import tp1.logic.gameobjects.GameObject;
 import tp1.logic.gameobjects.Goomba;
 import tp1.logic.gameobjects.Land;
 import tp1.logic.gameobjects.Mario;
+import tp1.logic.gameobjects.Mushroom;
+import tp1.view.Messages;
+import java.io.FileWriter;
+import java.io.IOException;
 
-public class Game {
+public class Game implements GameModel, GameStatus, GameWorld{
 
     public static final int DIM_X = 30;
     public static final int DIM_Y = 15;
@@ -16,24 +26,27 @@ public class Game {
     private int lives;
     private boolean playerWon;
     private boolean playerLost;
+    private boolean playerExit;
 
     private GameObjectContainer gameObjects;
     private Mario mario;
-
-    //TODO fill your code
+    private GameConfiguration fileLoader; 
+    
     // Atributos del juego
     public Game(int nLevel) {
-        // TODO Auto-generated constructor stub
         this.nLevel = nLevel;
         this.remainingTime = 100;
         this.points = 0;
         this.lives = 3;
         this.playerWon = false;
         this.playerLost = false;
+        this.playerExit = false;
 
         initLevel(nLevel);
     }
 
+    // METODOS DE GAME MODEL
+    @Override
     public void update() {
         //1 Reducir el tiempo
         if (remainingTime <= 0) {
@@ -41,18 +54,18 @@ public class Game {
         } else {
             remainingTime--;
         }
-        //2, Actualizar todos los objetos del juego
+        //2. Actualizar todos los objetos del juego
         gameObjects.update();
     }
 
-    public void addAction(Action accion) {
-        if (mario != null) {
-            mario.addAction(accion);
-        }
+    @Override
+    public boolean isFinished() {
+        return playerWon || playerLost || playerExit;
     }
 
-    public void doInteractionsFrom(Mario mario) {
-        gameObjects.doInteractionsFrom(mario);
+    @Override
+    public void reset() {
+        reset(this.nLevel); // Mantiene el nivel actual
     }
 
     /*
@@ -64,16 +77,120 @@ public class Game {
         playerWon = true;
     }
 
-    public void addPoints(int points) {
-        this.points += points;
+        this.nLevel = level;
+
+        initLevel(this.nLevel);
+
+        //Solo resetear vidas si el nivel es -1
+        if(level == -1) {
+            this.lives = 3;
+            this.points = 0;
+        }
+
+        
     }
 
-    // Mario muere :c
-    public void marioDies() {
+    @Override
+    public void addAction(Action action) {
+        if (mario != null) {
+            mario.addAction(action);
+        }
+    }
+    @Override  
+    public void registerAsMain(GameObject obj) {
+    // Game conoce a Mario, puede hacer cast
+        this.mario = (Mario) obj;
+    }
+
+    @Override
+    public void exit() {
+        this.playerExit = true;
+    }
+
+    // METODOS DE GAME STATUS
+    @Override
+    public int points() {
+        return points;
+    } 
+
+    @Override
+    public int numLives() {
+        return lives;
+    }
+
+    @Override
+    public int remainingTime() {
+        return remainingTime;
+    } 
+
+    @Override
+    public String positionToString(int col, int row) {
+        Position position = new Position(row, col);
+        return gameObjects.positionToString(position);
+    }
+    
+    public boolean playerWins() {
+        return playerWon;
+    }
+
+    public boolean playerLoses() {
+        return playerLost;
+    }
+
+    // METODOS DE GAME WORLD
+    @Override
+    public int getRows() {
+        return DIM_Y;
+    }
+
+    @Override
+    public int getCols() {
+        return DIM_X;
+    }
+
+    @Override
+    public boolean isInside(Position pos) {
+        if(pos == null) return false;
+        return pos.getCol() >= 0 && pos.getCol() < DIM_X
+            && pos.getRow() >= 0 && pos.getRow() < DIM_Y;
+    }
+
+    @Override
+    public boolean isSolid(Position pos) {
+       return gameObjects.isSolid(pos);
+    }
+
+    @Override
+    public void addObject(GameObject obj) throws OffBoardException{
+        //si la pos no esta dentro del tablero lanza la excepcion offboardexception
+        if (!isInside(obj.getPosition())) {
+            throw new OffBoardException(Messages.ERROR_POSITION_OFF_LIMITS + obj.getPosition());
+        }
+        
+        gameObjects.add(obj);
+    }
+
+    @Override
+    public boolean removeObjectAt(Position pos) {
+        return gameObjects.removeObjectAt(pos);
+    }  
+
+    @Override
+    public GameObject getObjectAt(Position pos) {
+        return gameObjects.getObjectAt(pos);
+    }
+
+    @Override
+    public void addScore(int pointsToAdd){
+        this.points += pointsToAdd;
+    }
+
+    @Override
+    public void loseLife(){
         lives--;
-        if (lives <= 0) {
+        if(lives <= 0){
             playerLost = true;
-        } else {
+        }else{
             //Reiniciar el nivel, pero mantienes puntos y vidas
             int currentPoints = this.points;
             int currentLives = this.lives;
@@ -82,55 +199,34 @@ public class Game {
             this.lives = currentLives;
         }
     }
-    //NEcesarioMario y Goomba puedan acceder al contenedor
 
-    public GameObjectContainer getGameObjects() {
-        return gameObjects;
-    }
-
-    public String positionToString(int col, int row) {
-        Position position = new Position(row, col);
-        return gameObjects.positionToString(position);
-    }
-
-    public boolean playerWins() {
-        // TODO Auto-generated method stub
-        return playerWon;
-    }
-
-    public boolean playerLoses() {
-        // TODO Auto-generated method stub
-        return lives <= 0;
-    }
-
-    public int remainingTime() {
-        // TODO Auto-generated method stub
-        return remainingTime;
-    }
-
-    public int points() {
-        // TODO Auto-generated method stub
-        return points;
-    }
-
-    public int numLives() {
-        // TODO Auto-generated method stub
-        return lives;
+    @Override
+    public void marioReachedExit() {
+        points += remainingTime * 10;
+        remainingTime = 0;
+        playerWon = true;
     }
 
     @Override
-    public String toString() {
-        // TODO returns a textual representation of the object
-        return "Vidas: " + lives + "\nTiempo: " + remainingTime + "\nPuntos: " + points;
+    public void doInteractionsFrom(GameItem item) {
+        gameObjects.doInteraction(item);
     }
+
+    // Metodos adicionales    
 
     private void initLevel(int nLevel) {
         switch (nLevel) {
+            case -1:
+                initLevelMinus1();
+                break;
             case 0:
                 initLevel0();
                 break;
             case 1:
                 initLevel1();
+                break;
+            case 2:
+                initLevel2();
                 break;
             default:
                 initLevel0();
@@ -138,33 +234,42 @@ public class Game {
         }
     }
 
-    private void initMap() {
-
+    private void initLevelMinus1(){
+        this.nLevel = -1;
+        this.remainingTime = 100;
+        //Mapa vacío para modo creativo
+        gameObjects = new GameObjectContainer();
+        this.mario = null;
     }
 
     private void initLevel0() {
         this.nLevel = 0;
         this.remainingTime = 100;
-
-        // 1. Mapa
+        //Se crea el contenedor de objetos
         gameObjects = new GameObjectContainer();
+
+        //1. Añadir primero a Mario para que sea el primero en actualizarse
+        this.mario = new Mario(this, new Position(Game.DIM_Y - 3, 0));
+        gameObjects.add(this.mario);
+
+        // 2. Añadrir el terreno
         for (int col = 0; col < 15; col++) {
-            gameObjects.add(new Land(new Position(13, col)));
-            gameObjects.add(new Land(new Position(14, col)));
+            gameObjects.add(new Land(this, new Position(13, col)));
+            gameObjects.add(new Land(this, new Position(14, col)));
         }
 
-        gameObjects.add(new Land(new Position(Game.DIM_Y - 3, 9)));
-        gameObjects.add(new Land(new Position(Game.DIM_Y - 3, 12)));
+        gameObjects.add(new Land(this, new Position(Game.DIM_Y - 3, 9)));
+        gameObjects.add(new Land(this, new Position(Game.DIM_Y - 3, 12)));
         for (int col = 17; col < Game.DIM_X; col++) {
-            gameObjects.add(new Land(new Position(Game.DIM_Y - 2, col)));
-            gameObjects.add(new Land(new Position(Game.DIM_Y - 1, col)));
+            gameObjects.add(new Land(this, new Position(Game.DIM_Y - 2, col)));
+            gameObjects.add(new Land(this, new Position(Game.DIM_Y - 1, col)));
         }
 
-        gameObjects.add(new Land(new Position(9, 2)));
-        gameObjects.add(new Land(new Position(9, 5)));
-        gameObjects.add(new Land(new Position(9, 6)));
-        gameObjects.add(new Land(new Position(9, 7)));
-        gameObjects.add(new Land(new Position(5, 6)));
+        gameObjects.add(new Land(this, new Position(9, 2)));
+        gameObjects.add(new Land(this, new Position(9, 5)));
+        gameObjects.add(new Land(this, new Position(9, 6)));
+        gameObjects.add(new Land(this, new Position(9, 7)));
+        gameObjects.add(new Land(this, new Position(5, 6)));
 
         // Salto final
         int tamX = 8, tamY = 8;
@@ -172,16 +277,13 @@ public class Game {
 
         for (int col = 0; col < tamX; col++) {
             for (int fila = 0; fila < col + 1; fila++) {
-                gameObjects.add(new Land(new Position(posIniY - fila, posIniX + col)));
+                gameObjects.add(new Land(this, new Position(posIniY - fila, posIniX + col)));
             }
         }
+        // 3. Añadir la puerta de salida
+        gameObjects.add(new ExitDoor(this, new Position(Game.DIM_Y - 3, Game.DIM_X - 1)));
 
-        gameObjects.add(new ExitDoor(new Position(Game.DIM_Y - 3, Game.DIM_X - 1)));
-
-        // 3. Personajes
-        this.mario = new Mario(this, new Position(Game.DIM_Y - 3, 0));
-        gameObjects.add(this.mario);
-
+        // 3. Añador enemigos al final
         gameObjects.add(new Goomba(this, new Position(0, 19)));
     }
 
@@ -196,30 +298,90 @@ public class Game {
         gameObjects.add(new Goomba(this, new Position(12, 11)));
         gameObjects.add(new Goomba(this, new Position(12, 14)));
     }
-
-    /**
-     * Resetea el juego al estado inicial manteniendo puntos y vidas
-     */
-    public void reset() {
-        reset(this.nLevel); // Mantiene el nivel actual
+    
+    private void initLevel2() {
+        // Igual que nivel 1 pero con extras
+        initLevel1();
+        
+        //Añadir Box en (9,4) - fila 4, columna 9
+        gameObjects.add(new Box(this, new Position(9, 4)));
+        
+        // Añadir Mushrooms en (12,8) y (2,20)
+        gameObjects.add(new Mushroom(this, new Position(12, 8)));
+        gameObjects.add(new Mushroom(this, new Position(2, 20)));
     }
+    
+    
+    //Metodo para crear archivo de texto con toda la info:
+    @Override
+    public String toString() {
+        //En la primera linea ponemos tiempo, puntos y vidas
+        String result = remainingTime + " " + points + " " + lives + "\n";
 
-    /**
-     * Resetea el juego con un nivel específico
-     *
-     * @param level nivel a cargar
-     */
-    public void reset(int level) {
-        // Resetear tiempo pero mantener puntos y vidas
-        this.remainingTime = 100;
-
-        // Solo cambiar nivel si existe, si no mantener el actual
-        if (level == 0 || level == 1) { // Añadir más niveles según necesites
-            this.nLevel = level;
+        //Ponemos una linea por cada objeto
+        for (GameObject obj : gameObjects.getObjects()) {
+            result = result + obj.serialize() + "\n";
         }
 
-        // Reinicializar el nivel
-        initLevel(this.nLevel);
+       
+        return result;
     }
+
+    
+    @Override
+    public void save(String fileName) throws GameModelException {
+        FileWriter fw = null;
+
+        try {
+            //Abrimos el fichero
+            fw = new FileWriter(fileName);
+
+            //Escribimos la info del juego
+            fw.write(this.toString());
+
+        } catch (IOException e) {
+            //Cualquier problema de escritura lo convertimos en GameModelException
+            throw new GameModelException("Unable to save game to file: " + fileName, e);
+
+        } finally {
+            //Cerrar el fichero si estaba abierto
+            if (fw != null) {
+                try {
+                    fw.close();
+                } catch (IOException ignore) {} //ignoramos error
+            }
+        }
+    }
+    
+    
+    @Override
+    public void load(String fileName) throws GameLoadException {
+    		GameConfiguration cfg = new FileGameConfiguration(fileName, this);
+
+        //ponemos todo los estados iniciales a false
+    		this.playerWon = false;
+    		this.playerLost = false;
+    		this.playerExit = false;
+
+        //le damos los valores del fichero
+    		this.remainingTime = cfg.getRemainingTime();
+    		this.points        = cfg.getPoints();
+    		this.lives         = cfg.getNumLives();
+    		
+    		this.gameObjects = new GameObjectContainer();
+
+        //añadimos a mario (guardamos referencia de filegame)
+    		this.mario = cfg.getMario();
+    		if (this.mario != null) {
+    			this.gameObjects.add(this.mario);
+        }
+
+        //añadimos el resto
+    		for (GameObject obj : cfg.getNPCObjects()) {
+    			this.gameObjects.add(obj);
+        }
+    		this.fileLoader = cfg;
+    }
+ 
 
 }

@@ -4,7 +4,7 @@ import tp1.util.MyStringUtils;
 
 public class Messages {
 	
-	public static final String VERSION = "1.0";
+	public static final String VERSION = "2.X";
 
 	public static final String GAME_NAME = "MarioBross";
 
@@ -35,6 +35,7 @@ public class Messages {
 	public static final String MARIO_WINS = "Thanks, Mario! Your mission is complete.";
 	// Position format
 	public static final String POSITION = "(%s,%s)";
+	public static final String ERROR_POSITION_OFF_LIMITS = "Position outside of the board limits";
 
 	// Other
 	public static final String SPACE = " ";
@@ -45,18 +46,22 @@ public class Messages {
 	public static final String LINE_2TABS = TAB + LINE_TAB;
 
 //Commands
+	// Errores de factorías:
 	public static final String UNKNOWN_COMMAND = "Unknown command: %s";
-	public static final String UNKNOWN_ACTION = "Unknown action: \"%s\"";
-	public static final String ILLEGAL_ACTION = "Illegal action: \"%s\"";
+	public static final String INVALID_GAME_OBJECT = "Invalid game object: %s";
 	// Errores de commandos:
 	public static final String COMMAND_PARAMETERS_MISSING = "Missing parameters";
 	public static final String COMMAND_INCORRECT_PARAMETER_NUMBER = "Incorrect parameter number";
+	public static final String UNKNOWN_ACTION = "Unknown action: \"%s\"";
+	public static final String ILLEGAL_ACTION = "Illegal action: \"%s\"";
 	public static final String INVALID_COMMAND = "Invalid command: %s";
 	public static final String INVALID_COMMAND_PARAMETERS = "Invalid command parameters";
 	public static final String ERROR_COMMAND_EXECUTE = "Command execute problem";
+	public static final String ERROR_ADD_OBJECT = "Error while adding object to the game: %s";
 
 	
 	public static final String HELP_AVAILABLE_COMMANDS = "Available commands:";
+	@Deprecated
 	/* @formatter:off */
 	public static final String[] HELP_LINES = new String[] { HELP_AVAILABLE_COMMANDS,
 		"[a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]+: user performs actions",
@@ -66,8 +71,58 @@ public class Messages {
 		"[e]xit: exits the game"
 	};
 	/* @formatter:on */
-
+	@Deprecated
 	public static final String HELP = String.join(LINE_SEPARATOR+"   ", HELP_LINES) + LINE_SEPARATOR;
+	public static final String COMMAND_HELP_TEXT = "   %s: %s";
+	
+	// UPDATE
+	public static final String COMMAND_UPDATE_NAME = "update";
+	public static final String COMMAND_UPDATE_SHORTCUT = "u";
+	public static final String COMMAND_UPDATE_DETAILS = "[u]pdate | \"\"";
+	public static final String COMMAND_UPDATE_HELP = "user does not perform any action";
+		
+	// EXIT
+	public static final String COMMAND_EXIT_NAME = "exit";
+	public static final String COMMAND_EXIT_SHORTCUT = "e";
+	public static final String COMMAND_EXIT_DETAILS = "[e]xit";
+	public static final String COMMAND_EXIT_HELP = "exits the game";
+	
+	// HELP
+	public static final String COMMAND_HELP_NAME = "help";
+	public static final String COMMAND_HELP_SHORTCUT = "h";
+	public static final String COMMAND_HELP_DETAILS = "[h]elp";
+	public static final String COMMAND_HELP_HELP = "print this help message";
+
+	// RESET
+	public static final String COMMAND_RESET_NAME = "reset";
+	public static final String COMMAND_RESET_SHORTCUT = "r";
+	public static final String COMMAND_RESET_DETAILS = "[r]eset [numLevel]";
+	public static final String COMMAND_RESET_HELP = "reset the game to initial configuration if not numLevel else load the numLevel map";
+
+	// ACTION
+	public static final String COMMAND_ACTION_NAME = "action";
+	public static final String COMMAND_ACTION_SHORTCUT = "a";
+	public static final String COMMAND_ACTION_DETAILS = "[a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]+";
+	public static final String COMMAND_ACTION_HELP = "user performs actions";
+
+	// ADDOBJECT COMMAND
+	public static final String COMMAND_ADDOBJECT_NAME = "addObject";
+	public static final String COMMAND_ADDOBJECT_SHORTCUT = "aO";
+	public static final String COMMAND_ADDOBJECT_DETAILS = "[a]dd[O]bject <object_description>";
+	public static final String COMMAND_ADDOBJECT_HELP = "adds to the board the object given by object_description.\n      <object_description> = (col,row) objName [dir [BIG|SMALL]]. Ej. (12,3) Mario LEFT SMALL";
+
+	public static final String COMMAND_SAVE_NAME = "save";
+    public static final String COMMAND_SAVE_SHORTCUT = "s";
+    public static final String COMMAND_SAVE_DETAILS = "[s]ave <fileName>";
+    public static final String COMMAND_SAVE_HELP = "save the actual configuration in text file <fileName>";
+
+    
+    //LOAD
+ // LOAD
+    public static final String COMMAND_LOAD_NAME     = "load";
+    public static final String COMMAND_LOAD_SHORTCUT = "l";
+    public static final String COMMAND_LOAD_DETAILS  = "[l]oad <fileName>";
+    public static final String COMMAND_LOAD_HELP     = "load the game configuration from text file <fileName>";
 
 //Symbols
 	public static final String EMPTY = "";
@@ -77,4 +132,8 @@ public class Messages {
 	public static final String MARIO_RIGHT = "🧍";//"🧍➡️";
 	public static final String MARIO_LEFT = "🚶";//"⬅️🚶";
 	public static final String GOOMBA = "🐻";
+	
+	public static final String MUSHROOM = "🍄";
+	public static final String BOX = MyStringUtils.repeat("?",ConsoleView.CELL_SIZE);
+	public static final String EMPTY_BOX = MyStringUtils.repeat("0",ConsoleView.CELL_SIZE);
 }

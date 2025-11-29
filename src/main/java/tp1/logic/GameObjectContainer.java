@@ -3,63 +3,78 @@ package tp1.logic;
 import java.util.ArrayList;
 import java.util.List;
 
-import tp1.logic.gameobjects.ExitDoor;
-import tp1.logic.gameobjects.Goomba;
-import tp1.logic.gameobjects.Land;
-import tp1.logic.gameobjects.Mario;
+import tp1.logic.gameobjects.GameItem;
+import tp1.logic.gameobjects.GameObject;
 import tp1.view.Messages;
 
 public class GameObjectContainer {
-    //TODO fill your code
 
-    private List<Land> lands;
-    private List<Goomba> goombas;
-    private ExitDoor exitDoor;
-    private Mario mario;
+    private List<GameObject> objects;
 
     public GameObjectContainer() {
-        this.lands = new ArrayList<>();
-        this.goombas = new ArrayList<>();
-        this.exitDoor = null;
-        this.mario = null;
+        this.objects = new ArrayList<>();
     }
 
-    public void add(Land land) {
-        lands.add(land);
+    // Métodos para añadir objetos al contenedor
+    // Si se añade antes se actualiza antes
+    public void add(GameObject obj) {
+        objects.add(obj);
     }
 
-    public void add(Goomba goomba) {
-        goombas.add(goomba);
+    // Borrar objeto en la posicion
+    public boolean removeObjectAt(Position pos) {
+        return objects.removeIf(obj -> obj.isInPosition(pos));
     }
-
-    public void add(ExitDoor exitDoor) {
-        this.exitDoor = exitDoor;
-    }
-
-    public void add(Mario mario) {
-        this.mario = mario;
-    }
-
-    public void update() {
-        // 1. PRIMERO Mario (orden importante según especificación)
-        if (mario != null) {
-            mario.update();
+    //Obtenes objeto en la posicion dada
+    public GameObject getObjectAt(Position pos) {
+        for (GameObject obj : objects) {
+            if (obj.isInPosition(pos)) {
+                return obj;
+            }
         }
+        return null;
+    }
+    // Actualizar todos los objetos vivos en orden de inserción
+    public void update() {
+        //Actualizar
+        for (GameObject obj : new ArrayList<>(objects)) {
+            if (obj.isAlive()) {
+                obj.update();
+            }
+        }
+        //Limpiar objetos muertos que puedan ser removidos
+        objects.removeIf(obj -> !obj.isAlive());
+    }
 
-        checkMarioInExit();
-        // 2. DESPUÉS los Goombas
-        for (Goomba goomba : goombas) {
-            goomba.update();
+    public void doInteraction(GameItem item){
+        // Solo procesar si ambos están vivos y no son el mismo objeto
+        for(GameObject obj : new ArrayList<>(objects)){
+        if(obj.isAlive() && item.isAlive() && obj != item){
+            // Primera llamada
+            boolean interacted1 = item.interactWith(obj);
+
+            // Si hubo interacción exitosa, salir del bucle
+            if(interacted1){
+                break;
+            }
+            if(obj.isAlive() && item.isAlive()){
+                boolean interacted2 = obj.interactWith(item);
+                
+                // Si hubo interacción exitosa, salir del bucle
+                if(interacted2){
+                    break;
+                }
+            }
         }
         doInteractionsFrom(mario);
         // 3. Eliminar Goombas muertos
         cleanupDeadGoombas();
     }
+}
 
     public boolean isSolid(Position position) {
-        //Comprueba si la posicion es la de algun Land
-        for (Land land : lands) {
-            if (land.isInPosition(position)) {
+        for (GameObject obj : objects) {
+            if (obj.isAlive() && obj.isSolid() && obj.isInPosition(position)) {
                 return true;
             }
         }
@@ -120,5 +135,8 @@ public class GameObjectContainer {
         // Devolver todos los iconos concatenados
         return sb.toString();
     }
-
+    //Acceso seguro a la lista
+    public List<GameObject> getObjects() {
+        return new ArrayList<>(objects);
+    }
 }
