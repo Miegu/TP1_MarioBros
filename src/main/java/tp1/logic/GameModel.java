@@ -1,15 +1,27 @@
 package tp1.logic;
-/*La interface que define el contrato para las operaciones de game model
- * Usado por el controlador para interactuar con la logica del juego
+
+import tp1.exceptions.OffBoardException;
+import tp1.logic.gameobjects.GameObject;
+
+/**
+ * Interfaz que define el contrato para las operaciones del modelo del juego.
+ * Responsable de la GESTIÓN DE OBJETOS del juego.
+ * Usado por el controlador para interactuar con la lógica del juego.
  */
-public interface GameModel extends GameWorld{
+public interface GameModel{
+    
+    // ===== GESTIÓN DE OBJETOS DEL JUEGO =====
+    void addObject(GameObject object) throws OffBoardException;
+    boolean removeObjectAt(Position pos);
+    GameObject getObjectAt(Position pos);
+    
+    // ===== CONTROL DEL FLUJO DEL JUEGO =====
     boolean isFinished();
-    /*Para actualizar las estadisticas del juego */
     void update();
     void reset();
-    //Reseteo con nivel especifico
     void reset(int level);
     void exit();
-    /*Añadir una accion para Mario */
+    
+    // ===== ACCIONES DE MARIO =====
     void addAction(Action action);
 }
