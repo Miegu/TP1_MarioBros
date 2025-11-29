@@ -116,6 +116,14 @@ public class Messages {
     public static final String COMMAND_SAVE_DETAILS = "[s]ave <fileName>";
     public static final String COMMAND_SAVE_HELP = "save the actual configuration in text file <fileName>";
 
+    
+    //LOAD
+ // LOAD
+    public static final String COMMAND_LOAD_NAME     = "load";
+    public static final String COMMAND_LOAD_SHORTCUT = "l";
+    public static final String COMMAND_LOAD_DETAILS  = "[l]oad <fileName>";
+    public static final String COMMAND_LOAD_HELP     = "load the game configuration from text file <fileName>";
+
 //Symbols
 	public static final String EMPTY = "";
 	public static final String LAND = MyStringUtils.repeat("▓",ConsoleView.CELL_SIZE);

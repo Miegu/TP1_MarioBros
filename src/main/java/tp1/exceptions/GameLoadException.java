@@ -1,12 +1,11 @@
 package tp1.exceptions;
 
 public class GameLoadException extends Exception {
-
-    public GameLoadException(String message) {
-        super(message);
+	public GameLoadException(String message) {
+		super(message);
     }
-
-    public GameLoadException(String message, Throwable cause) {
-        super(message, cause);
+	
+	public GameLoadException(String message, Throwable cause) {
+		super(message, cause);
     }
 }

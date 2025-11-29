@@ -31,6 +31,7 @@ public class Game implements GameModel, GameStatus, GameWorld{
     private GameObjectContainer gameObjects;
     private Mario mario;
     private GameConfiguration fileLoader; 
+    
     // Atributos del juego
     public Game(int nLevel) {
         this.nLevel = nLevel;
@@ -354,33 +355,31 @@ public class Game implements GameModel, GameStatus, GameWorld{
     
     @Override
     public void load(String fileName) throws GameLoadException {
-        GameConfiguration cfg = new FileGameConfiguration(fileName, this);
+    		GameConfiguration cfg = new FileGameConfiguration(fileName, this);
 
         //ponemos todo los estados iniciales a false
-        this.playerWon = false;
-        this.playerLost = false;
-        this.playerExit = false;
+    		this.playerWon = false;
+    		this.playerLost = false;
+    		this.playerExit = false;
 
         //le damos los valores del fichero
-        this.remainingTime = cfg.getRemainingTime();
-        this.points        = cfg.getPoints();
-        this.lives         = cfg.getNumLives();
-
-   
-        this.gameObjects = new GameObjectContainer();
+    		this.remainingTime = cfg.getRemainingTime();
+    		this.points        = cfg.getPoints();
+    		this.lives         = cfg.getNumLives();
+    		
+    		this.gameObjects = new GameObjectContainer();
 
         //añadimos a mario (guardamos referencia de filegame)
-        this.mario = cfg.getMario();
-        if (this.mario != null) {
-            this.gameObjects.add(this.mario);
+    		this.mario = cfg.getMario();
+    		if (this.mario != null) {
+    			this.gameObjects.add(this.mario);
         }
 
         //añadimos el resto
-        for (GameObject obj : cfg.getNPCObjects()) {
-            this.gameObjects.add(obj);
+    		for (GameObject obj : cfg.getNPCObjects()) {
+    			this.gameObjects.add(obj);
         }
-
-        this.fileLoader = cfg;
+    		this.fileLoader = cfg;
     }
  
 
