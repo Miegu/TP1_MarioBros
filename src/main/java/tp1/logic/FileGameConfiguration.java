@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import tp1.exceptions.ObjectParseException;
 import tp1.logic.gameobjects.GameObjectFactory;
-import tp1.exceptions.OffBoardException;
 import tp1.exceptions.GameLoadException;
 import tp1.logic.gameobjects.GameObject;
 import tp1.logic.gameobjects.Mario;
@@ -91,9 +90,9 @@ public class FileGameConfiguration implements GameConfiguration {
 
         } 
         
-        catch (ObjectParseException | OffBoardException e) {
+        catch (ObjectParseException e) {
             // //error al parsear->lanzamos excepcion
-            throw new GameLoadException(""));
+            throw new GameLoadException("");
 
         }
         
