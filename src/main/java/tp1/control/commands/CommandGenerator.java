@@ -20,12 +20,7 @@ public class CommandGenerator {
         new SaveCommand()
     );
 
-    /**
-     * Parsea la entrada del usuario y devuelve el comando correspondiente.
-     * 
-     * @param commandWords Array de palabras introducidas por el usuario
-     * @return Comando parseado o null si no se reconoce
-     */
+    
     public static Command parse(String[] words) throws CommandParseException {
         for (Command c : AVAILABLE_COMMANDS) {
             Command parsed = c.parse(words);
@@ -38,11 +33,7 @@ public class CommandGenerator {
         );
     }
 
-    /**
-     * Devuelve el texto de ayuda de todos los comandos disponibles.
-     * 
-     * @return String con la ayuda de todos los comandos
-     */
+
     public static String commandHelp() {
         StringBuilder commands = new StringBuilder();
 
