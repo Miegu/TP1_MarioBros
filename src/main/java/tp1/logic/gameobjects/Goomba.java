@@ -118,5 +118,16 @@ public class Goomba extends MovingObject {
         return null;
     }
     }
+    // Serializacion del objeto
+    @Override
+    public String serialize() {
+        int row = getPosition().getRow();
+        int col = getPosition().getCol();
+        
+        String dirStr = (direction == Action.LEFT) ? "LEFT" : "RIGHT";
+        
+        return "(" + row + "," + col + ") Goomba " + dirStr;
+    }
+
 
 }

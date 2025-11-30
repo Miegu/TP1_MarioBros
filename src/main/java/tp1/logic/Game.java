@@ -273,8 +273,23 @@ public class Game implements GameModel, GameStatus, GameWorld{
 
     @Override
     public String toString() {
-        return "Vidas: " + lives + "\nTiempo: " + remainingTime + "\nPuntos: " + points;
+        StringBuilder sb = new StringBuilder();
+        
+        // Primera línea: estado del juego
+        sb.append(remainingTime).append(" ")
+        .append(points).append(" ")
+        .append(lives).append("\n");
+        
+        // Resto de líneas: objetos del juego
+        for (GameObject obj : gameObjects.getObjects()) {
+            if (obj.isAlive()) {
+                sb.append(obj.serialize()).append("\n");
+            }
+        }
+        
+        return sb.toString();
     }
+
 
     private void initLevel(int nLevel) {
         switch (nLevel) {

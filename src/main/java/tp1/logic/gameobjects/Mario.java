@@ -377,4 +377,23 @@ public class Mario extends MovingObject {
             return null;
         }
     }
+    // Serializacion del objeto
+    @Override
+    public String serialize() {
+        int row = getPosition().getRow();
+        int col = getPosition().getCol();
+        
+        String dirStr;
+        switch (direction) {
+            case LEFT:  dirStr = "LEFT";  break;
+            case RIGHT: dirStr = "RIGHT"; break;
+            case STOP:  dirStr = "STOP";  break;
+            default:    dirStr = "RIGHT"; break;
+        }
+        
+        String sizeStr = big ? "BIG" : "SMALL";
+        
+        return "(" + row + "," + col + ") Mario " + dirStr + " " + sizeStr;
+    }
+
 }

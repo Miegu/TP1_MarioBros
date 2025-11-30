@@ -1,9 +1,9 @@
 package tp1.logic.gameobjects;
 
+import tp1.exceptions.OffBoardException;
 import tp1.logic.GameWorld;
 import tp1.logic.Position;
 import tp1.view.Messages;
-import tp1.exceptions.OffBoardException;
 
 public class Box extends GameObject {
     
@@ -119,5 +119,15 @@ public class Box extends GameObject {
     public String toString() {
         return "Box at " + getPosition().toString() + (isEmpty ? " (empty)" : " (full)");
     }
+    
+    // Serializacion del objeto
+    @Override
+    public String serialize() {
+        int row = getPosition().getRow();
+        int col = getPosition().getCol();
+        String state = isEmpty ? "EMPTY" : "FULL";
+        return "(" + row + "," + col + ") Box " + state;
+    }
+
 }
 

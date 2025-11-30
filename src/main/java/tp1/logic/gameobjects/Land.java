@@ -69,4 +69,13 @@ public class Land extends GameObject {
         return null;
     }
     }
+
+    // Serializacion del objeto
+    @Override
+    public String serialize() {
+        int row = getPosition().getRow();
+        int col = getPosition().getCol();
+        return "(" + row + "," + col + ") Land";
+    }
+
 }

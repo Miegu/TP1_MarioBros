@@ -85,6 +85,8 @@ public abstract class GameObject implements GameItem {
     // Representacion en String del objeto
     @Override
     public abstract String toString();
+    // Serializacion del objeto
+    public abstract String serialize();
     
     //Cada subclase debe implementar su propio Interact With
     @Override
