@@ -47,27 +47,17 @@ public class GameObjectContainer {
     }
 
     public void doInteraction(GameItem item){
-        // Solo procesar si ambos están vivos y no son el mismo objeto
         for(GameObject obj : new ArrayList<>(objects)){
-        if(obj.isAlive() && item.isAlive() && obj != item){
-            // Primera llamada
-            boolean interacted1 = item.interactWith(obj);
-
-            // Si hubo interacción exitosa, salir del bucle
-            if(interacted1){
-                break;
-            }
-            if(obj.isAlive() && item.isAlive()){
-                boolean interacted2 = obj.interactWith(item);
+            if(obj.isAlive() && item.isAlive() && obj != item){
+                // ✅ SIN breaks - procesar TODAS las interacciones
+                item.interactWith(obj);
                 
-                // Si hubo interacción exitosa, salir del bucle
-                if(interacted2){
-                    break;
+                if(obj.isAlive() && item.isAlive()){
+                    obj.interactWith(item);
                 }
             }
         }
     }
-}
 
     public boolean isSolid(Position position) {
         for (GameObject obj : objects) {
