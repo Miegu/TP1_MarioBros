@@ -4,8 +4,10 @@ import java.util.Arrays;
 
 import tp1.exceptions.CommandExecuteException;
 import tp1.exceptions.CommandParseException;
+import tp1.exceptions.ObjectParseException;
 import tp1.exceptions.OffBoardException;
 import tp1.logic.GameModel;
+import tp1.logic.GameWorld;
 import tp1.logic.gameobjects.GameObject;
 import tp1.logic.gameobjects.GameObjectFactory;
 import tp1.view.GameView;
@@ -49,24 +51,13 @@ public class AddObjectCommand extends AbstractCommand {
     
     @Override
     public void execute(GameModel game, GameView view) throws CommandExecuteException{
-        // 1. Intenta parsear el objeto usando GameObjectFactory
-        GameObject obj = GameObjectFactory.parse(objectDescription, game);
-        
-        if (obj == null) {
-            // Error: objeto no válido
-            //Construye mensaje de error
-            String objString = String.join(" ", objectDescription);
-            throw new CommandExecuteException(String.format(Messages.INVALID_GAME_OBJECT, objString));
-        }
-        
-        //2. Añadir el objeto al juego
         try {
-            game.addObject(obj);
-        } catch (OffBoardException e) {
-            //Se envuelve para no perder informacion
-            throw new CommandExecuteException(Messages.ERROR_ADD_OBJECT, e);
+            GameWorld gameWorld = (GameWorld) game;
+            GameObject obj = GameObjectFactory.parse(objectDescription, gameWorld);
+            gameWorld.addObject(obj);
+            view.showGame();
+        } catch (ObjectParseException | OffBoardException e) {
+            throw new CommandExecuteException(Messages.ERROR_COMMAND_EXECUTE, e);
         }
-
-        view.showGame();
     }
 }

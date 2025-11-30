@@ -1,5 +1,8 @@
 package tp1.logic;
 
+
+import tp1.exceptions.GameLoadException;
+import tp1.exceptions.GameModelException;
 import tp1.exceptions.OffBoardException;
 import tp1.logic.gameobjects.GameObject;
 
@@ -24,4 +27,7 @@ public interface GameModel{
     
     // ===== ACCIONES DE MARIO =====
     void addAction(Action action);
+
+    void load(String fileName) throws GameLoadException;
+    void save(String fileName) throws GameModelException;
 }

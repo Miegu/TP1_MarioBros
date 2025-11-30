@@ -1,6 +1,10 @@
 package tp1.logic;
 
-import tp1.exceptions.ObjectParseException;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import tp1.exceptions.GameLoadException;
+import tp1.exceptions.GameModelException;
 import tp1.exceptions.OffBoardException;
 import tp1.logic.gameobjects.Box;
 import tp1.logic.gameobjects.ExitDoor;
@@ -11,6 +15,7 @@ import tp1.logic.gameobjects.Land;
 import tp1.logic.gameobjects.Mario;
 import tp1.logic.gameobjects.Mushroom;
 import tp1.view.Messages;
+
 
 public class Game implements GameModel, GameStatus, GameWorld{
 
@@ -27,6 +32,7 @@ public class Game implements GameModel, GameStatus, GameWorld{
 
     private GameObjectContainer gameObjects;
     private Mario mario;
+    private GameConfiguration fileLoader;
 
     // Atributos del juego
     public Game(int nLevel) {
@@ -101,6 +107,60 @@ public class Game implements GameModel, GameStatus, GameWorld{
     @Override
     public void exit() {
         this.playerExit = true;
+    }
+    @Override
+    public void save(String fileName) throws GameModelException {
+        FileWriter fw = null;
+
+        try {
+            //Abrimos el fichero
+            fw = new FileWriter(fileName);
+
+            //Escribimos la info del juego
+            fw.write(this.toString());
+
+        } catch (IOException e) {
+            //Cualquier problema de escritura lo convertimos en GameModelException
+            throw new GameModelException("Unable to save game to file: " + fileName, e);
+
+        } finally {
+            //Cerrar el fichero si estaba abierto
+            if (fw != null) {
+                try {
+                    fw.close();
+                } catch (IOException ignore) {} //ignoramos error
+            }
+        }
+    }
+    
+    
+    @Override
+    public void load(String fileName) throws GameLoadException {
+    		GameConfiguration cfg = new FileGameConfiguration(fileName, this);
+
+        //ponemos todo los estados iniciales a false
+    		this.playerWon = false;
+    		this.playerLost = false;
+    		this.playerExit = false;
+
+        //le damos los valores del fichero
+    		this.remainingTime = cfg.getRemainingTime();
+    		this.points        = cfg.getPoints();
+    		this.lives         = cfg.getNumLives();
+    		
+    		this.gameObjects = new GameObjectContainer();
+
+        //añadimos a mario (guardamos referencia de filegame)
+    		this.mario = cfg.getMario();
+    		if (this.mario != null) {
+    			this.gameObjects.add(this.mario);
+        }
+
+        //añadimos el resto
+    		for (GameObject obj : cfg.getNPCObjects()) {
+    			this.gameObjects.add(obj);
+        }
+    		this.fileLoader = cfg;
     }
 
     // METODOS DE GAME STATUS

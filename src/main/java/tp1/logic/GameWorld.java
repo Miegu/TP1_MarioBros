@@ -1,5 +1,6 @@
 package tp1.logic;
 
+import tp1.exceptions.OffBoardException;
 import tp1.logic.gameobjects.GameItem;
 import tp1.logic.gameobjects.GameObject;
 
@@ -27,4 +28,5 @@ public interface GameWorld{
 
     // ===== GESTIÓN DE INTERACCIONES =====
     void doInteractionsFrom(GameItem item);
+    void addObject(GameObject object) throws OffBoardException;
 }
