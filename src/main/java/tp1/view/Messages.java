@@ -120,6 +120,15 @@ public class Messages {
 	public static final String COMMAND_ADDOBJECT_DETAILS = "[a]dd[O]bject <object_description>";
 	public static final String COMMAND_ADDOBJECT_HELP = "adds to the board the object given by object_description.\n      <object_description> = (col,row) objName [dir [BIG|SMALL]]. Ej. (12,3) Mario LEFT SMALL";
 
+	// Load errors
+	public static final String ERROR_EMPTY_FILE = "Empty configuration file: ";
+	public static final String ERROR_INVALID_GAME_STATUS = "Invalid game status line";
+	public static final String ERROR_NO_MARIO = "No Mario found in configuration file";
+	public static final String ERROR_FILE_NOT_FOUND = "Configuration file not found: ";
+	public static final String ERROR_INVALID_GAME_OBJECT = "Invalid game object in file";
+	public static final String ERROR_LOADING_GAME = "Error loading game from file: ";
+
+
 
 //Symbols
 	public static final String EMPTY = "";
