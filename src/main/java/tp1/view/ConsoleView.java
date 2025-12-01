@@ -167,11 +167,12 @@ public class ConsoleView extends GameView {
     @Override
     public String[] getPrompt() {
         System.out.print(Messages.PROMPT);
+        
+        if (!scanner.hasNextLine()) {
+            return new String[0];  // Devolver array vacío si no hay más entrada
+        }
+        
         String line = scanner.nextLine();
-        String[] words = line.trim().split("\\s+");
-
-        System.out.println(Messages.DEBUG.formatted(line));
-
-        return words;
+        return line.trim().split("\\s+");
     }
 }

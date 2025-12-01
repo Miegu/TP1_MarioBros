@@ -1,5 +1,6 @@
 package tp1.logic.gameobjects;
 
+import tp1.exceptions.ObjectParseException;
 import tp1.logic.GameWorld;
 import tp1.logic.Position;
 import tp1.view.Messages;
@@ -51,8 +52,15 @@ public class ExitDoor extends GameObject {
     }
 
     @Override
-    public GameObject parse(String[] objWords, GameWorld game) {
+    public GameObject parse(String[] objWords, GameWorld game) throws ObjectParseException {
         // Formato: (fila,col) EXITDOOR
+
+        if (objWords.length > 2) {
+            throw new ObjectParseException(
+                Messages.ERROR_OBJECT_PARSE_TOO_MANY_ARGS.formatted(String.join(" ", objWords))
+            );
+        }
+
         if (objWords.length < 2) return null;
         
         String type = objWords[1].toUpperCase();
@@ -60,23 +68,9 @@ public class ExitDoor extends GameObject {
             return null;
         }
         
-        Position pos = parsePosition(objWords[0]);
-        if (pos == null) return null;
+        Position pos = parsePosition(objWords[0], objWords);
         
         return new ExitDoor(game, pos);
-    }
-
-    private Position parsePosition(String posStr) {
-        try {
-        // Formato: (fila,columna)
-        posStr = posStr.replace("(", "").replace(")", "");
-        String[] parts = posStr.split(",");
-        int row = Integer.parseInt(parts[0]);
-        int col = Integer.parseInt(parts[1]);
-        return new Position(row, col);
-    } catch (Exception e) {
-        return null;
-        }
     }
 
     // Serializacion del objeto

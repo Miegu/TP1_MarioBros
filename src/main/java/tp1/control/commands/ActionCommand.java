@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tp1.exceptions.ActionParseException;
+import tp1.exceptions.CommandExecuteException;
 import tp1.exceptions.CommandParseException;
 import tp1.logic.Action;
 import tp1.logic.GameModel;
@@ -40,7 +41,13 @@ public class ActionCommand extends AbstractCommand {
      * Añade todas las acciones a Mario y actualiza el juego.
      */
     @Override
-    public void execute(GameModel game, GameView view){
+    public void execute(GameModel game, GameView view) throws CommandExecuteException {
+        //Valida que la lista de acciones no esté vacía
+        if (actions == null || actions.isEmpty()) {
+            throw new CommandExecuteException(
+                Messages.ERROR_INCORRECT_ACTION_EMPTY_LIST
+            );
+        }
         //Añade todas las acciones a Mario
         for(Action action : actions){
             game.addAction(action);
@@ -54,30 +61,32 @@ public class ActionCommand extends AbstractCommand {
 
     @Override
     public Command parse(String[] commandWords) throws CommandParseException {
-        
-        //Necesitamos al menos el comando y una accion
-        if (commandWords.length < 2) {
-            throw new CommandParseException(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER);
-        }
         //Comprueba si la primera palabra coincide con el comando
         if (!matchCommandName(commandWords[0])) {
             return null;
         }
+        //Necesitamos al menos el comando y una accion
+        if (commandWords.length < 2) {
+            throw new CommandParseException(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER);
+        }
 
         // Parsea las acciones
         List<Action> parsedActions = new ArrayList<>();
+        List<String> failedActions = new ArrayList<>();
 
         for (int i = 1; i < commandWords.length; i++) {
             try {
                 Action action = Action.parse(commandWords[i]);
                 parsedActions.add(action);
             } catch (ActionParseException ape) {
-                // Envolver la excepción del parseo de Action
-                throw new CommandParseException(
-                    Messages.UNKNOWN_ACTION.formatted(commandWords[i]), 
-                    ape
-                );
+                failedActions.add(commandWords[i]);
             }
+        }
+        
+        if (parsedActions.isEmpty()) {
+            throw new CommandParseException(
+                Messages.ERROR_INCORRECT_ACTION_EMPTY_LIST
+            );
         }
 
         //Devuelve un nuevo comando con las acciones parseadas

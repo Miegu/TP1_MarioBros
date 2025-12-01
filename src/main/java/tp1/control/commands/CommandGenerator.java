@@ -16,6 +16,8 @@ public class CommandGenerator {
         new ActionCommand(),
         new UpdateCommand(),
         new ResetCommand(),
+        new SaveCommand(), 
+        new LoadCommand(), 
         new HelpCommand(),
         new ExitCommand()
     );

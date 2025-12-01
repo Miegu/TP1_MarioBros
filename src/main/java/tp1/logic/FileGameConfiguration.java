@@ -77,7 +77,6 @@ public class FileGameConfiguration implements GameConfiguration {
                 String[] objWords = line.split(" ");
                 GameObject obj = GameObjectFactory.parse(objWords, game);
                 
-                // ✅ SOLUCIÓN: Comparar STRING en lugar de instanceof
                 // Si el tipo del objeto es "Mario" o "M", guardarlo como mario
                 if (objWords.length >= 2) {
                     String objectType = objWords[1].toUpperCase();
@@ -101,14 +100,14 @@ public class FileGameConfiguration implements GameConfiguration {
         
         catch (FileNotFoundException e) {
             throw new GameLoadException(
-                Messages.ERROR_FILE_NOT_FOUND + fileName, 
+                Messages.ERROR_FILE_NOT_FOUND_QUOTED.formatted(fileName), 
                 e
             );
         } 
         
         catch (ObjectParseException e) {
             throw new GameLoadException(
-                Messages.ERROR_INVALID_GAME_OBJECT,  
+                Messages.ERROR_INVALID_GAME_OBJECT_FILE,  
                 e
             );
         }

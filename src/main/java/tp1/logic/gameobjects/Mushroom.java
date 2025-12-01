@@ -1,5 +1,6 @@
 package tp1.logic.gameobjects;
 
+import tp1.exceptions.ObjectParseException;
 import tp1.logic.Action;
 import tp1.logic.GameWorld;
 import tp1.logic.Position;
@@ -81,8 +82,14 @@ public class Mushroom extends MovingObject {
     }
 
     @Override
-    public GameObject parse(String[] objWords, GameWorld game) {
+    public GameObject parse(String[] objWords, GameWorld game) throws ObjectParseException{
         // Formato: (fila,col) MUSHROOM o MU
+        if (objWords.length > 3) {
+            throw new ObjectParseException(
+                Messages.ERROR_OBJECT_PARSE_TOO_MANY_ARGS.formatted(String.join(" ", objWords))
+            );
+        }
+
         if (objWords.length < 2) return null;
         
         String type = objWords[1].toUpperCase();
@@ -90,23 +97,30 @@ public class Mushroom extends MovingObject {
             return null;
         }
         
-        Position pos = parsePosition(objWords[0]);
-        if (pos == null) return null;
+        Position pos = parsePosition(objWords[0], objWords);
+        Mushroom mushroom = new Mushroom(game, pos);
         
-        return new Mushroom(game, pos);
+        if (objWords.length >= 3) {
+            String dir = objWords[2].toUpperCase();
+            switch (dir) {
+                case "RIGHT":
+                case "R":
+                    mushroom.direction = Action.RIGHT;
+                    break;
+                case "LEFT":
+                case "L":
+                    mushroom.direction = Action.LEFT;
+                    break;
+                default:
+                    throw new ObjectParseException(
+                        Messages.ERROR_INVALID_MOVING_DIRECTION.formatted(String.join(" ", objWords))
+                    );
+            }
+        }
+        
+        return mushroom;
     }
     
-    private Position parsePosition(String posStr) {
-        try {
-            posStr = posStr.replace("(", "").replace(")", "");
-            String[] parts = posStr.split(",");
-            int row = Integer.parseInt(parts[0]);
-            int col = Integer.parseInt(parts[1]);
-            return new Position(row, col);
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
     // Serializacion del objeto
     @Override

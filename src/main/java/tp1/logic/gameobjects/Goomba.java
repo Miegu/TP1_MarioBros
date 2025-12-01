@@ -1,5 +1,7 @@
 package tp1.logic.gameobjects;
 
+import tp1.exceptions.ActionParseException;
+import tp1.exceptions.ObjectParseException;
 import tp1.logic.Action;
 import tp1.logic.GameWorld;
 import tp1.logic.Position;
@@ -41,10 +43,10 @@ public class Goomba extends MovingObject {
                 newPos = currentPos.right();
             }
 
-            if(canMoveTo(newPos)){
+            if (canMoveTo(newPos)) {
                 setPosition(newPos);
                 game.doInteractionsFrom(this);
-            }else{
+            } else {
                 //Cambiar direccion si choca con algo
                 direction = (direction == Action.LEFT) ? Action.RIGHT : Action.LEFT;
             }
@@ -62,6 +64,7 @@ public class Goomba extends MovingObject {
         //Mario maneja toda la lógica de la interacción
         return false;
     }
+
     // OTROS METODOS
     @Override
     public String toString() {
@@ -79,55 +82,83 @@ public class Goomba extends MovingObject {
     }
 
     @Override
-    public GameObject parse(String[] objWords, GameWorld game) {
+    public GameObject parse(String[] objWords, GameWorld game) throws ObjectParseException {
         // Formato: (fila,col) GOOMBA [LEFT|RIGHT|L|R]
-        if (objWords.length < 2) return null;
+        System.out.println("=== GOOMBA PARSE DEBUG ===");
+        System.out.println("objWords.length = " + objWords.length);
+        for (int i = 0; i < objWords.length; i++) {
+            System.out.println("objWords[" + i + "] = '" + objWords[i] + "'");
+        }
+        System.out.println("==========================");
         
+        if (objWords.length < 2) {
+            return null;
+        }
+
         String type = objWords[1].toUpperCase();
         if (!type.equals("GOOMBA") && !type.equals("G")) {
             return null;
         }
-        
-        Position pos = parsePosition(objWords[0]);
-        if (pos == null) return null;
-        
+
+        Position pos = parsePosition(objWords[0], objWords);
+
         Goomba goomba = new Goomba(game, pos);
-        
+
         // Dirección opcional (por defecto LEFT)
         if (objWords.length >= 3) {
             String dir = objWords[2].toUpperCase();
-            if (dir.equals("RIGHT") || dir.equals("R")) {
-                goomba.direction = Action.RIGHT; // Derecha
-            } else if (dir.equals("LEFT") || dir.equals("L")) {
-                goomba.direction = Action.LEFT; // Izquierda
+            boolean validDirection = false;
+            switch (dir) {
+                case "RIGHT":
+                case "R":
+                    goomba.direction = Action.RIGHT;
+                    validDirection = true;
+                    break;
+                case "LEFT":
+                case "L":
+                    goomba.direction = Action.LEFT;
+                    validDirection = true;
+                    break;
+            }
+            if (!validDirection) {
+                try {
+                    Action.parse(dir);
+                    // Si llegamos aquí, es una acción válida pero no para Goomba
+                    throw new ObjectParseException(
+                            Messages.ERROR_INVALID_MOVING_DIRECTION.formatted(String.join(" ", objWords))
+                    );
+                } catch (ActionParseException e) {
+                    // Es una dirección completamente desconocida
+                    ObjectParseException innerException = new ObjectParseException(
+                            Messages.UNKNOWN_ACTION.formatted(dir),
+                            e
+                    );
+                    throw new ObjectParseException(
+                            Messages.ERROR_UNKNOWN_MOVING_DIRECTION.formatted(String.join(" ", objWords)),
+                            innerException
+                    );
+                }
             }
         }
-        
+
+        if (objWords.length > 3) {
+            throw new ObjectParseException(
+                    Messages.ERROR_OBJECT_PARSE_TOO_MANY_ARGS.formatted(String.join(" ", objWords))
+            );
+        }
+
         return goomba;
     }
 
-    private Position parsePosition(String posStr) {
-        try {
-        // Formato: (fila,columna)
-        posStr = posStr.replace("(", "").replace(")", "");
-        String[] parts = posStr.split(",");
-        int row = Integer.parseInt(parts[0]);
-        int col = Integer.parseInt(parts[1]);
-        return new Position(row, col);
-    } catch (Exception e) {
-        return null;
-    }
-    }
     // Serializacion del objeto
     @Override
     public String serialize() {
         int row = getPosition().getRow();
         int col = getPosition().getCol();
-        
+
         String dirStr = (direction == Action.LEFT) ? "LEFT" : "RIGHT";
-        
+
         return "(" + row + "," + col + ") Goomba " + dirStr;
     }
-
 
 }

@@ -1,5 +1,6 @@
 package tp1.control.commands;
 
+import tp1.exceptions.CommandExecuteException;
 import tp1.exceptions.CommandParseException;
 import tp1.logic.GameModel;
 import tp1.view.GameView;
@@ -56,14 +57,16 @@ public class ResetCommand extends AbstractCommand {
     throw new CommandParseException(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER);
 }
 
-    @Override
-    public void execute(GameModel game, GameView view) {
-        if(level == null) {
-            game.reset(); // Resetea al nivel actual
+   @Override
+    public void execute(GameModel game, GameView view) throws CommandExecuteException {
+        if (level != null) {
+            if (level < -1 || level > 2) {
+                throw new CommandExecuteException("Not valid level number");
+            }
+            game.reset(level);
         } else {
-            game.reset(level); // Resetea al nivel especificado
+            game.reset();
         }
-        // Mostrar el juego después del reset
         view.showGame();
     }
 }

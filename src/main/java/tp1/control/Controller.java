@@ -30,8 +30,13 @@ public class Controller {
 
         while (!game.isFinished()) {
             String[] words = view.getPrompt();
-
+            
+            if (words.length == 0) {
+                break;
+            }
             try {
+                System.out.println(Messages.DEBUG.formatted(String.join(" ", words)));
+                
                 Command command = CommandGenerator.parse(words);
                 command.execute(game, view);
 

@@ -1,5 +1,6 @@
 package tp1.logic.gameobjects;
 
+import tp1.exceptions.ObjectParseException;
 import tp1.logic.Action;
 import tp1.logic.ActionList;
 import tp1.logic.GameWorld;
@@ -311,21 +312,21 @@ public class Mario extends MovingObject {
     }
 
     @Override
-    public GameObject parse(String[] objWords, GameWorld game) {
+    public GameObject parse(String[] objWords, GameWorld game) throws ObjectParseException {
        // Formato: (fila,col) MARIO [LEFT|RIGHT|STOP|L|R|S] [BIG|SMALL|B|S]
-    if (objWords.length < 2) return null;
-    
-    String type = objWords[1].toUpperCase();
-    if (!type.equals("MARIO") && !type.equals("M")) {
-        return null;
-    }
-    
-    // Parsear posición
-    Position pos = parsePosition(objWords[0]);
-    if (pos == null) return null;
-    
-    // Crear Mario con valores por defecto
-    Mario mario = new Mario(game, pos);
+
+        if (objWords.length < 2) return null;
+        
+        String type = objWords[1].toUpperCase();
+        if (!type.equals("MARIO") && !type.equals("M")) {
+            return null;
+        }
+        
+        // Parsear posición
+        Position pos = parsePosition(objWords[0], objWords);
+        
+        // Crear Mario con valores por defecto
+        Mario mario = new Mario(game, pos);
     
     // Parsear dirección (si existe)
     if (objWords.length > 2) {
@@ -343,6 +344,11 @@ public class Mario extends MovingObject {
             case "S":
                 mario.direction = Action.STOP;
                 break;
+            default:
+                throw new ObjectParseException(
+                    Messages.ERROR_UNKNOWN_MOVING_DIRECTION.formatted(String.join(" ", objWords)) + "\n" +
+                        Messages.ERROR_UNKNOWN_ACTION.formatted(dirStr)
+                );
         }
     }
     
@@ -358,25 +364,22 @@ public class Mario extends MovingObject {
             case "S":
                 mario.setBig(false);
                 break;
+            default:
+                throw new ObjectParseException(
+                    Messages.ERROR_INVALID_MARIO_SIZE.formatted(String.join(" ", objWords))
+                );
         }
     }
+
+    if (objWords.length > 4) {
+            throw new ObjectParseException(
+                Messages.ERROR_OBJECT_PARSE_TOO_MANY_ARGS.formatted(String.join(" ", objWords))
+            );
+        }
     
     return mario;
 }
 
-    // Método auxiliar para parsear posición
-    private Position parsePosition(String posStr) {
-        try {
-            // Formato: (fila,columna)
-            posStr = posStr.replace("(", "").replace(")", "");
-            String[] parts = posStr.split(",");
-            int row = Integer.parseInt(parts[0]);
-            int col = Integer.parseInt(parts[1]);
-            return new Position(row, col);
-        } catch (Exception e) {
-            return null;
-        }
-    }
     // Serializacion del objeto
     @Override
     public String serialize() {

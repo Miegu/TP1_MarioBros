@@ -1,5 +1,6 @@
 package tp1.logic.gameobjects;
 
+import tp1.exceptions.ObjectParseException;
 import tp1.exceptions.OffBoardException;
 import tp1.logic.GameWorld;
 import tp1.logic.Position;
@@ -74,45 +75,45 @@ public class Box extends GameObject {
     }
     
     @Override
-    public GameObject parse(String[] objWords, GameWorld game) {
+    public GameObject parse(String[] objWords, GameWorld game) throws ObjectParseException{
         // Formato: (fila,col) BOX [FULL|EMPTY|F|E]
         // o simplemente: (fila,col) B
-        if (objWords.length < 2) return null;
-        
+         if (objWords.length < 2) return null;
+ 
         String type = objWords[1].toUpperCase();
         if (!type.equals("BOX") && !type.equals("B")) {
             return null;
         }
         
-        Position pos = parsePosition(objWords[0]);
-        if (pos == null) return null;
+        Position pos = parsePosition(objWords[0], objWords);
         
         boolean isEmpty = false;
+        
         if (objWords.length >= 3) {
             String state = objWords[2].toUpperCase();
             if (state.equals("EMPTY") || state.equals("E")) {
                 isEmpty = true;
+            } else if (state.equals("FULL") || state.equals("F")) {
+                isEmpty = false;
+            } else {
+                throw new ObjectParseException(
+                    Messages.ERROR_INVALID_BOX_STATUS.formatted(String.join(" ", objWords))
+                );
             }
         }
         
+        if (objWords.length > 3) {
+            throw new ObjectParseException(
+                Messages.ERROR_OBJECT_PARSE_TOO_MANY_ARGS.formatted(String.join(" ", objWords))
+            );
+        }
+
         return new Box(game, pos, isEmpty);
     }
     
-    private Position parsePosition(String posStr) {
-        try {
-            posStr = posStr.replace("(", "").replace(")", "");
-            String[] parts = posStr.split(",");
-            int row = Integer.parseInt(parts[0]);
-            int col = Integer.parseInt(parts[1]);
-            return new Position(row, col);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     @Override
     public boolean canBeRemoved() {
-        return false; // Las cajas nunca se eliminan
+        return false; // Las cajas no se eliminan
     }
     
     @Override

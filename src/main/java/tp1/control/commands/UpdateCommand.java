@@ -30,25 +30,25 @@ public class UpdateCommand extends NoParamsCommand {
     }
     @Override
     public Command parse(String[] commandWords) throws CommandParseException {
-    // Aceptar entrada vacía (solo Enter)
-    if (commandWords.length == 0) {
+        // Aceptar entrada vacía (solo Enter)
+        if (commandWords.length == 0) {
+            return new UpdateCommand();
+        }
+        
+        // Aceptar un string vacío
+        if (commandWords.length == 1 && commandWords[0].isEmpty()) {
+            return new UpdateCommand();
+        }
+        
+        // Verificar si es "update" o "u"
+        if (!matchCommandName(commandWords[0])) {
+            return null;
+        }
+        // Si coincide pero hay parámetros extra, error
+        if (commandWords.length > 1) {
+            throw new CommandParseException(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER);
+        }
+        
         return this;
     }
-    
-    // Aceptar un string vacío
-    if (commandWords.length == 1 && commandWords[0].isEmpty()) {
-        return this;
-    }
-    
-    // Verificar si es "update" o "u"
-    if (!matchCommandName(commandWords[0])) {
-        return null;
-    }
-    // Si coincide pero hay parámetros extra, error
-    if (commandWords.length > 1) {
-        throw new CommandParseException(Messages.COMMAND_INCORRECT_PARAMETER_NUMBER);
-    }
-    
-    return this;
-}
 }
