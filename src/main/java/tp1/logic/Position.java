@@ -2,9 +2,14 @@ package tp1.logic;
 
 import tp1.exceptions.PositionParseException;
 import tp1.view.Messages;
+
 /**
- * Clase inmutable para manejar la posicion y mantener la encapsulación
- *
+ * Clase inmutable que representa una posición (fila, columna) en el tablero.
+ * 
+ * Implementa Value Object Pattern:
+ * - Inmutable (final fields)
+ * - Implementa Comparable para ordenamiento
+ * 
  */
 public class Position {
 
@@ -17,8 +22,7 @@ public class Position {
         this.col = col;
 
     }
-    //Metodos (que puede hacer)
-    //Getters
+    // ===== GETTERS =====
 
     public int getCol() {
         return col;
@@ -27,6 +31,8 @@ public class Position {
     public int getRow() {
         return row;
     }
+
+    // ===== OPERACIONES DE MOVIMIENTO =====
 
     public Position right() {
         return new Position(this.row, this.col + 1);
@@ -96,18 +102,24 @@ public class Position {
         return this.col == other.col && this.row == other.row;
     }
 
+    // ===== REPRESENTACIÓN EN STRING =====
+
     @Override
     public String toString() {
         return "(" + col + "," + row + ")";
     }
+
+    // ===== PARSING =====
 
     public static Position parsePosition(String posStr) throws PositionParseException {
         try {
             // Formato: (fila,columna)
             posStr = posStr.replace("(", "").replace(")", "").trim();
             String[] parts = posStr.split(",");
-            if (parts.length != 2) {throw new PositionParseException(Messages.ERROR_INVALID_POSITION_FORMAT.formatted(posStr));}
-            
+            if (parts.length != 2) {
+                throw new PositionParseException(Messages.ERROR_INVALID_POSITION_FORMAT.formatted(posStr));
+            }
+
             int row = Integer.parseInt(parts[0].trim());
             int col = Integer.parseInt(parts[1].trim());
             return new Position(row, col);
