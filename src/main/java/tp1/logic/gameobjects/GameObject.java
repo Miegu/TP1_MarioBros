@@ -1,168 +1,376 @@
 package tp1.logic.gameobjects;
 
 import tp1.exceptions.ObjectParseException;
-import tp1.logic.Action;
 import tp1.logic.GameWorld;
 import tp1.logic.Position;
 import tp1.view.Messages;
 
+/*
+* Clase abstracta que representa todos los objetos del juego.
+* Implementa la interfaz GameItem
+* Proporciona funcionalidad comun para todos los objetos del juego.
+* Control de posición
+* Control de estado (vivo/muerto)
+* Metodo para parsear posición desde String
+* Metodo para serializar el objeto
+*
+* Todos los objetos concretos del juego deben extender esta clase e implementar:
+*
+* {@link #getIcon()} - Representación visual
+* {@link #isSolid()} - Comportamiento de colisión
+* {@link #interactWith(GameItem)} - Lógica de interacción
+* {@link #toString()} - Descripción en formato texto
+* {@link #parse(String[], GameWorld)} - Creación del objeto desde archivo
+* {@link #serialize()} - Guardado del objeto en archivo
+* 
+*/
 public abstract class GameObject implements GameItem {
 
-    private Position pos; // If you can, make it private.
-    private boolean isAlive;
+    /** Referencia al mundo del juego para interacciones y consultas */
     protected GameWorld game;
 
-    //Constructor con GameWorld y Position
+    /** Posición actual de este objeto en el mundo del juego */
+    private Position pos;
+    
+    /** Estado de vida de este objeto */
+    private boolean isAlive;
+
+    /**
+     * Construye un GameObject con un mundo de juego y posición inicial.
+     * El objeto se crea en estado vivo por defecto.
+     * 
+     * @param game El mundo del juego al que pertenece este objeto
+     * @param pos La posición inicial de este objeto
+     */
     public GameObject(GameWorld game, Position pos) {
-        this.isAlive = true;
-        this.pos = pos;
         this.game = game;
-    }
-
-    //Constructor Necesario para GameObjectFactory
-    protected GameObject() {
+        this.pos = pos;
         this.isAlive = true;
-        this.pos = null;
-        this.game = null;
-    }
-
-    public GameObject parse(String[] objWords, GameWorld game) throws ObjectParseException {
-        return null; // Implementación por defecto
     }
 
     /**
-     * Parsea una posición en formato "(fila,col)" a un objeto Position.
-     *
-     * @param posStr String con formato "(fila,col)"
-     * @param objWords Array completo de palabras para mensajes de error
-     * @return Position parseada
-     * @throws ObjectParseException si el formato es inválido
+     * Constructor protegido sin argumentos para el patrón Factory.
+     * Crea un objeto no inicializado que necesita ser parseado.
+     * Usado por {@link GameObjectFactory} para crear instancias prototipo.
      */
-    protected static Position parsePosition(String posStr, String[] objWords) throws ObjectParseException {
-        try {
-            String cleanPosStr = posStr.replace("(", "").replace(")", "");
-            String[] parts = cleanPosStr.split(",");
-            int row = Integer.parseInt(parts[0]);
-            int col = Integer.parseInt(parts[1]);
-            return new Position(row, col);
-        } catch (NumberFormatException e) {
-            // Crear excepción anidada con el posStr original
-            ObjectParseException innerException = new ObjectParseException(
-                    Messages.ERROR_INVALID_POSITION_STR.formatted(posStr),
-                    e
-            );
-            throw new ObjectParseException(
-                    Messages.ERROR_INVALID_OBJECT_POSITION.formatted(String.join(" ", objWords)),
-                    innerException
-            );
-        } catch (Exception e) {
-            ObjectParseException innerException = new ObjectParseException(
-                    Messages.ERROR_INVALID_POSITION_FORMAT.formatted(posStr),
-                    e
-            );
-            throw new ObjectParseException(
-                    Messages.ERROR_INVALID_OBJECT_POSITION.formatted(String.join(" ", objWords)),
-                    innerException
-            );
-        }
+    protected GameObject() {
+        this.game = null;
+        this.isAlive = true;
+        this.pos = null;
     }
 
+    // ==================== GESTIÓN DE POSICIÓN ====================
+    
+    /**
+     * Obtiene la posición actual de este objeto.
+     * 
+     * @return La posición actual
+     */
+    public Position getPosition() {
+        return pos;
+    }
+
+    /**
+     * Establece una nueva posición para este objeto.
+     * 
+     * @param newPos La nueva posición
+     */
+    protected void setPosition(Position newPos) {
+        this.pos = newPos;
+    }
+    
+    /**
+     * Determina si este objeto está en una posición dada.
+     * 
+     * @param p La posición a verificar
+     * @return true si el objeto está en la posición dada, false en caso contrario
+     */
     @Override
     public boolean isInPosition(Position p) {
         return this.pos != null && this.pos.equals(p);
     }
 
+    // ==================== GESTIÓN DE ESTADO DE VIDA ====================
+    
     @Override
     public boolean isAlive() {
         return isAlive;
     }
 
+    /**
+     * Marca este objeto como muerto.
+     * Los objetos muertos típicamente se eliminan del juego en el siguiente ciclo de actualización.
+     */
     public void dead() {
         this.isAlive = false;
     }
-
-    public Position getPosition() {
-        return pos;
-    }
-
-    protected void setPosition(Position newPos) {
-        this.pos = newPos;
-    }
-
+    /**
+     * Determina si este objeto puede ser eliminado del juego.
+     * Por defecto, los objetos pueden ser eliminados cuando están muertos.
+     * 
+     * @return true si el objeto puede ser eliminado, false en caso contrario
+     */
     public boolean canBeRemoved() {
         return true;  // Por defecto si se puede eliminar
     }
 
+    // ==================== CICLO DE VIDA DEL JUEGO ====================
+    
     /**
-     * Este método se llama cuando el objeto es añadido al juego. Por defecto no
-     * hace nada, pero las subclases pueden sobreescribirlo si necesitan
-     * realizar alguna acción especial al ser añadidas.
+     * Actualiza el estado de este objeto para un ciclo de juego.
+     * Por defecto, no hace nada. Las subclases sobrescriben para implementar comportamiento.
      */
-    public void onAdded(GameWorld game) {
-        // Implementación vacía por defecto
-        // La mayoría de objetos no necesitan hacer nada especial
+    public void update() {
+        // Por defecto: sin lógica de actualización
     }
 
+    /**
+     * Se llama cuando este objeto se añade al mundo del juego.
+     * Por defecto, no hace nada. Las subclases pueden sobrescribir para inicialización.
+     * 
+     * @param game El mundo del juego al que se añadió este objeto
+     */
+    public void onAdded(GameWorld game) {
+        // Por defecto: sin acción especial al añadir
+    }
+
+    
+    // ==================== MÉTODOS ABSTRACTOS ====================
+    
+    /**
+     * Obtiene el icono visual que representa este objeto.
+     * 
+     * @return El icono en formato string para mostrar
+     */
     public abstract String getIcon();
 
+    /**
+     * Determina si este objeto bloquea el movimiento (es sólido).
+     * 
+     * @return true si es sólido, false en caso contrario
+     */
     @Override
     public abstract boolean isSolid();
 
-    //Las subclases pueden sobreescribirlo
-    public void update() {
-        //Implementación vacía, cada objeto se actualiza a su modo
-    }
-
-    // Movimiento del objeto en una direccion dada
-    protected void move(Action dir) {
-        if (dir != null && pos != null) {
-            Position newPos = pos.move(dir);
-            if (newPos != null && game != null && game.isInside(newPos)) {
-                this.pos = newPos;
-            }
-        }
-    }
-
-    // Representacion en String del objeto
-    @Override
-    public abstract String toString();
-
-    // Serializacion del objeto
-    public abstract String serialize();
-
-    //Cada subclase debe implementar su propio Interact With
+    /**
+     * Define cómo este objeto interactúa con otro elemento del juego.
+     * Usa patrón de doble despacho para interacciones polimórficas.
+     * 
+     * @param other El otro elemento del juego con el que interactuar
+     * @return true si la interacción ocurrió, false en caso contrario
+     */
     @Override
     public abstract boolean interactWith(GameItem other);
 
-    // Implementaciones por defecto (cada subclase las personaliza)
+    /**
+     * Devuelve una descripción en string de este objeto.
+     * 
+     * @return Representación en string incluyendo tipo y posición
+     */
+    @Override
+    public abstract String toString();
+
+    /**
+     * Parsea un array de strings en una instancia de objeto del juego.
+     * Devuelve null si este parser no reconoce el formato.
+     * 
+     * @param objWords Array de palabras describiendo el objeto
+     * @param game El mundo del juego para el nuevo objeto
+     * @return Una nueva instancia de GameObject, o null si el formato no es reconocido
+     * @throws ObjectParseException si el formato es reconocido pero inválido
+     */
+    public abstract GameObject parse(String[] objWords, GameWorld game) throws ObjectParseException;
+
+    /**
+     * Serializa este objeto a formato string para guardado.
+     * 
+     * @return Representación en string para almacenamiento en archivo
+     */
+    public abstract String serialize();
+
+     // ==================== RECEPTORES DE INTERACCIÓN POR DEFECTO ====================
+    
+    /**
+     * Comportamiento por defecto al recibir interacción de ExitDoor.
+     * Sobrescribir en subclases que reaccionen a ExitDoor.
+     * 
+     * @param obj El objeto ExitDoor
+     * @return false por defecto (sin interacción)
+     */
     @Override
     public boolean receiveInteraction(ExitDoor obj) {
         return false;
     }
 
+    /**
+     * Comportamiento por defecto al recibir interacción de Land.
+     * Sobrescribir en subclases que reaccionen a Land.
+     * 
+     * @param obj El objeto Land
+     * @return false por defecto (sin interacción)
+     */
     @Override
     public boolean receiveInteraction(Land obj) {
         return false;
     }
 
+    /**
+     * Comportamiento por defecto al recibir interacción de Mario.
+     * Sobrescribir en subclases que reaccionen a Mario.
+     * 
+     * @param obj El objeto Mario
+     * @return false por defecto (sin interacción)
+     */
     @Override
     public boolean receiveInteraction(Mario obj) {
         return false;
     }
 
+    /**
+     * Comportamiento por defecto al recibir interacción de Goomba.
+     * Sobrescribir en subclases que reaccionen a Goomba.
+     * 
+     * @param obj El objeto Goomba
+     * @return false por defecto (sin interacción)
+     */
     @Override
     public boolean receiveInteraction(Goomba obj) {
         return false;
     }
 
+    /**
+     * Comportamiento por defecto al recibir interacción de Mushroom.
+     * Sobrescribir en subclases que reaccionen a Mushroom.
+     * 
+     * @param mushroom El objeto Mushroom
+     * @return false por defecto (sin interacción)
+     */
     @Override
-    public boolean receiveInteraction(Mushroom mushroom) {
-        return false;
+    public boolean receiveInteraction(Mushroom mushroom) { 
+        return false; 
     }
 
+    /**
+     * Comportamiento por defecto al recibir interacción de Box.
+     * Sobrescribir en subclases que reaccionen a Box.
+     * 
+     * @param box El objeto Box
+     * @return false por defecto (sin interacción)
+     */
     @Override
-    public boolean receiveInteraction(Box box) {
-        return false;
+    public boolean receiveInteraction(Box box) { 
+        return false; 
     }
 
+    // ==================== UTILIDADES DE PARSING ====================
+    
+    /**
+     * Parsea elementos comunes a todos los objetos del juego.
+     * Valida el formato básico y parsea la posición.
+     * 
+     * <p>Este método es usado por las subclases para evitar duplicación.
+     * Verifica:
+     * <ul>
+     *   <li>Número mínimo de argumentos (2)</li>
+     *   <li>Tipo de objeto coincide con los esperados</li>
+     *   <li>Posición válida y dentro del tablero</li>
+     * </ul>
+     * 
+     * @param objWords Array de palabras que describen el objeto
+     * @param expectedTypes Tipos válidos para este objeto (ej: "LAND", "L")
+     * @return La posición parseada, o null si el tipo no coincide
+     * @throws ObjectParseException si el formato es incorrecto
+     */
+    protected Position parseCommon(String[] objWords, String... expectedTypes) 
+            throws ObjectParseException {
+        
+        // Validar número mínimo de argumentos
+        if (objWords.length < 2) {
+            return null; // No hay suficientes argumentos, no es este objeto
+        }
+
+        // Validar que el tipo coincide
+        if (!matchesType(objWords[1], expectedTypes)) {
+            return null; // No es este tipo de objeto
+        }
+
+        // Parsear y validar posición
+        return parsePosition(objWords[0], objWords);
+    }
+
+    /**
+     * Parsea un string de posición en formato "(fila,columna)" a un objeto Position.
+     * Esta es una utilidad común usada por todos los parsers de objetos del juego.
+     * 
+     * @param posStr El string de posición a parsear (ej. "(3,5)")
+     * @param objWords La descripción completa del objeto (para mensajes de error)
+     * @return El objeto Position parseado
+     * @throws ObjectParseException si el formato de posición es inválido o está fuera de límites
+     */
+    protected static Position parsePosition(String posStr, String[] objWords) throws ObjectParseException {
+        try {
+            // Eliminar paréntesis y dividir por coma
+            String cleaned = posStr.replace("(", "").replace(")", "").trim();
+            String[] parts = cleaned.split(",");
+            
+            if (parts.length != 2) {
+                throw new ObjectParseException(
+                    Messages.ERROR_INVALID_POSITION.formatted(String.join(" ", objWords))
+                );
+            }
+            
+            int row = Integer.parseInt(parts[0].trim());
+            int col = Integer.parseInt(parts[1].trim());
+            
+            Position pos = new Position(row, col);
+
+            // Validar que la posición está dentro de los límites del tablero
+            if (!pos.isValidPosition()) {
+                throw new ObjectParseException(
+                    Messages.ERROR_OBJECT_POSITION_OFF_BOARD.formatted(String.join(" ", objWords))
+                );
+            }
+            
+            return pos;
+        } catch (NumberFormatException e) {
+            throw new ObjectParseException(
+                Messages.ERROR_INVALID_POSITION.formatted(String.join(" ", objWords)),
+                e
+            );
+        }
+    }
+
+    /**
+     * Valida que el tipo de objeto coincide con uno de los tipos esperados.
+     * Este es un método de utilidad para reducir duplicación de código en los métodos parse.
+     * 
+     * @param actualType El string de tipo del input
+     * @param expectedTypes Nombres de tipos válidos (ej: "MARIO", "M")
+     * @return true si el tipo coincide con algún tipo esperado (ignorando mayúsculas/minúsculas)
+     */
+    protected static boolean matchesType(String actualType, String... expectedTypes) {
+        String upperType = actualType.toUpperCase();
+        for (String expected : expectedTypes) {
+            if (upperType.equals(expected.toUpperCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Valida que no haya demasiados argumentos para un objeto.
+     * 
+     * @param objWords Array de palabras del objeto
+     * @param maxArgs Número máximo de argumentos permitidos
+     * @throws ObjectParseException si hay demasiados argumentos
+     */
+    protected static void validateMaxArgs(String[] objWords, int maxArgs) 
+            throws ObjectParseException {
+        if (objWords.length > maxArgs) {
+            throw new ObjectParseException(
+                Messages.ERROR_OBJECT_PARSE_TOO_MANY_ARGS.formatted(String.join(" ", objWords))
+            );
+        }
+    }
 }

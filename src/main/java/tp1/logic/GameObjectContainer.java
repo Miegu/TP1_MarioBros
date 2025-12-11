@@ -102,7 +102,9 @@ public class GameObjectContainer {
      * Itera sobre copia para permitir cambios estructurales.
      */
     private void updateAliveObjects() {
-        for (GameObject obj : new ArrayList<>(objects)) {
+        List<GameObject> objectsCopy = new ArrayList<>(objects);
+
+        for (GameObject obj : objectsCopy) {
             if (obj.isAlive()) {
                 obj.update();
             }
@@ -133,7 +135,8 @@ public class GameObjectContainer {
      * @param item Objeto que inicia las interacciones
      */
     public void doInteraction(GameItem item) {
-        for (GameObject obj : new ArrayList<>(objects)) {
+        List<GameObject> objectsCopy = new ArrayList<>(objects);
+        for (GameObject obj : objectsCopy) {
             if (isValidInteractionTarget(obj, item)) {
                 // Item interactúa con obj
                 item.interactWith(obj);

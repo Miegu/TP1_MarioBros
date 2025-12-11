@@ -5,15 +5,36 @@ import tp1.logic.GameWorld;
 import tp1.logic.Position;
 import tp1.view.Messages;
 
+/**
+ * Representa una plataforma sólida del juego (suelo, bloques).
+ * 
+ * Características:
+ *   Es sólido - bloquea el movimiento
+ *   No se puede eliminar/morir del juego
+ *   No tiene comportamiento activo (update vacío)
+ * 
+ * Formato de parseo: {@code (fila,col) LAND} o {@code (fila,col) L}
+ */
 public class Land extends GameObject {
 
+    /**
+     * Construye un Land en la posición especificada.
+     * 
+     * @param game El mundo del juego
+     * @param pos La posición donde se encuentra el Land
+     */
     public Land(GameWorld game, Position pos) {
         super(game, pos);
     }
 
+    /**
+     * Constructor protegido sin argumentos para el patrón Factory.
+     */
     protected Land() {
         super();
     }
+
+    // ==================== PROPIEDADES DEL OBJETO ====================
 
     @Override
     public String getIcon() {
@@ -22,8 +43,15 @@ public class Land extends GameObject {
 
     @Override
     public boolean isSolid() {
-        return true;
+        return true; // Land siempre es sólido
     }
+
+    @Override
+    public boolean canBeRemoved() {
+        return false; // Land no puede ser eliminado
+    }
+
+    // ==================== INTERACCIONES ====================
 
     @Override
     public boolean interactWith(GameItem other) {
@@ -31,34 +59,34 @@ public class Land extends GameObject {
         return other.receiveInteraction(this);
     }
 
-    @Override
-    public boolean canBeRemoved() {
-        return false;
-    }
+    // ==================== REPRESENTACIÓN ====================
 
     @Override
     public String toString() {
         return "Land at " + getPosition().toString();
     }
 
-    
-    @Override
-    public GameObject parse(String[] objWords, GameWorld game) throws ObjectParseException{
-        // Formato: (fila,col) LAND
-        if (objWords.length > 2) {
-           throw new ObjectParseException(
-                Messages.ERROR_OBJECT_PARSE_TOO_MANY_ARGS.formatted(String.join(" ", objWords))
-            );
-        }
+    // ==================== PARSING Y SERIALIZACIÓN ====================
 
-        if (objWords.length < 2) return null;
-        
-        String type = objWords[1].toUpperCase();
-        if (!type.equals("LAND") && !type.equals("L")) {
-            return null;
+    /**
+     * Parsea un Land desde su descripción en string.
+     * Usa covarianza para devolver el tipo específico Land en lugar de GameObject.
+     * 
+     * @param objWords Array de palabras que describen el objeto
+     * @param game El mundo del juego
+     * @return Una instancia de Land, o null si no es un Land
+     * @throws ObjectParseException si el formato es reconocido pero inválido
+     */
+    @Override
+    public Land parse(String[] objWords, GameWorld game) throws ObjectParseException {
+        // Parsear elementos comunes (posición + validación de tipo)
+        Position pos = parseCommon(objWords, "LAND", "L");
+        if (pos == null) {
+            return null; // No es un Land
         }
         
-        Position pos = parsePosition(objWords[0], objWords);
+        // Validar que no hay argumentos extra
+        validateMaxArgs(objWords, 2);
         
         return new Land(game, pos);
     }

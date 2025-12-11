@@ -1,77 +1,52 @@
 package tp1.logic.gameobjects;
 
-import tp1.exceptions.ActionParseException;
 import tp1.exceptions.ObjectParseException;
 import tp1.logic.Action;
 import tp1.logic.GameWorld;
 import tp1.logic.Position;
 import tp1.view.Messages;
 
+/**
+ * Representa un enemigo Goomba del juego.
+ * 
+ * Características:
+ *   Se mueve horizontalmente (izquierda por defecto)
+ *   Cambia de dirección al chocar con obstáculos
+ *   Es afectado por la gravedad
+ *   Muere cuando Mario salta sobre él
+ *   Mata a Mario si lo toca lateralmente
+ *   Se elimina del juego cuando muere
+ * 
+ * Formato de parseo:
+ *   {@code (fila,col) GOOMBA} - Dirección LEFT por defecto
+ *   {@code (fila,col) G} - Dirección LEFT por defecto
+ *   {@code (fila,col) GOOMBA LEFT} o {@code (fila,col) GOOMBA L}
+ *   {@code (fila,col) GOOMBA RIGHT} o {@code (fila,col) GOOMBA R}
+ */
 public class Goomba extends MovingObject {
 
+    /**
+     * Constructor protegido sin argumentos para el patrón Factory.
+     */
     protected Goomba() {
         super();
     }
 
+    /**
+     * Construye un Goomba en la posición especificada.
+     * La dirección por defecto es LEFT.
+     * 
+     * @param game El mundo del juego
+     * @param pos La posición inicial del Goomba
+     */
     public Goomba(GameWorld game, Position pos) {
         super(game, pos);
         this.direction = Action.LEFT; //Empieza mirando a la izquierda
     }
 
-    @Override
-    protected void handleOutOfBounds() {
-        // Cuando el Goomba sale del tablero, muere
-        dead();
-    }
-
-    @Override
-    public void update() {
-        if (!isAlive()) {
-            return;
-        }
-        // 1: Apply gravity
-        applyGravity();
-        game.doInteractionsFrom(this);
-
-        // 2: Horizontal movement if not falling
-        if (!isFalling) {
-            Position currentPos = getPosition();
-            Position newPos;
-            if (direction == Action.LEFT) {
-                newPos = currentPos.left();
-            } else {
-                newPos = currentPos.right();
-            }
-
-            if (canMoveTo(newPos)) {
-                setPosition(newPos);
-                game.doInteractionsFrom(this);
-            } else {
-                //Cambiar direccion si choca con algo
-                direction = (direction == Action.LEFT) ? Action.RIGHT : Action.LEFT;
-            }
-        }
-    }
-    //METODOS DE INTERACCION
-
-    @Override
-    public boolean interactWith(GameItem other) {
-        return other.receiveInteraction(this);
-    }
-
-    @Override
-    public boolean receiveInteraction(Mario mario) {
-        //Mario maneja toda la lógica de la interacción
-        return false;
-    }
-
-    // OTROS METODOS
-    @Override
-    public String toString() {
-        return "Goomba at " + getPosition().toString();
-    }
-
-    @Override
+    // ==================== PROPIEDADES DEL OBJETO ====================
+    
+     @Override
     public String getIcon() {
         return Messages.GOOMBA;
     }
@@ -82,69 +57,110 @@ public class Goomba extends MovingObject {
     }
 
     @Override
-    public GameObject parse(String[] objWords, GameWorld game) throws ObjectParseException {
-        // Formato: (fila,col) GOOMBA [LEFT|RIGHT|L|R]
-        System.out.println("=== GOOMBA PARSE DEBUG ===");
-        System.out.println("objWords.length = " + objWords.length);
-        for (int i = 0; i < objWords.length; i++) {
-            System.out.println("objWords[" + i + "] = '" + objWords[i] + "'");
-        }
-        System.out.println("==========================");
-        
-        if (objWords.length < 2) {
-            return null;
-        }
+    protected void handleOutOfBounds() {
+        // Cuando el Goomba sale del tablero, muere
+        dead();
+    }
 
-        String type = objWords[1].toUpperCase();
-        if (!type.equals("GOOMBA") && !type.equals("G")) {
-            return null;
+     // ==================== ACTUALIZACIÓN ====================
+
+   @Override
+    public void update() {
+        if (!isAlive()) {
+            return; // Si no está vivo, no hace nada
         }
 
-        Position pos = parsePosition(objWords[0], objWords);
+        // 1. Aplicar gravedad
+        applyGravity();
+        game.doInteractionsFrom(this);
 
+        // 2. Movimiento horizontal (solo si no está cayendo)
+        if (!isFalling) {
+            performHorizontalMovement();
+        }
+    }
+
+    /**
+     * Realiza el movimiento horizontal del Goomba.
+     * Si choca con un obstáculo, cambia de dirección.
+     */
+    private void performHorizontalMovement() {
+        // Intentar moverse en la dirección actual
+        if (!move(direction)) {
+            // Si el movimiento falló (chocó con algo), cambiar dirección
+            direction = (direction == Action.LEFT) ? Action.RIGHT : Action.LEFT;
+        } else {
+            // Movimiento exitoso, verificar interacciones
+            game.doInteractionsFrom(this);
+        }
+    }
+
+    // ==================== INTERACCIONES ====================
+
+    @Override
+    public boolean interactWith(GameItem other) {
+        return other.receiveInteraction(this);
+    }
+
+    @Override
+    public boolean receiveInteraction(Mario mario) {
+        // Verificar si están en la misma posición
+        if (!isInPosition(mario.getPosition())) {
+            return false;
+        }
+
+        // Si Mario está cayendo, aplasta al Goomba
+        if (mario.isFalling()) {
+            dead(); // Goomba muere
+            game.addScore(100); // 100 puntos por matar al Goomba
+            return true;
+        } else {
+            // Mario toca al Goomba lateralmente - Mario recibe daño
+            mario.receiveDamage();
+            dead(); // El Goomba también muere en el choque
+            game.addScore(100); // 100 puntos por matar al Goomba
+            return true;
+        }
+    }
+
+     // ==================== REPRESENTACIÓN ====================
+
+    @Override
+    public String toString() {
+        return "Goomba at " + getPosition().toString();
+    }
+
+    // ==================== PARSING Y SERIALIZACIÓN ====================
+
+    /**
+     * Parsea un Goomba desde su descripción en string.
+     * Usa covarianza para devolver el tipo específico Goomba.
+     * 
+     * @param objWords Array de palabras que describen el objeto
+     * @param game El mundo del juego
+     * @return Una instancia de Goomba, o null si no es un Goomba
+     * @throws ObjectParseException si el formato es reconocido pero inválido
+     */
+    @Override
+    public Goomba parse(String[] objWords, GameWorld game) throws ObjectParseException {
+        // Parsear elementos comunes de objetos móviles (posición + dirección)
+        Object[] parsed = parseMovingCommon(objWords, "GOOMBA", "G");
+        if (parsed == null) {
+            return null; // No es un Goomba
+        }
+
+        Position pos = (Position) parsed[0];
+        Action direction = (Action) parsed[1];
+
+        // Validar que no hay argumentos extra
+        validateMaxArgs(objWords, 3);
+
+        // Crear Goomba
         Goomba goomba = new Goomba(game, pos);
 
-        // Dirección opcional (por defecto LEFT)
-        if (objWords.length >= 3) {
-            String dir = objWords[2].toUpperCase();
-            boolean validDirection = false;
-            switch (dir) {
-                case "RIGHT":
-                case "R":
-                    goomba.direction = Action.RIGHT;
-                    validDirection = true;
-                    break;
-                case "LEFT":
-                case "L":
-                    goomba.direction = Action.LEFT;
-                    validDirection = true;
-                    break;
-            }
-            if (!validDirection) {
-                try {
-                    Action.parse(dir);
-                    // Si llegamos aquí, es una acción válida pero no para Goomba
-                    throw new ObjectParseException(
-                            Messages.ERROR_INVALID_MOVING_DIRECTION.formatted(String.join(" ", objWords))
-                    );
-                } catch (ActionParseException e) {
-                    // Es una dirección completamente desconocida
-                    ObjectParseException innerException = new ObjectParseException(
-                            Messages.UNKNOWN_ACTION.formatted(dir),
-                            e
-                    );
-                    throw new ObjectParseException(
-                            Messages.ERROR_UNKNOWN_MOVING_DIRECTION.formatted(String.join(" ", objWords)),
-                            innerException
-                    );
-                }
-            }
-        }
-
-        if (objWords.length > 3) {
-            throw new ObjectParseException(
-                    Messages.ERROR_OBJECT_PARSE_TOO_MANY_ARGS.formatted(String.join(" ", objWords))
-            );
+        // Establecer dirección si se especificó
+        if (direction != null) {
+            goomba.setDirection(direction);
         }
 
         return goomba;
