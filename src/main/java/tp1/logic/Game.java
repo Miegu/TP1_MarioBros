@@ -38,16 +38,20 @@ public class Game implements GameModel, GameStatus, GameWorld {
     public static final int DIM_X = 30; // Ancho del tablero
     public static final int DIM_Y = 15; // Alto del tablero
 
-    // ===== CONSTANTES DE JUEGO =====
-    private static final int INITIAL_TIME = 100;
-    private static final int INITIAL_LIVES = 3;
-    private static final int INITIAL_POINTS = 0;
+    // ===== VALORES POR DEFECTO =====
+    private static final int DEFAULT_TIME = 100;
+    private static final int DEFAULT_LIVES = 3;
+    private static final int DEFAULT_POINTS = 0;
 
     // ===== ESTADO DEL JUEGO =====
     private int nLevel;              // Nivel actual
     private int remainingTime;       // Tiempo restante en este nivel
     private int points;              // Puntuación acumulada
     private int lives;               // Vidas restantes
+
+    // ===== CONFIGURACIÓN INICIAL (desde archivo) =====
+    private int initialTime;         // Tiempo inicial del nivel para reset
+    private int initialLives;        // Vidas iniciales del nivel para reset
 
     // ===== FLAGS DE ESTADO =====
     private boolean playerWon;       // Victoria (llegó a la puerta)
@@ -58,6 +62,7 @@ public class Game implements GameModel, GameStatus, GameWorld {
     private GameObjectContainer gameObjects;  // Contenedor de todos los objetos
     private Mario mario;                      // Referencia rápida a Mario
     private GameConfiguration fileLoader;     // Para cargar configuración de archivo
+    private String currentFileName;         // Nombre del archivo cargado
 
     /**
      * Crea una nueva instancia del juego en un nivel específico.
@@ -68,14 +73,33 @@ public class Game implements GameModel, GameStatus, GameWorld {
      */
     public Game(int nLevel) {
         this.nLevel = nLevel;
-        this.remainingTime = INITIAL_TIME;
-        this.points = INITIAL_POINTS;
-        this.lives = INITIAL_LIVES;
+        this.remainingTime = DEFAULT_TIME;
+        this.points = DEFAULT_POINTS;
+        this.lives = DEFAULT_LIVES;
+        this.initialTime = DEFAULT_TIME;
+        this.initialLives = DEFAULT_LIVES;
         this.playerWon = false;
         this.playerLost = false;
         this.playerExit = false;
+        this.currentFileName = null;
 
         initLevel(nLevel);
+    }
+
+    /**
+     * Establece la configuración inicial del juego desde el archivo.
+     * Este método es llamado por FileGameConfiguration al cargar.
+     * 
+     * @param time Tiempo inicial del nivel
+     * @param lives Vidas iniciales del nivel
+     */
+    public void setInitialConfiguration(int time, int lives) {
+        this.initialTime = time;
+        this.initialLives = lives;
+        
+        // Aplicar también al estado actual
+        this.remainingTime = time;
+        this.lives = lives;
     }
 
     // ===== IMPLEMENTACIÓN GAMESTATUS =====
@@ -265,24 +289,36 @@ public class Game implements GameModel, GameStatus, GameWorld {
 
     @Override
     public void reset() {
-        reset(this.nLevel);  // Mantiene el nivel actual
+        if(currentFileName != null) {
+            try {
+                load(currentFileName);
+            } catch (GameLoadException e) {
+                // Si falla la carga, continuar con el reinicio normal
+                reset(this.nLevel);
+            }
+        }else{
+            //Si no hay archivo cargado, reiniciar el nivel actual
+            reset(this.nLevel);
+        }
     }
 
     @Override
     public void reset(int level) {
-        // Reiniciar estado del juego
-        this.remainingTime = INITIAL_TIME;
+        // limpiar estado de archivo cargado si se reinicia con nivel específico
+        this.currentFileName = null;
+
+        // Reiniciar flags de estado
         this.playerWon = false;
         this.playerLost = false;
         this.playerExit = false;
         this.nLevel = level;
 
+        //Recargar el nivel
         initLevel(level);
 
-        // Solo resetear vidas y puntos si es nivel -1 (creativo)
+        // Solo resetear puntos si es nivel -1 (creativo)
         if (level == -1) {
-            this.lives = INITIAL_LIVES;
-            this.points = INITIAL_POINTS;
+            this.points = DEFAULT_POINTS;
         }
     }
 
@@ -302,6 +338,9 @@ public class Game implements GameModel, GameStatus, GameWorld {
 
     @Override
     public void load(String fileName) throws GameLoadException {
+        // Guardar el nombre del archivo cargado para recargar en reset
+        this.currentFileName = fileName;
+
         GameConfiguration cfg = new FileGameConfiguration(fileName, this);
 
         // Reiniciar flags de estado
@@ -331,9 +370,12 @@ public class Game implements GameModel, GameStatus, GameWorld {
      * @param cfg Configuración cargada del archivo
      */
     private void loadGameStateFromConfiguration(GameConfiguration cfg) {
-        this.remainingTime = cfg.getRemainingTime();
+        int time = cfg.getRemainingTime();
+        int lives = cfg.getNumLives();
+
+        setInitialConfiguration(time, lives);
+
         this.points = cfg.getPoints();
-        this.lives = cfg.getNumLives();
     }
 
     /**
@@ -368,7 +410,7 @@ public class Game implements GameModel, GameStatus, GameWorld {
 
         } catch (IOException e) {
             //Cualquier problema de escritura lo convertimos en GameModelException
-            throw new GameModelException("Unable to save game to file: " + fileName, e);
+            throw new GameModelException("El sistema no puede encontrar el archivo especificado: " + fileName, e);
 
         } finally {
             //Cerrar el fichero si estaba abierto
@@ -449,7 +491,7 @@ public class Game implements GameModel, GameStatus, GameWorld {
      */
     private void initLevelMinus1() {
         this.nLevel = -1;
-        this.remainingTime = INITIAL_TIME;
+        this.remainingTime = DEFAULT_TIME;
         this.gameObjects = new GameObjectContainer();
         this.mario = null;
     }
@@ -463,7 +505,7 @@ public class Game implements GameModel, GameStatus, GameWorld {
      */
     private void initLevel0() {
         this.nLevel = 0;
-        this.remainingTime = INITIAL_TIME;
+        this.remainingTime = DEFAULT_TIME;
         this.gameObjects = new GameObjectContainer();
 
         // 1. Añadir a Mario (primero para que se actualice primero)

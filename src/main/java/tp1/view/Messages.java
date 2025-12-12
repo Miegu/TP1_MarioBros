@@ -94,7 +94,7 @@ public class Messages {
     // Load errors con comillas
     public static final String ERROR_UNABLE_TO_LOAD = "Unable to load game configuration from file \"%s\"";
     public static final String ERROR_FILE_NOT_FOUND_QUOTED = "File not found: \"%s\"";
-
+    
     public static final String HELP_AVAILABLE_COMMANDS = "Available commands:";
     
     @Deprecated
