@@ -105,10 +105,14 @@ public class Goomba extends MovingObject {
     @Override
     public boolean receiveInteraction(Mario mario) {
         if (!isAlive()) {
-        return false;
-        }
+            return false;
+            }
         // Verificar si están en la misma posición
         if (!isInPosition(mario.getPosition())) {
+            return false;
+        }
+        // Si Mario ya fue dañado este turno, NO hacer nada
+        if (mario.hasCollidedThisTurn()) {
             return false;
         }
 
@@ -124,6 +128,19 @@ public class Goomba extends MovingObject {
             game.addScore(100); // 100 puntos por matar al Goomba
             return true;
         }
+    }
+
+    /**
+     * Cuando Goomba interactúa exitosamente con Mario, marca colisión como crítica.
+     * 
+     * Solo es crítica si:
+     * 1. Estamos vivos (vamos a interactuar)
+     * 2. Mario también será procesado (para detener más Goombas)
+     */
+    @Override
+    public boolean isCriticalCollision() {
+        // Es crítica si vamos a causar interacción con Mario
+        return isAlive();
     }
      // ==================== REPRESENTACIÓN ====================
 

@@ -261,6 +261,16 @@ public abstract class GameObject implements GameItem {
     public boolean receiveInteraction(Box box) { 
         return false; 
     }
+    /**
+     * Indica si una colisión con este objeto es crítica (causa daño).
+     * Por defecto, no lo es. Sobrescribir en subclases que representen peligro.
+     * 
+     * @return true si la colisión es crítica, false en caso contrario
+     */
+    public boolean isCriticalCollision() {
+        return false;
+    }
+
 
     // ==================== UTILIDADES DE PARSING ====================
     

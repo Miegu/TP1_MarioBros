@@ -53,4 +53,5 @@ public interface GameItem {
     
     boolean receiveInteraction(Box box); 
 
+    boolean isCriticalCollision();
 }

@@ -139,11 +139,19 @@ public class GameObjectContainer {
         for (GameObject obj : objectsCopy) {
             if (isValidInteractionTarget(obj, item)) {
                 // Item interactúa con obj
-                item.interactWith(obj);
+                 boolean itemProcessed = item.interactWith(obj);
+                 // Si item procesó algo y es crítica, detener
+                if (itemProcessed && item.isCriticalCollision()) {
+                    break;  // ← Detener si fue crítica
+                }
 
                 // Si ambos siguen vivos, obj interactúa con item
                 if (obj.isAlive() && item.isAlive()) {
-                    obj.interactWith(item);
+                    boolean objProcessed = obj.interactWith(item);
+                    // Si obj procesó algo y es crítica, detener
+                    if (objProcessed && obj.isCriticalCollision()) {
+                        break;  // ← Detener si fue crítica
+                    }
                 }
             }
         }

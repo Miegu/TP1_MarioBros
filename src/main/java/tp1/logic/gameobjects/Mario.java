@@ -30,6 +30,7 @@ public class Mario extends MovingObject {
     private boolean big;
     private ActionList pendingActions;
     private boolean hasMovedThisTurn; //Para saber si ya se ha movido en el turno actual
+    private boolean collidedThisTurn = false;
     /**
      * Construye un Mario en la posición especificada.
      * Por defecto es grande y sin acciones pendientes.
@@ -91,6 +92,7 @@ public class Mario extends MovingObject {
 
     @Override
     public void update() {
+        collidedThisTurn = false;  // Reset el flag cada turno
         // Chequea si Mario se sale por arriba si es grande
         if (isBig() && !game.isInside(getPosition().up())) {
             game.loseLife();
@@ -268,13 +270,30 @@ public class Mario extends MovingObject {
     /**
      * Mario recibe daño de un enemigo.
      * Si es grande, se hace pequeño. Si es pequeño, pierde una vida.
+     * IMPORTANTE: Solo procesa daño UNA VEZ por turno gracias a collidedThisTurn.
      */
     public void receiveDamage() {
+        if (collidedThisTurn) {
+            return; // Ya ha recibido daño este turno
+        }
+
+        collidedThisTurn = true;
+
         if (isBig()) {
             setBig(false);
         } else {
             game.loseLife();
         }
+    }
+    /**
+     * Indica si Mario ya fue procesado para colisión en este turno.
+     * 
+     * Retorna true si ya colisionó (para detener más colisiones).
+     * Retorna false si aún puede colisionar.
+     */
+    @Override
+    public boolean isCriticalCollision() {
+        return collidedThisTurn;  // ← Ya fue procesado este turno
     }
 
     // ==================== GETTERS Y SETTERS ====================
@@ -304,6 +323,14 @@ public class Mario extends MovingObject {
      */
     public void addAction(Action action) {
         pendingActions.addAction(action);
+    }
+
+    /**
+     * Indica si Mario ya fue dañado en este turno.
+     * Usado por enemigos para evitar doble daño.
+     */
+    public boolean hasCollidedThisTurn() {
+        return collidedThisTurn;
     }
 
     // ==================== OCUPACIÓN DE ESPACIO ====================
