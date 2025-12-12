@@ -104,6 +104,9 @@ public class Goomba extends MovingObject {
 
     @Override
     public boolean receiveInteraction(Mario mario) {
+        if (!isAlive()) {
+        return false;
+        }
         // Verificar si están en la misma posición
         if (!isInPosition(mario.getPosition())) {
             return false;
@@ -113,7 +116,7 @@ public class Goomba extends MovingObject {
         if (mario.isFalling()) {
             dead(); // Goomba muere
             game.addScore(100); // 100 puntos por matar al Goomba
-            return true;
+            return false;
         } else {
             // Mario toca al Goomba lateralmente - Mario recibe daño
             mario.receiveDamage();
@@ -122,7 +125,6 @@ public class Goomba extends MovingObject {
             return true;
         }
     }
-
      // ==================== REPRESENTACIÓN ====================
 
     @Override

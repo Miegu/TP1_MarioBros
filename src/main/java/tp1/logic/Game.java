@@ -57,6 +57,7 @@ public class Game implements GameModel, GameStatus, GameWorld {
     private boolean playerWon;       // Victoria (llegó a la puerta)
     private boolean playerLost;      // Derrota (sin tiempo o sin vidas)
     private boolean playerExit;      // Salida voluntaria
+    private boolean needsLevelReset; // Indica si el nivel debe resetearse (tras perder vida)
 
     // ===== OBJETOS DEL JUEGO =====
     private GameObjectContainer gameObjects;  // Contenedor de todos los objetos
@@ -82,7 +83,7 @@ public class Game implements GameModel, GameStatus, GameWorld {
         this.playerLost = false;
         this.playerExit = false;
         this.currentFileName = null;
-
+        this.needsLevelReset = false;
         initLevel(nLevel);
     }
 
@@ -225,7 +226,7 @@ public class Game implements GameModel, GameStatus, GameWorld {
             playerLost = true;
         } else {
             // Reiniciar el nivel pero mantener puntos y vidas
-            resetLevelKeepingProgress();
+            needsLevelReset = true;
         }
     }
 
@@ -269,6 +270,11 @@ public class Game implements GameModel, GameStatus, GameWorld {
         
         // 2. Actualizar todos los objetos
         gameObjects.update();
+        // 3. Resetear nivel si es necesario (DESPUÉS de actualizar)
+        if (needsLevelReset) {
+            needsLevelReset = false;
+            resetLevelKeepingProgress();
+        }
     }
 
     /**
