@@ -59,9 +59,9 @@ public class ExitDoor extends GameObject {
     }
 
     @Override
-    public boolean receiveInteraction(Mario mario) {
+    public boolean receiveInteraction(PlayableObject player) {
         // Mario ha llegado a la puerta de salida
-        if (mario.isInPosition(this.getPosition())) {
+        if (player.isInPosition(this.getPosition())) {
             game.marioReachedExit();
             return true;
         }

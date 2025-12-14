@@ -14,6 +14,7 @@ import tp1.logic.gameobjects.Goomba;
 import tp1.logic.gameobjects.Land;
 import tp1.logic.gameobjects.Mario;
 import tp1.logic.gameobjects.Mushroom;
+import tp1.logic.gameobjects.PlayableObject;
 import tp1.view.Messages;
 
 /**
@@ -61,6 +62,7 @@ public class Game implements GameModel, GameStatus, GameWorld {
 
     // ===== OBJETOS DEL JUEGO =====
     private GameObjectContainer gameObjects;  // Contenedor de todos los objetos
+    private PlayableObject player;
     private Mario mario;                      // Referencia rápida a Mario
     private GameConfiguration fileLoader;     // Para cargar configuración de archivo
     private String currentFileName;         // Nombre del archivo cargado
@@ -256,9 +258,9 @@ public class Game implements GameModel, GameStatus, GameWorld {
     }
 
     @Override
-    public void registerAsMain(GameObject obj) {
+    public void registerAsMain(PlayableObject player) {
         // Mario se registra a sí mismo con el juego
-        this.mario = (Mario) obj;
+        this.player = player;
     }
 
     // ===== IMPLEMENTACIÓN GAMEMODEL =====

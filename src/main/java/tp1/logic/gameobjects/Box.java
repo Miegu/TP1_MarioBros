@@ -81,7 +81,7 @@ public class Box extends GameObject {
     }
     
     @Override
-    public boolean receiveInteraction(Mario mario) {
+    public boolean receiveInteraction(PlayableObject player) {
         // Si ya esta vacía, no hace nada
         if (isEmpty) {
             return false; 
@@ -90,7 +90,7 @@ public class Box extends GameObject {
         // Verificar si Mario golpea desde abajo
         Position below = getPosition().down();
 
-        if (mario.isInPosition(below)) {
+        if (player.isInPosition(below)) {
             // Mario golpeó desde abajo
             freeMushroom();
             isEmpty = true;

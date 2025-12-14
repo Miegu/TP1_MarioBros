@@ -1,4 +1,5 @@
 tp1\control\commands\LoadCommand.class
+tp1\logic\gameobjects\NPCObject.class
 tp1\control\Controller.class
 tp1\view\ViewInterface.class
 tp1\exceptions\CommandParseException.class
@@ -46,6 +47,7 @@ tp1\control\commands\NoParamsCommand.class
 tp1\control\commands\ResetCommand.class
 tp1\exceptions\ActionParseException.class
 tp1\logic\gameobjects\Mario.class
+tp1\logic\gameobjects\PlayableObject.class
 tp1\logic\GameWorld.class
 tp1\logic\gameobjects\GameObjectFactory.class
 tp1\view\ConsoleView.class

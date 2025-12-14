@@ -60,15 +60,15 @@ public class Mushroom extends NPCObject {
     }
 
     @Override
-    public boolean receiveInteraction(Mario mario) {
+    public boolean receiveInteraction(PlayableObject player) {
        // Verificar si Mario está en la misma posición que el Mushroom
-        if (!mario.isInPosition(getPosition())) {
+        if (!player.isInPosition(getPosition())) {
             return false;
         }
 
         // Mario recoge el Mushroom y crece si es pequeño
-        if (!mario.isBig()) {
-            mario.setBig(true); // Mario se hace grande
+        if (!player.isBig()) {
+            player.setBig(true); // Mario se hace grande
         }
 
         // El Mushroom desaparece después de ser recogido

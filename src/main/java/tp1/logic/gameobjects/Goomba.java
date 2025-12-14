@@ -59,27 +59,27 @@ public class Goomba extends NPCObject {
     }
 
     @Override
-    public boolean receiveInteraction(Mario mario) {
+    public boolean receiveInteraction(PlayableObject player) {
         if (!isAlive()) {
             return false;
             }
         // Verificar si están en la misma posición
-        if (!isInPosition(mario.getPosition())) {
+        if (!isInPosition(player.getPosition())) {
             return false;
         }
         // Si Mario ya fue dañado este turno, NO hacer nada
-        if (mario.hasCollidedThisTurn()) {
+        if (player.hasCollidedThisTurn()) {
             return false;
         }
 
         // Si Mario está cayendo, aplasta al Goomba
-        if (mario.isFalling()) {
+        if (player.isFalling()) {
             dead(); // Goomba muere
             game.addScore(100); // 100 puntos por matar al Goomba
             return false;
         } else {
             // Mario toca al Goomba lateralmente - Mario recibe daño
-            mario.receiveDamage();
+            player.receiveDamage();
             dead(); // El Goomba también muere en el choque
             game.addScore(100); // 100 puntos por matar al Goomba
             return true;

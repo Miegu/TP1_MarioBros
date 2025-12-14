@@ -44,14 +44,12 @@ public interface GameItem {
     boolean receiveInteraction(Land obj);
     
     boolean receiveInteraction(ExitDoor obj);
-
-    boolean receiveInteraction(Mario obj);
-
-    boolean receiveInteraction(Goomba obj);
-
-    boolean receiveInteraction(Mushroom mushroom); 
     
     boolean receiveInteraction(Box box); 
+
+    boolean receiveInteraction(PlayableObject player);
+    
+    boolean receiveInteraction(NPCObject npc);
 
     boolean isCriticalCollision();
 }

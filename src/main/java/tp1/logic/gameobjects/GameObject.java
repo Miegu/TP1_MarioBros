@@ -216,42 +216,6 @@ public abstract class GameObject implements GameItem {
     }
 
     /**
-     * Comportamiento por defecto al recibir interacción de Mario.
-     * Sobrescribir en subclases que reaccionen a Mario.
-     * 
-     * @param obj El objeto Mario
-     * @return false por defecto (sin interacción)
-     */
-    @Override
-    public boolean receiveInteraction(Mario obj) {
-        return false;
-    }
-
-    /**
-     * Comportamiento por defecto al recibir interacción de Goomba.
-     * Sobrescribir en subclases que reaccionen a Goomba.
-     * 
-     * @param obj El objeto Goomba
-     * @return false por defecto (sin interacción)
-     */
-    @Override
-    public boolean receiveInteraction(Goomba obj) {
-        return false;
-    }
-
-    /**
-     * Comportamiento por defecto al recibir interacción de Mushroom.
-     * Sobrescribir en subclases que reaccionen a Mushroom.
-     * 
-     * @param mushroom El objeto Mushroom
-     * @return false por defecto (sin interacción)
-     */
-    @Override
-    public boolean receiveInteraction(Mushroom mushroom) { 
-        return false; 
-    }
-
-    /**
      * Comportamiento por defecto al recibir interacción de Box.
      * Sobrescribir en subclases que reaccionen a Box.
      * 
@@ -262,6 +226,31 @@ public abstract class GameObject implements GameItem {
     public boolean receiveInteraction(Box box) { 
         return false; 
     }
+
+    /**
+     * Comportamiento por defecto al recibir interacción de player.
+     * Sobrescribir en subclases que reaccionen a player.
+     * 
+     * @param player El objeto Player
+     * @return false por defecto (sin interacción)
+     */
+    @Override
+    public boolean receiveInteraction(PlayableObject player) {
+        return false;
+    }
+
+    /**
+     * Comportamiento por defecto al recibir interacción de npc
+     * Sobrescribir en subclases que reaccionen a npc
+     * 
+     * @param npc El objeto npc
+     * @return false por defecto (sin interacción)
+     */
+    @Override
+    public boolean receiveInteraction(NPCObject npc) {
+        return false;
+    }
+    
     /**
      * Indica si una colisión con este objeto es crítica (causa daño).
      * Por defecto, no lo es. Sobrescribir en subclases que representen peligro.
