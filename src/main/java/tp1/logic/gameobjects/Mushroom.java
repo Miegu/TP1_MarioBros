@@ -74,6 +74,7 @@ public class Mushroom extends MovingObject {
         // 1. Aplicar gravedad
         applyGravity();
 
+        game.doInteractionsFrom(this);
         // 2. Movimiento horizontal (solo si no está cayendo)
         if (!isFalling) {
             performHorizontalMovement();
@@ -89,6 +90,8 @@ public class Mushroom extends MovingObject {
         if (!move(direction)) {
             // Si el movimiento falló (chocó con algo), cambiar dirección
             direction = (direction == Action.LEFT) ? Action.RIGHT : Action.LEFT;
+        }else{
+            game.doInteractionsFrom(this);
         }
     }
 
