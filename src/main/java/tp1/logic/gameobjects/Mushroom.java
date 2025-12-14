@@ -24,7 +24,7 @@ import tp1.view.Messages;
  *   {@code (fila,col) MUSHROOM RIGHT} o {@code (fila,col) MUSHROOM R}
  *
  */
-public class Mushroom extends MovingObject {
+public class Mushroom extends NPCObject {
     
     /**
      * Construye un Mushroom en la posición especificada.
@@ -50,49 +50,6 @@ public class Mushroom extends MovingObject {
     @Override
     public String getIcon() {
         return Messages.MUSHROOM;
-    }
-
-    @Override
-    public boolean isSolid() {
-        return false; // Mushroom no es sólido, se puede atravesar
-    }
-
-    @Override
-    protected void handleOutOfBounds() {
-        // Cuando el Mushroom sale del tablero, muere
-        dead();
-    }
-
-    // ==================== ACTUALIZACIÓN ====================
-
-    @Override
-    public void update() {
-        if (!isAlive()) {
-            return; // Si no está vivo, no hace nada
-        }
-
-        // 1. Aplicar gravedad
-        applyGravity();
-
-        game.doInteractionsFrom(this);
-        // 2. Movimiento horizontal (solo si no está cayendo)
-        if (!isFalling) {
-            performHorizontalMovement();
-        }
-    }
-
-    /**
-     * Realiza el movimiento horizontal del Mushroom.
-     * Si choca con un obstáculo, cambia de dirección.
-     */
-    private void performHorizontalMovement() {
-        // Intentar moverse en la dirección actual
-        if (!move(direction)) {
-            // Si el movimiento falló (chocó con algo), cambiar dirección
-            direction = (direction == Action.LEFT) ? Action.RIGHT : Action.LEFT;
-        }else{
-            game.doInteractionsFrom(this);
-        }
     }
 
     // ==================== INTERACCIONES ====================

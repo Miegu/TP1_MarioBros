@@ -23,7 +23,7 @@ import tp1.view.Messages;
  *   {@code (fila,col) GOOMBA LEFT} o {@code (fila,col) GOOMBA L}
  *   {@code (fila,col) GOOMBA RIGHT} o {@code (fila,col) GOOMBA R}
  */
-public class Goomba extends MovingObject {
+public class Goomba extends NPCObject {
 
     /**
      * Constructor protegido sin argumentos para el patrón Factory.
@@ -49,50 +49,6 @@ public class Goomba extends MovingObject {
      @Override
     public String getIcon() {
         return Messages.GOOMBA;
-    }
-
-    @Override
-    public boolean isSolid() {
-        return false;
-    }
-
-    @Override
-    protected void handleOutOfBounds() {
-        // Cuando el Goomba sale del tablero, muere
-        dead();
-    }
-
-     // ==================== ACTUALIZACIÓN ====================
-
-   @Override
-    public void update() {
-        if (!isAlive()) {
-            return; // Si no está vivo, no hace nada
-        }
-
-        // 1. Aplicar gravedad
-        applyGravity();
-        game.doInteractionsFrom(this);
-
-        // 2. Movimiento horizontal (solo si no está cayendo)
-        if (!isFalling) {
-            performHorizontalMovement();
-        }
-    }
-
-    /**
-     * Realiza el movimiento horizontal del Goomba.
-     * Si choca con un obstáculo, cambia de dirección.
-     */
-    private void performHorizontalMovement() {
-        // Intentar moverse en la dirección actual
-        if (!move(direction)) {
-            // Si el movimiento falló (chocó con algo), cambiar dirección
-            direction = (direction == Action.LEFT) ? Action.RIGHT : Action.LEFT;
-        } else {
-            // Movimiento exitoso, verificar interacciones
-            game.doInteractionsFrom(this);
-        }
     }
 
     // ==================== INTERACCIONES ====================
