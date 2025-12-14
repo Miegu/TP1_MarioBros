@@ -89,7 +89,7 @@ public class ExitDoor extends GameObject {
     @Override
     public ExitDoor parse(String[] objWords, GameWorld game) throws ObjectParseException {
         // Parsear elementos comunes (posición + validación de tipo)
-        Position pos = parseCommon(objWords, "EXITDOOR", "ED");
+        Position pos = parseCommon(objWords, "EXITDOOR", "ED", "EXIT");
         if (pos == null) {
             return null; // No es una ExitDoor
         }

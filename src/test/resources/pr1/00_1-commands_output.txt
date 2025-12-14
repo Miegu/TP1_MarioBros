@@ -1,4 +1,4 @@
-MarioBross 2.X
+MarioBross 3.0
 
 Time: 100
 Points: 0
@@ -26,11 +26,10 @@ Lives: 3
 
 Command > [DEBUG] Executing: action
 
-[ERROR] Error: Unknown command: action
+[ERROR] Error: Incorrect parameter number
 Command > [DEBUG] Executing: action dir_Incorrecta
 
-[ERROR] Error: Unknown action: "dir_Incorrecta"
-[ERROR] Error: Unknown command: action dir_Incorrecta
+[ERROR] Error: Incorrect 'action command', because the action list is empty (all actions are unknown).
 Command > [DEBUG] Executing: update
 
 Time: 99
@@ -59,11 +58,6 @@ Lives: 3
 
 Command > [DEBUG] Executing: reset
 
-[DEBUG ResetCommand] level = -1
-[DEBUG reset()] Parámetro level recibido: 0
-[DEBUG reset()] ANTES - Lives: 3, Points: 0
-[DEBUG reset()] DESPUÉS initLevel - Lives: 3, Points: 0
-[DEBUG reset()] Verificando: level == -1? false
 Time: 100
 Points: 0
 Lives: 3
@@ -168,11 +162,6 @@ Lives: 3
 
 Command > [DEBUG] Executing: reset
 
-[DEBUG ResetCommand] level = -1
-[DEBUG reset()] Parámetro level recibido: 0
-[DEBUG reset()] ANTES - Lives: 3, Points: 0
-[DEBUG reset()] DESPUÉS initLevel - Lives: 3, Points: 0
-[DEBUG reset()] Verificando: level == -1? false
 Time: 100
 Points: 0
 Lives: 3
@@ -199,11 +188,6 @@ Lives: 3
 
 Command > [DEBUG] Executing: r 0
 
-[DEBUG ResetCommand] level = 0
-[DEBUG reset()] Parámetro level recibido: 0
-[DEBUG reset()] ANTES - Lives: 3, Points: 0
-[DEBUG reset()] DESPUÉS initLevel - Lives: 3, Points: 0
-[DEBUG reset()] Verificando: level == -1? false
 Time: 100
 Points: 0
 Lives: 3
@@ -256,11 +240,6 @@ Lives: 3
 
 Command > [DEBUG] Executing: r 1
 
-[DEBUG ResetCommand] level = 1
-[DEBUG reset()] Parámetro level recibido: 1
-[DEBUG reset()] ANTES - Lives: 3, Points: 0
-[DEBUG reset()] DESPUÉS initLevel - Lives: 3, Points: 0
-[DEBUG reset()] Verificando: level == -1? false
 Time: 100
 Points: 0
 Lives: 3
@@ -313,11 +292,6 @@ Lives: 3
 
 Command > [DEBUG] Executing: r 2
 
-[DEBUG ResetCommand] level = 2
-[DEBUG reset()] Parámetro level recibido: 2
-[DEBUG reset()] ANTES - Lives: 3, Points: 0
-[DEBUG reset()] DESPUÉS initLevel - Lives: 3, Points: 0
-[DEBUG reset()] Verificando: level == -1? false
 Time: 100
 Points: 0
 Lives: 3

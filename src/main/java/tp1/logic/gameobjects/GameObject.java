@@ -1,6 +1,7 @@
 package tp1.logic.gameobjects;
 
 import tp1.exceptions.ObjectParseException;
+import tp1.exceptions.PositionParseException;
 import tp1.logic.GameWorld;
 import tp1.logic.Position;
 import tp1.view.Messages;
@@ -267,6 +268,7 @@ public abstract class GameObject implements GameItem {
      * 
      * @return true si la colisión es crítica, false en caso contrario
      */
+    @Override
     public boolean isCriticalCollision() {
         return false;
     }
@@ -319,32 +321,19 @@ public abstract class GameObject implements GameItem {
      */
     protected static Position parsePosition(String posStr, String[] objWords) throws ObjectParseException {
         try {
+            // DELEGAR a Position.parsePosition() en lugar de duplicar código
+            Position pos = Position.parsePosition(posStr);
             // Eliminar paréntesis y dividir por coma
-            String cleaned = posStr.replace("(", "").replace(")", "").trim();
-            String[] parts = cleaned.split(",");
-            
-            if (parts.length != 2) {
-                throw new ObjectParseException(
-                    Messages.ERROR_INVALID_POSITION.formatted(String.join(" ", objWords))
-                );
-            }
-            
-            int row = Integer.parseInt(parts[0].trim());
-            int col = Integer.parseInt(parts[1].trim());
-            
-            Position pos = new Position(row, col);
-
-            // Validar que la posición está dentro de los límites del tablero
             if (!pos.isValidPosition()) {
                 throw new ObjectParseException(
-                    Messages.ERROR_OBJECT_POSITION_OFF_BOARD.formatted(String.join(" ", objWords))
+                Messages.ERROR_OBJECT_POSITION_OFF_BOARD.formatted(String.join(" ", objWords))
                 );
             }
-            
             return pos;
-        } catch (NumberFormatException e) {
+        } catch (PositionParseException e) {
+            String fullDescription = String.join(" ", objWords);
             throw new ObjectParseException(
-                Messages.ERROR_INVALID_POSITION.formatted(String.join(" ", objWords)),
+                Messages.ERROR_INVALID_POSITION.formatted(fullDescription),
                 e
             );
         }

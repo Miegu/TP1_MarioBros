@@ -171,6 +171,13 @@ public class Goomba extends MovingObject {
         Position pos = (Position) parsed[0];
         Action direction = (Action) parsed[1];
 
+        if (direction != null && direction != Action.LEFT && direction != Action.RIGHT) {
+            String fullDescription = String.join(" ", objWords);
+            throw new ObjectParseException(
+                Messages.ERROR_INVALID_MOVING_DIRECTION.formatted(fullDescription)
+            );
+        }
+
         // Validar que no hay argumentos extra
         validateMaxArgs(objWords, 3);
 

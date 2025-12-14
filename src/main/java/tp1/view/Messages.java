@@ -45,17 +45,20 @@ public class Messages {
     public static final String LINE = "%s" + LINE_SEPARATOR;
     public static final String LINE_TAB = TAB + LINE;
     public static final String LINE_2TABS = TAB + LINE_TAB;
+    
+    //Mensaje juego guardado
+    public static final String FILE_SAVED = TAB + "File \"%s\" correctly saved" + LINE_SEPARATOR;
 
     // Commands - Errores de factorías
     public static final String UNKNOWN_COMMAND = "Unknown command: %s";
-    public static final String INVALID_GAME_OBJECT = "Invalid game object: %s";
+    public static final String INVALID_GAME_OBJECT = "Unknown game object: \"%s\"";
     
     // Errores de commandos
     public static final String COMMAND_PARAMETERS_MISSING = "Missing parameters";
     public static final String COMMAND_INCORRECT_PARAMETER_NUMBER = "Incorrect parameter number";
     public static final String UNKNOWN_ACTION = "Unknown action: \"%s\"";
     public static final String ILLEGAL_ACTION = "Illegal action: \"%s\"";
-    public static final String INVALID_COMMAND = "Invalid command: %s";
+    public static final String INVALID_COMMAND = "Invalid command: \"%s\"";
     public static final String INVALID_COMMAND_PARAMETERS = "Invalid command parameters";
     public static final String ERROR_COMMAND_EXECUTE = "Command execute problem";
     public static final String ERROR_ADD_OBJECT = "Error while adding object to the game: %s";
@@ -63,16 +66,16 @@ public class Messages {
     // Errores de parseo del modelo
     public static final String ERROR_INVALID_ACTION = "Invalid action";
     public static final String ERROR_ACTION_NULL_OR_EMPTY = "Action cannot be null or empty";
-    public static final String ERROR_UNKNOWN_ACTION = "Unknown action: %s";
+    public static final String ERROR_UNKNOWN_ACTION = "Unknown action: \"%s\"";
 
-    public static final String ERROR_INVALID_POSITION = "Invalid position format";
-    public static final String ERROR_INVALID_POSITION_FORMAT = "Invalid position format: %s";
-    public static final String ERROR_INVALID_POSITION_NUMBERS = "Invalid position numbers: %s";
+    public static final String ERROR_INVALID_POSITION = "Invalid object position: \"%s\"";
+    public static final String ERROR_INVALID_POSITION_FORMAT = "Invalid position: \"%s\"";
+    public static final String ERROR_INVALID_POSITION_NUMBERS = "Invalid position: \"%s\"";
     
     // Mensajes de error para parsing de objetos
     public static final String ERROR_OBJECT_PARSE_TOO_MANY_ARGS = "Object parse error, too much args: \"%s\"";
     public static final String ERROR_OBJECT_POSITION_OFF_BOARD = "Object position is off board: \"%s\"";
-    public static final String ERROR_INVALID_OBJECT_POSITION = "Invalid object position: \"%s\"";
+    public static final String ERROR_INVALID_OBJECT_POSITION = "Unknown object position: \"%s\"";
     public static final String ERROR_INVALID_POSITION_STR = "Invalid position: \"%s\"";
     public static final String ERROR_UNKNOWN_MOVING_DIRECTION = "Unknown moving object direction: \"%s\"";
     public static final String ERROR_INVALID_MOVING_DIRECTION = "Invalid moving object direction: \"%s\"";
@@ -96,20 +99,6 @@ public class Messages {
     public static final String ERROR_FILE_NOT_FOUND_QUOTED = "File not found: \"%s\"";
     
     public static final String HELP_AVAILABLE_COMMANDS = "Available commands:";
-    
-    @Deprecated
-    /* @formatter:off */
-    public static final String[] HELP_LINES = new String[] { HELP_AVAILABLE_COMMANDS,
-        "[a]ction [[R]IGHT | [L]EFT | [U]P | [D]OWN | [S]TOP]+: user performs actions",
-        "[u]pdate | \"\": user does not perform any action",
-        "[r]eset [numLevel]: reset the game to initial configuration if not numLevel else load the numLevel map",
-        "[h]elp: print this help message",
-        "[e]xit: exits the game"
-    };
-    /* @formatter:on */
-    
-    @Deprecated
-    public static final String HELP = String.join(LINE_SEPARATOR+"   ", HELP_LINES) + LINE_SEPARATOR;
     public static final String COMMAND_HELP_TEXT = "   %s: %s";
     
     // UPDATE
@@ -152,13 +141,13 @@ public class Messages {
     public static final String COMMAND_SAVE_NAME = "save";
     public static final String COMMAND_SAVE_SHORTCUT = "s";
     public static final String COMMAND_SAVE_DETAILS = "[s]ave <fileName>";
-    public static final String COMMAND_SAVE_HELP = "save the current game state to a file";
+    public static final String COMMAND_SAVE_HELP = "save the actual configuration in text file <fileName>";
 
     // LOAD COMMAND
     public static final String COMMAND_LOAD_NAME = "load";
     public static final String COMMAND_LOAD_SHORTCUT = "l";
     public static final String COMMAND_LOAD_DETAILS = "[l]oad <fileName>";
-    public static final String COMMAND_LOAD_HELP = "load a game state from a file";
+    public static final String COMMAND_LOAD_HELP = "load the game configuration from text file <fileName>";
 
     // Symbols
     public static final String EMPTY = "";

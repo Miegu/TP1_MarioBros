@@ -1,4 +1,4 @@
-MarioBross 2.X
+MarioBross 3.0
 
 Time: 100
 Points: 0
@@ -26,12 +26,14 @@ Lives: 3
 
 Command > [DEBUG] Executing: aob (1,1) Land
 
-[ERROR] Error: Unknown command: aob (1,1) Land
+[ERROR] Error: Unknown command: aob
 Command > [DEBUG] Executing: addoBjEct (-1,-1) Land
 
-[ERROR] Error: Invalid game object: (-1,-1) Land
+[ERROR] Error: Command execute problem
+[ERROR] Error: Object position is off board: "(-1,-1) Land"
 Command > [DEBUG] Executing: aO (2,2) Patata
 
+[ERROR] Error: Command execute problem
 [ERROR] Error: Invalid game object: (2,2) Patata
 Command > [DEBUG] Executing: exit
 

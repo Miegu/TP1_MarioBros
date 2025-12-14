@@ -281,6 +281,7 @@ public class Mario extends MovingObject {
 
         if (isBig()) {
             setBig(false);
+            collidedThisTurn = false; // Puede recibir daño de nuevo en el mismo turno
         } else {
             game.loseLife();
         }

@@ -325,6 +325,7 @@ public class Game implements GameModel, GameStatus, GameWorld {
         // Solo resetear puntos si es nivel -1 (creativo)
         if (level == -1) {
             this.points = DEFAULT_POINTS;
+            this.lives = DEFAULT_LIVES;
         }
     }
 

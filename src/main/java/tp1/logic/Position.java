@@ -112,19 +112,22 @@ public class Position {
     // ===== PARSING =====
 
     public static Position parsePosition(String posStr) throws PositionParseException {
+        String originalString = posStr;
         try {
             // Formato: (fila,columna)
             posStr = posStr.replace("(", "").replace(")", "").trim();
             String[] parts = posStr.split(",");
+
             if (parts.length != 2) {
-                throw new PositionParseException(Messages.ERROR_INVALID_POSITION_FORMAT.formatted(posStr));
+                throw new PositionParseException(Messages.ERROR_INVALID_POSITION_FORMAT.formatted(originalString));
             }
 
             int row = Integer.parseInt(parts[0].trim());
             int col = Integer.parseInt(parts[1].trim());
             return new Position(row, col);
+
         } catch (NumberFormatException e) {
-            throw new PositionParseException(Messages.ERROR_INVALID_POSITION_NUMBERS.formatted(posStr), e);
+            throw new PositionParseException(Messages.ERROR_INVALID_POSITION_NUMBERS.formatted(originalString), e);
         }
     }
 }

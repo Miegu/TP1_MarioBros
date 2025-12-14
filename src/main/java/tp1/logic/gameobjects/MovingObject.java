@@ -1,5 +1,6 @@
 package tp1.logic.gameobjects;
 
+import tp1.exceptions.ActionParseException;
 import tp1.exceptions.ObjectParseException;
 import tp1.logic.Action;
 import tp1.logic.GameWorld;
@@ -230,33 +231,17 @@ public abstract class MovingObject extends GameObject {
     protected static Action parseDirection(String dirStr, String[] objWords) 
             throws ObjectParseException {
         
-        String upperDir = dirStr.toUpperCase();
-        
-        switch (upperDir) {
-            case "LEFT":
-            case "L":
-                return Action.LEFT;
-                
-            case "RIGHT":
-            case "R":
-                return Action.RIGHT;
-                
-            case "STOP":
-            case "S":
-                return Action.STOP;
-                
-            case "UP":
-            case "U":
-                return Action.UP;
-                
-            case "DOWN":
-            case "D":
-                return Action.DOWN;
-                
-            default:
-                throw new ObjectParseException(
-                    Messages.ERROR_UNKNOWN_MOVING_DIRECTION.formatted(String.join(" ", objWords))
-                );
+        try {
+            // DELEGAR a Action.parse() en lugar de duplicar lógica
+            return Action.parse(dirStr);
+            
+        } catch (ActionParseException e) {
+            // Envolver con información del objeto completo
+            String fullDescription = String.join(" ", objWords);
+            throw new ObjectParseException(
+                Messages.ERROR_UNKNOWN_MOVING_DIRECTION.formatted(fullDescription),
+                e  // ← ActionParseException como causa
+            );
         }
     }
 }

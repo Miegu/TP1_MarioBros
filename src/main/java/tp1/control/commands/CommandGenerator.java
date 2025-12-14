@@ -29,12 +29,12 @@ public class CommandGenerator {
      * IMPORTANTE: El orden puede ser relevante si hay comandos similares.
      */
     private static final List<Command> AVAILABLE_COMMANDS = Arrays.<Command>asList(
+            new LoadCommand(),
+            new SaveCommand(),
             new AddObjectCommand(),
             new ActionCommand(),
             new UpdateCommand(),
             new ResetCommand(),
-            new SaveCommand(),
-            new LoadCommand(),
             new HelpCommand(),
             new ExitCommand()
     );

@@ -99,6 +99,8 @@ public class SaveCommand extends AbstractCommand {
         try {
             // Guardar el estado del juego en el archivo especificado
             game.save(fileName);
+            // Mostrar mensaje de éxito al usuario
+            view.showMessage(Messages.FILE_SAVED.formatted(fileName));
         } catch (GameModelException e) {
             // Envolver la excepción en CommandExecuteException
             throw new CommandExecuteException(Messages.ERROR_COMMAND_EXECUTE, e);
